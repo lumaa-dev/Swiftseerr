@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		B964EA0D2E45523A0045CB2B /* Swiftseerr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Swiftseerr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B964EA0D2E45523A0045CB2B /* Swiftseerr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Swiftseerr.app; path = "/Users/lumaa/Documents/XCode Apps/Swiftseerr/build/Debug-iphoneos/Swiftseerr.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				B964EA0F2E45523A0045CB2B /* Swiftseerr */,
-				B964EA0E2E45523A0045CB2B /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		B964EA0E2E45523A0045CB2B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B964EA0D2E45523A0045CB2B /* Swiftseerr.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = B964EA042E45523A0045CB2B;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = B964EA0E2E45523A0045CB2B /* Products */;
+			productRefGroup = B964EA042E45523A0045CB2B;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
