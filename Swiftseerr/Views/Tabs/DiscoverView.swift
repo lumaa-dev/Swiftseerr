@@ -4,8 +4,12 @@ import SwiftUI
 
 struct DiscoverView: View {
     @State private var trending: [DiscoverItem] = []
+
     @State private var movies: [DiscoverItem] = []
     @State private var shows: [DiscoverItem] = []
+
+    @State private var upMovies: [DiscoverItem] = []
+    @State private var upShows: [DiscoverItem] = []
 
     private var hasLoaded: Bool {
         !trending.isEmpty || !movies.isEmpty || !shows.isEmpty
@@ -18,8 +22,12 @@ struct DiscoverView: View {
                     ScrollView {
                         LazyVStack(spacing: 32) {
                             VScrollItems("trending", items: trending)
+
                             VScrollItems("movies", items: movies)
                             VScrollItems("shows", items: shows)
+
+                            VScrollItems("upcoming.movies", items: upMovies)
+                            VScrollItems("upcoming.shows", items: upShows)
                         }
                     }
                     .navigationTitle(Text("discover"))
@@ -31,9 +39,12 @@ struct DiscoverView: View {
         }
         .task {
             self.trending = await self.fetchTrend()
+
             self.movies = await self.fetchItems(type: .movie)
             self.shows = await self.fetchItems(type: .show)
 
+            self.upMovies = await self.fetchUpcoming(type: .movie)
+            self.upShows = await self.fetchUpcoming(type: .show)
         }
     }
 
@@ -44,7 +55,6 @@ struct DiscoverView: View {
 
         if results?.isEmpty == false {
             let fetched: [DiscoverItem] = results!.map { .init(data: $0) }
-            print(fetched)
             return fetched
         }
         return []
@@ -58,7 +68,6 @@ struct DiscoverView: View {
 
         if results?.isEmpty == false {
             let fetched: [DiscoverItem] = results!.map { .init(data: $0) }
-            print(fetched)
             return fetched
         }
         return []
@@ -66,7 +75,7 @@ struct DiscoverView: View {
 
     func fetchUpcoming(type: DiscoverItem.ItemType) async -> [DiscoverItem] {
         let endpoint: Discover = type == .movie ? Discover.movie : Discover.show
-        guard let (data, _, _) = try? await SeerSession.shared.raw(endpoint, queries: [Discover.upcoming()]), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        guard let (data, _, _) = try? await SeerSession.shared.raw(endpoint, queries: [Discover.upcoming(type: type)]), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return []
         }
 
@@ -74,7 +83,6 @@ struct DiscoverView: View {
 
         if results?.isEmpty == false {
             let fetched: [DiscoverItem] = results!.map { .init(data: $0) }
-            print(fetched)
             return fetched
         }
         return []

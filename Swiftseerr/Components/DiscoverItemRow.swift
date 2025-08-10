@@ -47,6 +47,11 @@ struct DiscoverItemRow: View {
             Rectangle()
                 .fill(Color.gray.gradient)
                 .frame(width: self.width, height: self.height)
+                .overlay {
+                    Text(String("?"))
+                        .font(.system(size: 176, weight: .ultraLight, design: .rounded))
+                        .foregroundStyle(Color.white.opacity(0.4))
+                }
         }
     }
 }

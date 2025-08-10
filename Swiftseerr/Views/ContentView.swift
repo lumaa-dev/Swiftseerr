@@ -9,10 +9,15 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if self.onboarding != SeerSession.OnboardingSteps.complete {
-                OnboardingView(onboarding: $onboarding)
+            if loading {
+                ProgressView()
+                    .progressViewStyle(.circular)
             } else {
-                tabs
+                if self.onboarding != SeerSession.OnboardingSteps.complete {
+                    OnboardingView(onboarding: $onboarding)
+                } else if SeerSession.shared.authorization != nil {
+                    tabs
+                }
             }
         }
         .task {

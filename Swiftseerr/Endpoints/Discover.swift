@@ -24,8 +24,11 @@ enum Discover: Endpoint {
         return []
     }
 
-    static func upcoming() -> URLQueryItem {
-        let date = ISO8601DateFormatter().string(from: Date.now)
-        return .init(name: "primaryReleaseDateGte", value: date)
+    static func upcoming(type: DiscoverItem.ItemType) -> URLQueryItem {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        let date: String = dateFormatter.string(from: Date.now)
+        return .init(name: type == .movie ? "primaryReleaseDateGte" : "firstAirDateGte", value: date)
     }
 }
