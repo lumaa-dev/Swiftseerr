@@ -12,7 +12,7 @@ struct ContentView: View {
             if self.onboarding != SeerSession.OnboardingSteps.complete {
                 OnboardingView(onboarding: $onboarding)
             } else {
-                Text("logged in yipee")
+                tabs
             }
         }
         .task {
@@ -33,7 +33,39 @@ struct ContentView: View {
         }
     }
 
-    func logIn(auth: AuthInfo) async throws {
+    //MARK: - Views
+
+    @ViewBuilder
+    private var tabs: some View {
+        TabView {
+            Tab {
+                Text("C'est pas fini. T'attends comme tout le monde.")
+            } label: {
+                Label("discover", systemImage: "sparkles")
+            }
+
+            Tab {
+                DiscoverItemsView(type: .movie)
+            } label: {
+                Label("movies", systemImage: "film.stack")
+            }
+
+            Tab {
+                DiscoverItemsView(type: .show)
+            } label: {
+                Label("shows", systemImage: "play.tv")
+            }
+
+            Tab(role: .search) {
+                Text("C'est pas fini. T'attends comme tout le monde.")
+            }
+        }
+        .tabBarMinimizeBehavior(.onScrollDown)
+    }
+
+    //MARK: - Methods
+
+    private func logIn(auth: AuthInfo) async throws {
         guard !auth.address.isEmpty && !auth.password.isEmpty else { throw SeerrError() }
         
         let (data, res, cookies) = try await SeerSession.shared.raw(Login.jellyfin(username: auth.username, password: auth.password))
@@ -44,6 +76,7 @@ struct ContentView: View {
                 SeerSession.shared.auth = auth
                 SeerSession.shared.authorization = sid.value
 
+                print("[logIn] Cookie bounded \(sid.value)")
                 UserDefaults.standard.set(true, forKey: "onboarded")
             }
         } else {

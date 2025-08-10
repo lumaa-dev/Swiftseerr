@@ -15,6 +15,7 @@ extension Endpoint {
     }
 
     var source: String { SeerSession.shared.auth.address }
+    var api: String { "\(SeerSession.shared.auth.address)/api/v1" }
 }
 
 enum HTTPMethod: String {
@@ -22,27 +23,6 @@ enum HTTPMethod: String {
     case post = "POST"
     case put = "PUT"
     case delete = "DELETE"
-}
-
-class CookieCatchingDelegate: NSObject, URLSessionTaskDelegate {
-    var lastCookies: [HTTPCookie] = []
-
-    func urlSession(_ session: URLSession,
-                    task: URLSessionTask,
-                    willPerformHTTPRedirection response: HTTPURLResponse,
-                    newRequest request: URLRequest,
-                    completionHandler: @escaping (URLRequest?) -> Void) {
-        if let url = response.url {
-            let headers = response.allHeaderFields.reduce(into: [String:String]()) {
-                if let k = $1.key as? String, let v = $1.value as? String {
-                    $0[k] = v
-                }
-            }
-            let cookies = HTTPCookie.cookies(withResponseHeaderFields: headers, for: url)
-            lastCookies.append(contentsOf: cookies)
-        }
-        completionHandler(request) // follow the redirect
-    }
 }
 
 struct SeerrError: Error {}

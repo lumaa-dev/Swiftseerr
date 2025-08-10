@@ -12,16 +12,23 @@ class SeerSession {
         self.auth = auth
     }
 
-    func call<Response: Decodable>(_ endpoint: Endpoint) async throws -> Response {
+    func call<Response: Decodable>(_ endpoint: Endpoint, queries: [URLQueryItem] = []) async throws -> Response {
         let data = try await self.raw(endpoint).0
         let result = try JSONDecoder().decode(Response.self, from: data)
         return result
     }
 
-    func raw(_ endpoint: Endpoint) async throws -> (Data, HTTPURLResponse?, [(name: String, value: String)]) {
-        guard let url = URL(string: endpoint.path()) else {
+    func raw(_ endpoint: Endpoint, queries: [URLQueryItem] = []) async throws -> (Data, HTTPURLResponse?, [(name: String, value: String)]) {
+        var strUrl: String = endpoint.path()
+        if !queries.isEmpty {
+            strUrl = "\(endpoint.path())?\(queries.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&"))"
+        }
+        
+        guard let url = URL(string: strUrl) else {
             throw URLError(.badURL)
         }
+
+        print("[SeerSession] \(endpoint.method.rawValue) \(strUrl)")
 
         var req = URLRequest(url: url)
         req.httpMethod = endpoint.method.rawValue
@@ -31,9 +38,11 @@ class SeerSession {
             encoder.outputFormatting = .sortedKeys
             req.httpBody = try encoder.encode(json)
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            if let authorization {
-                req.setValue("Authorization", forHTTPHeaderField: authorization)
-            }
+        }
+        
+        if let authorization {
+            print("[SeerSession] Cookie header set")
+            req.setValue("connect.sid=\(authorization)", forHTTPHeaderField: "Cookie")
         }
 
         let cookieStorage: HTTPCookieStorage = .init()
@@ -54,6 +63,9 @@ class SeerSession {
 //            for (key, value) in http.allHeaderFields {
 //                print("  \(key): \(value)")
 //            }
+
+            let rawResponse: String? = String(data: data, encoding: .utf8)
+            print("[\(http.statusCode)] \(rawResponse ?? "*No content*")")
 
             let stringCookies = http.value(forHTTPHeaderField: "Set-Cookie") ?? ""
             let arrayCookies = stringCookies.split(separator: /(; ?)+/)

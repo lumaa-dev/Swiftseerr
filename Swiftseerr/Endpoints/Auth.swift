@@ -23,8 +23,6 @@ enum Login: Endpoint {
     case jellyfin(username: String, password: String)
 
     func path() -> String {
-        let api: String = "\(self.source)/api/v1"
-
         switch self {
             case .jellyfin:
                 return "\(api)/auth/jellyfin"
