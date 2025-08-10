@@ -39,7 +39,7 @@ struct ContentView: View {
     private var tabs: some View {
         TabView {
             Tab {
-                Text("C'est pas fini. T'attends comme tout le monde.")
+                DiscoverView()
             } label: {
                 Label("discover", systemImage: "sparkles")
             }
