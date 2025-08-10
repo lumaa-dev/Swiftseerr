@@ -44,14 +44,15 @@ struct DiscoverItemsView: View {
         }
     }
 
-    func fetchItems() async -> [DiscoverItem] {
-        guard let (data, _, _) = try? await SeerSession.shared.raw(self.endpoint), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
+    func fetchItems(page: Int = 1) async -> [DiscoverItem] {
+        guard let (data, _, _) = try? await SeerSession.shared.raw(self.endpoint, queries: [.init(name: "page", value: "\(page)")]), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return []
+        }
 
         let results: [[String: Any]]? = json["results"] as? [[String: Any]]
 
         if results?.isEmpty == false {
             let fetched: [DiscoverItem] = results!.map { .init(data: $0) }
-            print(fetched)
             return fetched
         }
         return []
