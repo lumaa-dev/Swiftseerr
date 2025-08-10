@@ -20,8 +20,12 @@ class SeerSession {
 
     func raw(_ endpoint: Endpoint, queries: [URLQueryItem] = []) async throws -> (Data, HTTPURLResponse?, [(name: String, value: String)]) {
         var strUrl: String = endpoint.path()
-        if !queries.isEmpty {
-            let q: [URLQueryItem] = queries.encodeQueryItemValues()
+        var q: [URLQueryItem] = endpoint.queryItems() ?? []
+        q.append(contentsOf: queries)
+        
+        if !q.isEmpty {
+            q = q.encodeQueryItemValues()
+
             strUrl = "\(endpoint.path())?\(q.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&"))"
         }
         

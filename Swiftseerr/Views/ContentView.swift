@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var onboarding: SeerSession.OnboardingSteps = .complete
 
     @State private var loading: Bool = false
+    @State private var searchQuery: String = ""
 
     var body: some View {
         ZStack {
@@ -62,9 +63,10 @@ struct ContentView: View {
             }
 
             Tab(role: .search) {
-                Text("C'est pas fini. T'attends comme tout le monde.")
+                SearchView(query: $searchQuery)
             }
         }
+        .searchable(text: $searchQuery, prompt: "search.prompt")
         .tabBarMinimizeBehavior(.onScrollDown)
     }
 
