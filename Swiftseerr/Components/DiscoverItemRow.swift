@@ -14,8 +14,9 @@ struct DiscoverItemRow: View {
                 poster
                     .frame(width: width, height: height)
 
-                Text(item.type == .movie ? "FILM" : "SHOW")
-                    .font(.caption2.bold())
+                Text(item.type == .movie ? "movie" : "show")
+                    .textCase(.uppercase)
+                    .font(.caption2.bold().lowercaseSmallCaps())
                     .foregroundColor(.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 4)
