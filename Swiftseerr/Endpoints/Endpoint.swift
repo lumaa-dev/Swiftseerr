@@ -10,9 +10,8 @@ protocol Endpoint: Sendable {
 }
 
 extension Endpoint {
-    var jsonValue: Encodable? {
-        nil
-    }
+    var jsonValue: Encodable? { nil }
+    func queryItems() -> [URLQueryItem]? { return nil }
 
     var source: String { SeerSession.shared.auth.address }
     var api: String { "\(SeerSession.shared.auth.address)/api/v1" }

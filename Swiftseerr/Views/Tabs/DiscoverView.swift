@@ -61,7 +61,7 @@ struct DiscoverView: View {
         return []
     }
 
-    func fetchItems(type: DiscoverItem.ItemType) async -> [DiscoverItem] {
+    func fetchItems(type: ItemType) async -> [DiscoverItem] {
         let endpoint: Discover = type == .movie ? Discover.movie : Discover.show
         guard let (data, _, _) = try? await SeerSession.shared.raw(endpoint), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
 
@@ -74,7 +74,7 @@ struct DiscoverView: View {
         return []
     }
 
-    func fetchUpcoming(type: DiscoverItem.ItemType) async -> [DiscoverItem] {
+    func fetchUpcoming(type: ItemType) async -> [DiscoverItem] {
         let endpoint: Discover = type == .movie ? Discover.movie : Discover.show
         guard let (data, _, _) = try? await SeerSession.shared.raw(endpoint, queries: [Discover.upcoming(type: type)]), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return []

@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct DiscoverItemsView: View {
-    let type: DiscoverItem.ItemType
+    let type: ItemType
 
     @State private var items: [DiscoverItem] = []
 
@@ -16,7 +16,7 @@ struct DiscoverItemsView: View {
         GridItem(.flexible(), spacing: 16)
     ]
 
-    init(type: DiscoverItem.ItemType) {
+    init(type: ItemType) {
         self.type = type
     }
 

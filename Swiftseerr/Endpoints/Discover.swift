@@ -24,7 +24,7 @@ enum Discover: Endpoint {
         return []
     }
 
-    static func upcoming(type: DiscoverItem.ItemType) -> URLQueryItem {
+    static func upcoming(type: ItemType) -> URLQueryItem {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
