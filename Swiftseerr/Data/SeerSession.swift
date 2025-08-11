@@ -96,12 +96,12 @@ class SeerSession {
         return self.auth
     }
 
-    enum OnboardingSteps: Int, CaseIterable {
-        case welcome = 1
-        case url = 2
-        case provider = 3
-        case login = 4
-        case complete = 5
+    enum OnboardingSteps: CaseIterable, Equatable {
+        case welcome
+        case url
+        case provider
+        case login(_ provider: AuthInfo.Providers? = nil)
+        case complete
 
         var title: String {
             switch self {
@@ -131,6 +131,20 @@ class SeerSession {
                 default:
                     ""
             }
+        }
+
+        static var allCases: [SeerSession.OnboardingSteps] {
+            [
+                .welcome,
+                .url,
+                .provider,
+                .login(nil), // nil until selected .provider
+                .complete
+            ]
+        }
+
+        static func isLogin(_ step: Self) -> Bool {
+            return step == .login(nil) || step == .login(.jellyfin) || step == .login(.local)
         }
     }
 }

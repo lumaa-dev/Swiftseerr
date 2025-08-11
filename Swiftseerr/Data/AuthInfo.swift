@@ -6,13 +6,13 @@ struct AuthInfo: Codable {
     var username: String = ""
     var password: String = ""
     var address: String = ""
-    var token: String = ""
+    var provider: Self.Providers? = nil
 
-    init(username: String? = nil, password: String? = nil, address: String? = nil, token: String? = nil) {
+    init(username: String? = nil, password: String? = nil, address: String? = nil, provider: Self.Providers? = nil) {
         self.username = username ?? ""
         self.password = password ?? ""
         self.address = address ?? ""
-        self.token = token ?? ""
+        self.provider = provider
     }
 
     init(from decoder: any Decoder) throws {
@@ -20,7 +20,7 @@ struct AuthInfo: Codable {
         self.username = try container.decode(String.self, forKey: .username)
         self.password = try container.decode(String.self, forKey: .password)
         self.address = try container.decode(String.self, forKey: .address)
-        self.token = try container.decode(String.self, forKey: .token)
+        self.provider = try container.decodeIfPresent(Self.Providers.self, forKey: .provider)
     }
 
     func encode(to encoder: any Encoder) throws {
@@ -28,13 +28,18 @@ struct AuthInfo: Codable {
         try container.encode(self.username, forKey: .username)
         try container.encode(self.password, forKey: .password)
         try container.encode(self.address, forKey: .address)
-        try container.encode(self.token, forKey: .token)
+        try container.encodeIfPresent(self.provider, forKey: .provider)
     }
 
     enum CodingKeys: CodingKey {
         case username
         case password
         case address
-        case token
+        case provider
+    }
+
+    enum Providers: CaseIterable, Codable {
+        case jellyfin
+        case local
     }
 }

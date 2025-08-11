@@ -8,7 +8,7 @@ struct OnboardingView: View {
     @State private var seerrUrl: String = ""
     @State private var isSeerr: Bool = false
 
-    @State private var selection: Bool = false
+    @State private var selection: AuthInfo.Providers? = nil
 
     @State private var username: String = ""
     @State private var password: String = ""
@@ -22,7 +22,7 @@ struct OnboardingView: View {
             case .url:
                 return !seerrUrl.isEmpty
             case .provider:
-                return self.selection
+                return self.selection != nil
             case .login:
                 return !self.username.isEmpty && !self.password.isEmpty
             default:
@@ -50,13 +50,20 @@ struct OnboardingView: View {
 
             Button {
                 let allCases: [SeerSession.OnboardingSteps] = SeerSession.OnboardingSteps.allCases
-                let curI: Int = allCases.firstIndex(of: self.onboarding) ?? -1
+                let isLogin: Bool = SeerSession.OnboardingSteps.isLogin(self.onboarding)
+                let curI: Int = allCases.firstIndex(of: isLogin ? .login(nil) : self.onboarding) ?? -1
 
                 Task {
                     do {
                         try await self.stepAction() {
                             withAnimation {
-                                self.onboarding = allCases[min(curI + 1, allCases.count - 1)]
+                                let nextOnboard: SeerSession.OnboardingSteps = allCases[min(curI + 1, allCases.count - 1)]
+
+                                if nextOnboard == .login(nil) {
+                                    self.onboarding = .login(self.selection)
+                                } else {
+                                    self.onboarding = nextOnboard
+                                }
                             }
                         }
                     } catch {
@@ -89,20 +96,37 @@ struct OnboardingView: View {
                     .glassEffect(.regular.interactive())
             case .provider:
                 VStack {
-                    Button {
-                        self.selection = true
-                    } label: {
-                        Text("Jellyseerr selection")
+                    ForEach(AuthInfo.Providers.allCases, id: \.self) { provider in
+                        Button {
+                            self.selection = provider
+                        } label: {
+                            Text(String("Login with \(provider)"))
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
                 }
-            case .login:
+            case .login(let p):
                 VStack(spacing: 30) {
-                    TextField("Username", text: $username)
-                        .padding()
-                        .textContentType(.username)
-                        .keyboardType(.asciiCapable)
-                        .textInputFormattingControlVisibility(.hidden, for: .all)
-                        .glassEffect(.regular.interactive())
+                    switch p {
+                        case .jellyfin:
+                            TextField("Username", text: $username)
+                                .padding()
+                                .textContentType(.username)
+                                .keyboardType(.asciiCapable)
+                                .textInputFormattingControlVisibility(.hidden, for: .all)
+                                .textInputAutocapitalization(.never)
+                                .glassEffect(.regular.interactive())
+                        case .local:
+                            TextField("Email", text: $username)
+                                .padding()
+                                .textContentType(.emailAddress)
+                                .keyboardType(.asciiCapable)
+                                .textInputFormattingControlVisibility(.hidden, for: .all)
+                                .textInputAutocapitalization(.never)
+                                .glassEffect(.regular.interactive())
+                        default:
+                            EmptyView()
+                    }
 
                     SecureField("Password", text: $password)
                         .padding()
@@ -135,14 +159,21 @@ struct OnboardingView: View {
             } else {
                 throw SeerrError()
             }
-        } else if self.onboarding == .login {
-            let (data, res, cookies) = try await SeerSession.shared.raw(Login.jellyfin(username: self.username, password: self.password))
+        } else if self.onboarding == .login(self.selection) {
+            let endpoint: Login = self.selection == .jellyfin ? Login.jellyfin(username: self.username, password: self.password) : Login.local(email: self.username, password: self.password)
+
+            let (data, res, cookies) = try await SeerSession.shared.raw(endpoint)
             let code = res?.statusCode ?? -1
 
             if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], json["id"] != nil && code == 200 {
                 if let sid = cookies.first(where: { $0.name == "connect.sid" }) {
                     print("Got session ID:", sid.value)
-                    SeerSession.shared.auth = .init(username: self.username, password: self.password, address: self.seerrUrl)
+                    SeerSession.shared.auth = .init(
+                        username: self.username,
+                        password: self.password,
+                        address: self.seerrUrl,
+                        provider: self.selection
+                    )
                     SeerSession.shared.authorization = sid.value
                     try SeerSession.shared.saveAuth()
 

@@ -73,9 +73,10 @@ struct ContentView: View {
     //MARK: - Methods
 
     private func logIn(auth: AuthInfo) async throws {
-        guard !auth.address.isEmpty && !auth.password.isEmpty else { throw SeerrError() }
-        
-        let (data, res, cookies) = try await SeerSession.shared.raw(Login.jellyfin(username: auth.username, password: auth.password))
+        guard !auth.address.isEmpty && !auth.password.isEmpty && auth.provider != nil else { throw SeerrError() }
+
+        let endpoint: Login = auth.provider! == .jellyfin ? Login.jellyfin(username: auth.username, password: auth.password) : Login.local(email: auth.username, password: auth.password)
+        let (data, res, cookies) = try await SeerSession.shared.raw(endpoint)
         let code = res?.statusCode ?? -1
 
         if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], json["id"] != nil && code == 200 {
