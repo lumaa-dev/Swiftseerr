@@ -36,6 +36,7 @@ struct DiscoverItemsView: View {
                         .padding()
                     }
                     .navigationTitle(Text(type == .movie ? "movies" : "shows"))
+                    .addSettings()
                 }
             }
         }

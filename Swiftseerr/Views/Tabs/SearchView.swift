@@ -27,6 +27,7 @@ struct SearchView: View {
                     }
                 }
                 .padding()
+                .addSettings()
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 16) {
@@ -37,6 +38,7 @@ struct SearchView: View {
                     .padding()
                 }
                 .navigationTitle("search")
+                .addSettings()
             }
         }
         .onChange(of: query) { _, newQuery in

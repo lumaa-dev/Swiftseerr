@@ -31,6 +31,7 @@ struct DiscoverView: View {
                         }
                     }
                     .navigationTitle(Text("discover"))
+                    .addSettings()
                 }
             } else {
                 ProgressView()
