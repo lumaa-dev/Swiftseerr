@@ -116,7 +116,6 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "4k.tv")
                         }
-                        .frame(maxHeight: .infinity)
                         .buttonStyle(.glass)
                     } else {
                         Text(self.item!.requestStatus.localized)
