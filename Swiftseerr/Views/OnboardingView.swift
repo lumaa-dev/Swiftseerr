@@ -72,7 +72,7 @@ struct OnboardingView: View {
                 }
             } label: {
                 HStack(alignment: .center, spacing: 10) {
-                    Text("Next Step")
+                    Text("onboarding.next")
                     Image(systemName: "arrow.forward")
                 }
                 .frame(maxWidth: .infinity, minHeight: 40)
@@ -87,7 +87,7 @@ struct OnboardingView: View {
     var stepView: some View {
         switch self.onboarding {
             case .url:
-                TextField("Jellyseerr URL", text: $seerrUrl)
+                TextField("jellyseerr.url", text: $seerrUrl)
                     .padding()
                     .textContentType(.URL)
                     .keyboardType(.URL)
@@ -109,7 +109,7 @@ struct OnboardingView: View {
                 VStack(spacing: 30) {
                     switch p {
                         case .jellyfin:
-                            TextField("Username", text: $username)
+                            TextField("username", text: $username)
                                 .padding()
                                 .textContentType(.username)
                                 .keyboardType(.asciiCapable)
@@ -117,7 +117,7 @@ struct OnboardingView: View {
                                 .textInputAutocapitalization(.never)
                                 .glassEffect(.regular.interactive())
                         case .local:
-                            TextField("Email", text: $username)
+                            TextField("email", text: $username)
                                 .padding()
                                 .textContentType(.emailAddress)
                                 .keyboardType(.asciiCapable)
@@ -128,7 +128,7 @@ struct OnboardingView: View {
                             EmptyView()
                     }
 
-                    SecureField("Password", text: $password)
+                    SecureField("password", text: $password)
                         .padding()
                         .textContentType(.password)
                         .keyboardType(.asciiCapable)
