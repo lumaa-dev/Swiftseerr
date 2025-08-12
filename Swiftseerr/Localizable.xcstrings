@@ -356,7 +356,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Requête de %@"
+            "value" : "Demande de %@"
           }
         }
       }
@@ -372,7 +372,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Décliner"
+            "value" : "Refuser"
           }
         }
       }
@@ -420,7 +420,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interdit"
+            "value" : "Refusé"
           }
         }
       }
