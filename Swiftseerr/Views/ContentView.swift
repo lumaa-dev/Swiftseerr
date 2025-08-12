@@ -91,6 +91,22 @@ struct ContentView: View {
         } else {
             throw SeerrError()
         }
+
+        try await self.getMe()
+    }
+
+    private func getMe() async throws {
+        guard let user = SeerSession.shared.user, user.permission <= 0 else { return }
+
+        let (data, res, _) = try await SeerSession.shared.raw(Identify.me)
+        let code = res?.statusCode ?? -1
+
+        if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], code == 200 {
+            SeerSession.shared.user = .init(data: json)
+            print("[getMe] Updated user")
+        } else {
+            throw SeerrError()
+        }
     }
 }
 

@@ -2,16 +2,19 @@
 
 import Foundation
 
-struct User {
+struct User: Identifiable, Equatable {
+    let id: Int
     let username: String
     let permission: Int
 
-    init(username: String, permission: Int) {
+    init(id: Int, username: String, permission: Int) {
+        self.id = id
         self.username = username
         self.permission = permission
     }
 
     init(data: [String: Any]) {
+        self.id = data["id"] as! Int
         self.username = data["displayName"] as? String ?? data["username"] as! String
         self.permission = data["permissions"] as! Int
     }

@@ -4,13 +4,16 @@ import Foundation
 
 enum Identify: Endpoint {
     case status(url: String)
+    case me
 
     var method: HTTPMethod { return .get }
 
     func path() -> String {
         switch self {
             case .status(let url):
-                return "\(url)/api/v1/status"
+                return "\(api)/status"
+            case .me:
+                return "\(api)/auth/me"
         }
     }
 
