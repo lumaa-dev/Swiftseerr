@@ -5,8 +5,6 @@ import SwiftUI
 struct MediaItemView: View {
     @State private var item: MediaItem? = nil
 
-    @State private var isLoading: Bool = false
-
     let id: Int
     let type: ItemType
 
@@ -31,6 +29,9 @@ struct MediaItemView: View {
                     header
 
                     info
+
+                    list
+                        .padding(.top, 30.0)
                 }
                 .navigationTitle(Text(item.title))
                 .navigationBarTitleDisplayMode(.inline)
@@ -79,19 +80,10 @@ struct MediaItemView: View {
     }
 
     private var info: some View {
-        VStack(alignment: .leading) {
-            Text(self.item!.title)
-                .font(.title2.bold())
-                .multilineTextAlignment(.leading)
-
-            Text(self.item!.tagline)
-                .foregroundStyle(Color.secondary)
-                .font(.callout.width(.condensed))
-                .multilineTextAlignment(.leading)
-
+        VStack(alignment: .leading, spacing: 25) {
             GlassEffectContainer {
                 HStack {
-                    if self.item!.requestStatus == .requestable || self.item!.requestStatus == .unknown {
+                    if self.item!.requestStatus == .unknown {
                         Button {
                             Task {
                                 if let http: HTTPURLResponse = await self.request(), http.statusCode == 201 {
@@ -126,15 +118,85 @@ struct MediaItemView: View {
             }
             .frame(width: 370, alignment: .center)
 
-            Text("summary")
-                .font(.title.bold())
-                .padding(.top, 20)
+            VStack(alignment: .leading) {
+                Text(self.item!.title)
+                    .font(.title.bold())
+                    .multilineTextAlignment(.leading)
 
-            Text(self.item!.overview)
-                .font(.body.italic())
-                .multilineTextAlignment(.leading)
+                Text(self.item!.tagline)
+                    .foregroundStyle(Color.secondary)
+                    .font(.callout.width(.condensed))
+                    .multilineTextAlignment(.leading)
+            }
+
+            if !self.item!.overview.isEmpty {
+                VStack(alignment: .leading) {
+                    Text("summary")
+                        .font(.title2.bold())
+                    
+                    Text(self.item!.overview)
+                        .font(.body.italic())
+                        .multilineTextAlignment(.leading)
+                }
+            }
         }
         .frame(width: 370, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var list: some View {
+        VStack(spacing: 20.0) {
+            HStack {
+                Text("release")
+
+                Spacer()
+
+                Text(self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
+                    .foregroundStyle(Color.secondary)
+            }
+
+            if let duration = self.item!.runtime, duration > 0 {
+                Divider()
+
+                HStack {
+                    Text("duration")
+
+                    Spacer()
+
+                    Text("duration.m-\(duration)")
+                        .foregroundStyle(Color.secondary)
+                }
+            } else if let seasonsCount = self.item!.seasonsCount, let episodesCount = self.item!.episodesCount {
+                Divider()
+
+                HStack {
+                    Text("duration")
+
+                    Spacer()
+
+                    Text("show.seasons-\(seasonsCount).episodes-\(episodesCount)")
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+
+            if let rating = self.item!.rating {
+                Divider()
+
+                HStack {
+                    Text("content-rating")
+
+                    Spacer()
+
+                    Text(rating)
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+        }
+        .frame(width: 340, alignment: .leading)
+        .padding(.vertical)
+        .padding(.horizontal, 15.0)
+        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
+        .clipShape(RoundedRectangle(cornerRadius: 15.0))
     }
 
     private func fetchItem() async throws -> MediaItem {
@@ -154,5 +216,24 @@ struct MediaItemView: View {
 
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k)).1
         return http
+    }
+
+    func flagEmoji(for regionCode: String) -> String? {
+        guard regionCode.count == 2, let asciiA = Character("A").asciiValue else { return nil }
+
+        let uppercasedCode = regionCode.uppercased()
+        var emoji = ""
+
+        for char in uppercasedCode {
+            guard let asciiValue = char.asciiValue, let z = Character("Z").asciiValue, asciiValue >= asciiA && asciiValue <= z else { return nil }
+            let offset = UInt32(asciiValue - asciiA)
+            if let scalar = UnicodeScalar(0x1F1E6 + offset) {
+                emoji.append(Character(scalar))
+            } else {
+                return nil
+            }
+        }
+
+        return emoji
     }
 }

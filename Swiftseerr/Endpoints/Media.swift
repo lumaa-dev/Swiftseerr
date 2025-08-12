@@ -22,7 +22,6 @@ enum Media: Endpoint {
 }
 
 enum MediaStatus: Int {
-    case requestable = 0
     case unknown = 1
     case pending = 2
     case processing = 3
@@ -33,8 +32,6 @@ enum MediaStatus: Int {
 
     var localized: String {
         switch self {
-            case .requestable:
-                String(localized: "request.status.requestable")
             case .unknown:
                 String(localized: "request.status.unknown")
             case .pending:
@@ -54,8 +51,6 @@ enum MediaStatus: Int {
 
     var color: Color {
         switch self {
-            case .requestable:
-                Color.clear
             case .unknown:
                 Color.clear
             case .pending:

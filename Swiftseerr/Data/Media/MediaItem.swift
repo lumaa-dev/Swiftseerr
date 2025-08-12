@@ -12,15 +12,15 @@ struct MediaItem: Identifiable {
 
     var requestStatus: MediaStatus
 
-    private let runtime: Int?
+    let seasonsCount: Int?
+    let episodesCount: Int?
+    let runtime: Int?
+
+    var rating: String?
+    let releaseDate: Date
 
     private let posterPath: String?
     private let backPath: String?
-
-    var movieRuntime: (hours: Double, minutes: Double)? {
-        guard let runtime, runtime > 0 else { return nil }
-        return (hours: Double(runtime / 60), minutes: Double(runtime - runtime / 60))
-    }
 
     var image: URL? {
         guard let posterPath else { return nil }
@@ -40,14 +40,29 @@ struct MediaItem: Identifiable {
         self.tagline = data["tagline"] as! String
         self.overview = data["overview"] as! String
 
+        self.seasonsCount = data["numberOfSeasons"] as? Int
+        self.episodesCount = data["numberOfEpisodes"] as? Int
         self.runtime = data["runtime"] as? Int
+
+        let releaseStr: String = data[type == .movie ? "releaseDate" : "firstAirDate"] as! String
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        self.releaseDate = dateFormatter.date(from: releaseStr) ?? .init(timeIntervalSince1970: 0)
 
         self.posterPath = data["posterPath"] as? String
         self.backPath = data["backdropPath"] as? String
 
-        self.requestStatus = .requestable
+        // CONDITIONS (needs to be var not let)
+        self.requestStatus = .unknown
+        self.rating = nil
+        
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] {
-            self.requestStatus = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .requestable
+            self.requestStatus = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .unknown
+        }
+
+        if let c: [String: Any] = data["contentRatings"] as? [String: Any], let ratings: [[String: Any]] = c["results"] as? [[String: Any]], let localRating = ratings.filter({ ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }).first {
+            self.rating = localRating["rating"] as? String
         }
     }
 }
