@@ -11,6 +11,11 @@ struct MediaItemView: View {
     private var posterWidth: CGFloat { self.posterHeight * (1.0 / 1.5) }
     private let posterHeight: CGFloat = 260
 
+    private var canManageRequests: Bool {
+        guard let user = SeerSession.shared.user else { return false }
+        return user.hasPermission(Permission.manageRequests)
+    }
+
     init(item: MediaItem) {
         self.item = item
         self.id = item.id
@@ -108,11 +113,35 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "4k.tv")
                         }
+                        .buttonBorderShape(.circle)
                         .buttonStyle(.glass)
                     } else {
                         Text(self.item!.requestStatus.localized)
-                            .padding(7.0)
+                            .padding(.vertical, 7.0)
+                            .padding(.horizontal, 15.0)
                             .glassEffect(.regular.interactive(false).tint(self.item!.requestStatus.color.opacity(0.4)))
+
+                        Menu {
+                            ForEach(self.item!.requests) { req in
+                                if self.canManageRequests {
+                                    self.manageRequest(req)
+                                }
+
+                                Button(role: .destructive) {
+                                    Task {
+                                        if let http = await self.deleteRequest(req), http.statusCode == 200 {
+                                            self.item!.requestStatus = .unknown
+                                        }
+                                    }
+                                } label: {
+                                    Label("request.delete", systemImage: "trash")
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                        }
+                        .buttonBorderShape(.circle)
+                        .buttonStyle(.glass)
                     }
                 }
             }
@@ -199,6 +228,39 @@ struct MediaItemView: View {
         .clipShape(RoundedRectangle(cornerRadius: 15.0))
     }
 
+    // MARK: View Methods
+
+    @ViewBuilder
+    private func manageRequest(_ request: MediaRequest) -> some View {
+        ControlGroup {
+            Button {
+                Task {
+                    if let http = await self.updateStatus(.approve, request: request), http.statusCode == 200 {
+                        withAnimation {
+                            self.item!.requestStatus = .processing
+                        }
+                    }
+                }
+            } label: {
+                Label("request.accept", systemImage: "checkmark.seal")
+            }
+
+            Button {
+                Task {
+                    if let http = await self.updateStatus(.decline, request: request), http.statusCode == 200 {
+                        withAnimation {
+                            self.item!.requestStatus = .unknown
+                        }
+                    }
+                }
+            } label: {
+                Label("request.decline", systemImage: "xmark")
+            }
+        }
+    }
+
+    // MARK: Functional Methods
+
     private func fetchItem() async throws -> MediaItem {
         guard self.item == nil else { throw SeerrError() }
 
@@ -215,6 +277,16 @@ struct MediaItemView: View {
         guard let item else { return nil }
 
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k)).1
+        return http
+    }
+
+    private func updateStatus(_ status: Requests.Status, request: MediaRequest) async -> HTTPURLResponse? {
+        let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.updateStatus(id: request.id, status: status)).1
+        return http
+    }
+
+    private func deleteRequest(_ request: MediaRequest) async -> HTTPURLResponse? {
+        let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.delete(id: request.id)).1
         return http
     }
 

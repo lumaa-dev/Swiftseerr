@@ -6,7 +6,7 @@ enum Requests: Endpoint {
     case all(_ page: Int = 1, limit: Int = 10)
     case create(id: Int, type: ItemType, is4k: Bool)
     case media(id: Int)
-    case updateStatus(id: Int, status: MediaStatus)
+    case updateStatus(id: Int, status: Self.Status)
     case delete(id: Int)
 
     var method: HTTPMethod {
@@ -59,5 +59,10 @@ enum Requests: Endpoint {
             self.mediaType = mediaType.rawValue
             self.is4k = is4k
         }
+    }
+
+    enum Status: String {
+        case approve = "approve"
+        case decline = "decline"
     }
 }

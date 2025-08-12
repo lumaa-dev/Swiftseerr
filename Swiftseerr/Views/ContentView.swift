@@ -79,12 +79,13 @@ struct ContentView: View {
         let (data, res, cookies) = try await SeerSession.shared.raw(endpoint)
         let code = res?.statusCode ?? -1
 
-        if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], json["id"] != nil && code == 200 {
+        if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], code == 200 {
             if let sid = cookies.first(where: { $0.name == "connect.sid" }) {
                 SeerSession.shared.auth = auth
                 SeerSession.shared.authorization = sid.value
+                SeerSession.shared.user = .init(data: json)
 
-                print("[logIn] Cookie bounded \(sid.value)")
+                print("[logIn] Cookie bound \(sid.value)")
                 UserDefaults.standard.set(true, forKey: "onboarded")
             }
         } else {

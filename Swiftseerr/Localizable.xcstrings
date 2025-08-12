@@ -329,6 +329,15 @@
         }
       }
     },
+    "request.accept" : {
+
+    },
+    "request.decline" : {
+
+    },
+    "request.delete" : {
+
+    },
     "request.status.available" : {
       "localizations" : {
         "en" : {

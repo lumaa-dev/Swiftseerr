@@ -6,6 +6,7 @@ class SeerSession {
     static let shared: SeerSession = .init()
 
     var auth: AuthInfo
+    var user: User? = nil
     var authorization: String? = nil
 
     init(auth: AuthInfo = .init()) {

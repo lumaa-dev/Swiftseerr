@@ -165,9 +165,8 @@ struct OnboardingView: View {
             let (data, res, cookies) = try await SeerSession.shared.raw(endpoint)
             let code = res?.statusCode ?? -1
 
-            if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], json["id"] != nil && code == 200 {
+            if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], code == 200 {
                 if let sid = cookies.first(where: { $0.name == "connect.sid" }) {
-                    print("Got session ID:", sid.value)
                     SeerSession.shared.auth = .init(
                         username: self.username,
                         password: self.password,
@@ -175,6 +174,8 @@ struct OnboardingView: View {
                         provider: self.selection
                     )
                     SeerSession.shared.authorization = sid.value
+                    SeerSession.shared.user = .init(data: json)
+
                     try SeerSession.shared.saveAuth()
 
                     UserDefaults.standard.set(true, forKey: "onboarded")

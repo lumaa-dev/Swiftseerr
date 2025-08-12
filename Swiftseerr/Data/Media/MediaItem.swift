@@ -11,12 +11,13 @@ struct MediaItem: Identifiable {
     let overview: String
 
     var requestStatus: MediaStatus
+    var requests: [MediaRequest]
 
     let seasonsCount: Int?
     let episodesCount: Int?
     let runtime: Int?
 
-    var rating: String?
+    let rating: String?
     let releaseDate: Date
 
     private let posterPath: String?
@@ -53,16 +54,20 @@ struct MediaItem: Identifiable {
         self.posterPath = data["posterPath"] as? String
         self.backPath = data["backdropPath"] as? String
 
-        // CONDITIONS (needs to be var not let)
-        self.requestStatus = .unknown
-        self.rating = nil
-        
+        // CONDITIONS
+
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] {
             self.requestStatus = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .unknown
+            self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
+        } else {
+            self.requests = []
+            self.requestStatus = .unknown
         }
 
         if let c: [String: Any] = data["contentRatings"] as? [String: Any], let ratings: [[String: Any]] = c["results"] as? [[String: Any]], let localRating = ratings.filter({ ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }).first {
             self.rating = localRating["rating"] as? String
+        } else {
+            self.rating = nil
         }
     }
 }
