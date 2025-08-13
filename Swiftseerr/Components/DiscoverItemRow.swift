@@ -23,7 +23,7 @@ struct DiscoverItemRow: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 4)
-                        .glassEffect(.clear.tint(item.type == .movie ? Color.blue.opacity(0.7) : Color.purple.opacity(0.7)))
+                        .glassEffect(.clear.tint(item.type == .movie ? Color.accentBlue.opacity(0.7) : Color.showPurple.opacity(0.7)))
                         .clipShape(Capsule())
                         .padding(6)
                 }
