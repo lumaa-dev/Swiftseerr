@@ -165,7 +165,7 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(Color.primary)
-                                .padding()
+                                .padding(7.0)
                         }
                         .menuStyle(.button)
                         .buttonBorderShape(.circle)
