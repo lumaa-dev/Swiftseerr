@@ -82,7 +82,9 @@ struct RequestRow: View {
                 VStack(spacing: 8) {
                     Button {
                         Task {
-                            await self.deleteRequest()
+                            if await self.deleteRequest() {
+                                onDelete()
+                            }
                         }
                     } label: {
                         Label("delete.request", systemImage: "trash.fill")

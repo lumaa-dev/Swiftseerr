@@ -42,6 +42,10 @@ struct MediaItemView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background {
+            Color.bgPurple.ignoresSafeArea()
+        }
         .ignoresSafeArea(edges: .top)
         .task {
             if let newItem = try? await self.fetchItem() {
@@ -274,6 +278,7 @@ struct MediaItemView: View {
             } label: {
                 Label("request.accept", systemImage: "checkmark")
             }
+            .disabled(request.status != .unknown)
 
             Button {
                 Task {
@@ -289,6 +294,7 @@ struct MediaItemView: View {
             } label: {
                 Label("request.decline", systemImage: "xmark")
             }
+            .disabled(request.status != .unknown)
         }
     }
 

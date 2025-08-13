@@ -14,13 +14,15 @@ struct RequestView: View {
                     ScrollView {
                         LazyVStack {
                             ForEach(self.requests) { req in
-                                RequestRow(request: req) {
-                                    // onDelete
-                                    self.requests.removeAll(where: { $0.id == req.id })
+                                RequestRow(request: req) { // onDelete
+                                    withAnimation {
+                                        self.requests.removeAll(where: { $0.id == req.id })
+                                    }
                                 }
                             }
                         }
                     }
+                    .navigationTitle(Text("requests"))
                     .scrollContentBackground(.hidden)
                     .background {
                         Color.bgPurple.ignoresSafeArea()
