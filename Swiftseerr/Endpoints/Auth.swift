@@ -11,7 +11,7 @@ enum Identify: Endpoint {
     func path() -> String {
         switch self {
             case .status(let url):
-                return "\(api)/status"
+                return "\(url)/api/v1/status" // DO NOT CHANGE
             case .me:
                 return "\(api)/auth/me"
         }
