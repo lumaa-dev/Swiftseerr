@@ -113,7 +113,7 @@ struct RequestRow: View {
                                     await self.deleteSonarr()
                                 }
                             } label: {
-                                Text("delete.sonarr")
+                                Text("delete.radarr")
                             }
 
                             Button(role: .cancel) {} label: {
