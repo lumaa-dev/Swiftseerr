@@ -100,7 +100,7 @@ struct MediaItemView: View {
                         } label: {
                             Text("request")
                         }
-                        .buttonStyle(.glassProminent)
+                        .buttonStyle(.borderedProminent)
 
                         Button {
                             Task {
@@ -114,12 +114,13 @@ struct MediaItemView: View {
                             Image(systemName: "4k.tv")
                         }
                         .buttonBorderShape(.circle)
-                        .buttonStyle(.glass)
+                        .buttonStyle(.bordered)
                     } else {
                         Text(self.item!.requestStatus.localized)
                             .padding(.vertical, 7.0)
                             .padding(.horizontal, 15.0)
-                            .glassEffect(.regular.interactive(false).tint(self.item!.requestStatus.color.opacity(0.4)))
+                            .background(self.item!.requestStatus.color)
+                            .clipShape(Capsule())
 
                         Menu {
                             if canManageRequests {
@@ -166,10 +167,8 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(Color.primary)
-                                .padding(10.0)
-                                .glassEffect(.regular.interactive())
                         }
-                        .menuStyle(.borderlessButton)
+                        .menuStyle(.button)
                     }
                 }
             }
