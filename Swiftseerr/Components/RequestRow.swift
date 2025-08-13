@@ -23,6 +23,9 @@ struct RequestRow: View {
         } else {
             ProgressView()
                 .progressViewStyle(.circular)
+                .frame(width: 370, height: 200, alignment: .center)
+                .background(Color.gray.opacity(0.4).gradient)
+                .clipShape(RoundedRectangle(cornerRadius: 15.0))
                 .task {
                     if let m = try? await self.request.getMedia() {
                         self.item = m
@@ -127,7 +130,7 @@ struct RequestRow: View {
 
     @ViewBuilder
     var poster: some View {
-        AsyncImage(url: item?.image) { image in
+        AsyncImage(url: item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png")) { image in
             image
                 .resizable()
                 .scaledToFill()
@@ -135,12 +138,11 @@ struct RequestRow: View {
                 .clipped()
         } placeholder: {
             Rectangle()
-                .fill(Color.gray.gradient)
+                .fill(Color.clear)
                 .frame(width: self.width, height: self.height)
                 .overlay {
-                    Text(String("?"))
-                        .font(.system(size: 176, weight: .ultraLight, design: .rounded))
-                        .foregroundStyle(Color.white.opacity(0.4))
+                    ProgressView()
+                        .progressViewStyle(.circular)
                 }
         }
     }

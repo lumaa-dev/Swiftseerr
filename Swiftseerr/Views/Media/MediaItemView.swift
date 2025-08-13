@@ -61,14 +61,15 @@ struct MediaItemView: View {
                     .resizable()
                     .scaledToFill()
             } placeholder: {
-                EmptyView()
+                Rectangle()
+                    .fill(Color.bgPurple)
             }
             .frame(height: 400, alignment: .center)
             .mask {
                 LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
             }
 
-            AsyncImage(url: item?.image) { image in
+            AsyncImage(url: item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -76,12 +77,11 @@ struct MediaItemView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } placeholder: {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.gradient)
+                    .fill(Color.clear)
                     .frame(width: self.posterWidth, height: self.posterHeight)
                     .overlay {
-                        Text(String("?"))
-                            .font(.system(size: 176, weight: .ultraLight, design: .rounded))
-                            .foregroundStyle(Color.white.opacity(0.4))
+                        ProgressView()
+                            .progressViewStyle(.circular)
                     }
             }
             .safeAreaPadding(.top, 120)

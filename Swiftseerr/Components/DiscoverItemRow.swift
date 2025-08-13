@@ -43,7 +43,7 @@ struct DiscoverItemRow: View {
 
     @ViewBuilder
     var poster: some View {
-        AsyncImage(url: item.image) { image in
+        AsyncImage(url: item.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png")) { image in
             image
                 .resizable()
                 .scaledToFill()
@@ -51,12 +51,11 @@ struct DiscoverItemRow: View {
                 .clipped()
         } placeholder: {
             Rectangle()
-                .fill(Color.gray.gradient)
+                .fill(Color.clear)
                 .frame(width: self.width, height: self.height)
                 .overlay {
-                    Text(String("?"))
-                        .font(.system(size: 176, weight: .ultraLight, design: .rounded))
-                        .foregroundStyle(Color.white.opacity(0.4))
+                    ProgressView()
+                        .progressViewStyle(.circular)
                 }
         }
     }
