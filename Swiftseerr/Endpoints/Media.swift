@@ -56,7 +56,7 @@ enum MediaStatus: Int {
             case .pending:
                 Color.orange
             case .processing:
-                Color.clear
+                Color.purple
             case .partiallyAvailable:
                 Color.yellow
             case .available:

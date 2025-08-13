@@ -7,6 +7,7 @@ struct SwiftseerrApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.colorScheme, ColorScheme.dark)
         }
     }
 }

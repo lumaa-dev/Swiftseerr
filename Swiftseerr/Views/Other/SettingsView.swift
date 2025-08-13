@@ -23,6 +23,10 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(Text("settings"))
+        .scrollContentBackground(.hidden)
+        .background {
+            Color.bgPurple.ignoresSafeArea()
+        }
     }
 }
 

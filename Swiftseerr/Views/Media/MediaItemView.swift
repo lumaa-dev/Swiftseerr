@@ -117,10 +117,8 @@ struct MediaItemView: View {
                         .buttonStyle(.bordered)
                     } else {
                         Text(self.item!.requestStatus.localized)
-                            .padding(.vertical, 7.0)
-                            .padding(.horizontal, 15.0)
-                            .background(self.item!.requestStatus.color)
-                            .clipShape(Capsule())
+                            .foregroundStyle(Color.white)
+                            .pill(self.item!.requestStatus.color)
 
                         Menu {
                             if canManageRequests {
@@ -167,8 +165,10 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(Color.primary)
+                                .padding()
                         }
                         .menuStyle(.button)
+                        .buttonBorderShape(.circle)
                     }
                 }
             }

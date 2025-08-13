@@ -36,6 +36,10 @@ struct DiscoverItemsView: View {
                         .padding()
                     }
                     .navigationTitle(Text(type == .movie ? "movies" : "shows"))
+                    .scrollContentBackground(.hidden)
+                    .background {
+                        Color.bgPurple.ignoresSafeArea()
+                    }
                     .addSettings()
                 }
             }

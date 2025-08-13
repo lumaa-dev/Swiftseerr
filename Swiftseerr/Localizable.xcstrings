@@ -1,6 +1,15 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "cancel" : {
+
+    },
+    "confirm.delete.radarr" : {
+
+    },
+    "confirm.delete.radarr.message" : {
+
+    },
     "content-rating" : {
       "localizations" : {
         "en" : {
@@ -16,6 +25,15 @@
           }
         }
       }
+    },
+    "delete.radarr" : {
+
+    },
+    "delete.request" : {
+
+    },
+    "delete.sonarr" : {
+
     },
     "discover" : {
       "localizations" : {
@@ -504,6 +522,9 @@
           }
         }
       }
+    },
+    "requests" : {
+
     },
     "search" : {
       "localizations" : {

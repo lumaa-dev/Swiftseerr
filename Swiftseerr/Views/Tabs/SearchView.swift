@@ -38,6 +38,10 @@ struct SearchView: View {
                     .padding()
                 }
                 .navigationTitle("search")
+                .scrollContentBackground(.hidden)
+                .background {
+                    Color.bgPurple.ignoresSafeArea()
+                }
                 .addSettings()
             }
         }

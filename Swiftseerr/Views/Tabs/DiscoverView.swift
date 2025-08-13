@@ -31,6 +31,10 @@ struct DiscoverView: View {
                         }
                     }
                     .navigationTitle(Text("discover"))
+                    .scrollContentBackground(.hidden)
+                    .background {
+                        Color.bgPurple.ignoresSafeArea()
+                    }
                     .addSettings()
                 }
             } else {

@@ -8,6 +8,7 @@ enum Requests: Endpoint {
     case media(id: Int)
     case updateStatus(id: Int, status: Self.Status)
     case delete(id: Int)
+    case deleteFile(id: Int)
 
     var method: HTTPMethod {
         switch self {
@@ -15,7 +16,7 @@ enum Requests: Endpoint {
                 return .get
             case .create, .updateStatus:
                 return .post
-            case .delete:
+            case .delete, .deleteFile:
                 return .delete
         }
     }
@@ -28,6 +29,8 @@ enum Requests: Endpoint {
                 "\(api)/request/\(id)"
             case .updateStatus(let id, let status):
                 "\(api)/request/\(id)/\(status.rawValue)"
+            case .deleteFile(let id):
+                "\(api)/media/\(id)/file"
         }
     }
 

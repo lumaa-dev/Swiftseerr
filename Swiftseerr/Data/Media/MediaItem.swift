@@ -57,7 +57,7 @@ struct MediaItem: Identifiable {
         // CONDITIONS
 
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] {
-            self.requestStatus = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .unknown
+            self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
             self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
         } else {
             self.requests = []
@@ -69,5 +69,12 @@ struct MediaItem: Identifiable {
         } else {
             self.rating = nil
         }
+    }
+
+    private static func allStatus(hd: Int, fourK: Int) -> MediaStatus {
+        let statusHd: MediaStatus = MediaStatus(rawValue: hd) ?? .unknown
+        let status4k: MediaStatus = MediaStatus(rawValue: fourK) ?? .unknown
+
+        return status4k.rawValue > 1 ? status4k : statusHd
     }
 }

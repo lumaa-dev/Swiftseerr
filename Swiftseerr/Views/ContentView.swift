@@ -62,6 +62,12 @@ struct ContentView: View {
                 Label("shows", systemImage: "play.tv")
             }
 
+            Tab {
+                RequestView()
+            } label: {
+                Label("requests", systemImage: "clock")
+            }
+
             Tab(role: .search) {
                 SearchView(query: $searchQuery)
             }

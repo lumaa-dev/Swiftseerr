@@ -25,9 +25,20 @@ struct MediaRequest: Identifiable {
         self.requestedBy = .init(data: data["requestedBy"] as! [String: Any])
 
         if let media = data["media"] as? [String: Any] {
-            self.mediaId = media["id"] as? Int
+            self.mediaId = media["tmdbId"] as? Int
         } else {
             self.mediaId = nil
+        }
+    }
+
+    func getMedia() async throws -> MediaItem {
+        guard let mediaId else { throw SeerrError() }
+
+        let (data, http, _) = try await SeerSession.shared.raw(Media.get(id: mediaId, type: self.type))
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any], http?.statusCode == 200 {
+            return .init(data: json, type: self.type)
+        } else {
+            throw SeerrError()
         }
     }
 }
