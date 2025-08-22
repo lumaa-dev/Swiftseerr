@@ -1,0 +1,155 @@
+{
+  "fill" : {
+    "solid" : "srgb:0.00000,0.05490,0.12941,1.00000"
+  },
+  "groups" : [
+    {
+      "blur-material" : 0.4,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "head.svg",
+          "name" : "head",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -109
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "position" : {
+        "scale" : 1.15,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.8
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : 0.5,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "legs.svg",
+          "name" : "legs",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              63
+            ]
+          }
+        }
+      ],
+      "opacity-specializations" : [
+        {
+          "appearance" : "tinted",
+          "value" : 0.4
+        }
+      ],
+      "position" : {
+        "scale" : 1.15,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow-specializations" : [
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        }
+      ],
+      "specular" : false,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material-specializations" : [
+        {
+          "value" : 0.5
+        },
+        {
+          "appearance" : "tinted",
+          "value" : null
+        }
+      ],
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "behind 2.svg",
+          "name" : "behind 2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              143
+            ]
+          }
+        }
+      ],
+      "opacity-specializations" : [
+        {
+          "appearance" : "tinted",
+          "value" : 0.4
+        }
+      ],
+      "position" : {
+        "scale" : 1.15,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow-specializations" : [
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        }
+      ],
+      "specular" : false,
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        }
+      ]
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
