@@ -1,12 +1,16 @@
 // Made by Lumaa
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.isSearching) private var isSearching: Bool
+
+    @Query private var auths: [AuthInfo]
+
     @State private var onboarding: SeerSession.OnboardingSteps = .complete
 
     @State private var loading: Bool = false
-    @State private var searchQuery: String = ""
 
     var body: some View {
         ZStack {
@@ -26,7 +30,9 @@ struct ContentView: View {
             self.loading = true
 
             do {
-                let loaded: AuthInfo = try SeerSession.shared.loadAuth()
+                guard let loaded: AuthInfo = self.auths.first else { throw SeerrError() }
+                
+                SeerSession.shared.auth = loaded
                 try await logIn(auth: loaded)
 
                 let isLogged: Bool = SeerSession.shared.authorization?.isEmpty == false
@@ -69,10 +75,9 @@ struct ContentView: View {
             }
 
             Tab(role: .search) {
-                SearchView(query: $searchQuery)
+                SearchView()
             }
         }
-        .searchable(text: $searchQuery, prompt: "search.prompt")
         .tabBarMinimizeBehavior(.onScrollDown)
     }
 

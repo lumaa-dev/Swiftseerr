@@ -1,6 +1,7 @@
 // Made by Lumaa
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SwiftseerrApp: App {
@@ -9,5 +10,6 @@ struct SwiftseerrApp: App {
             ContentView()
                 .environment(\.colorScheme, ColorScheme.dark)
         }
+        .modelContainer(for: AuthInfo.self, isAutosaveEnabled: true)
     }
 }

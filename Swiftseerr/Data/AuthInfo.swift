@@ -1,14 +1,20 @@
 // Made by Lumaa
 
 import Foundation
+import SwiftData
 
-struct AuthInfo: Codable {
+@Model
+final class AuthInfo: Codable, Identifiable {
     var username: String = ""
     var password: String = ""
     var address: String = ""
-    var provider: Self.Providers? = nil
+    var provider: AuthInfo.Providers? = nil
 
-    init(username: String? = nil, password: String? = nil, address: String? = nil, provider: Self.Providers? = nil) {
+    var id: String {
+        "\(username)_\(password):\(address)"
+    }
+
+    init(username: String? = nil, password: String? = nil, address: String? = nil, provider: AuthInfo.Providers? = nil) {
         self.username = username ?? ""
         self.password = password ?? ""
         self.address = address ?? ""
@@ -41,5 +47,14 @@ struct AuthInfo: Codable {
     enum Providers: CaseIterable, Codable {
         case jellyfin
         case local
+
+        var string: String {
+            switch self {
+                case .jellyfin:
+                    "Jellyfin"
+                case .local:
+                    String(localized: "provider.local")
+            }
+        }
     }
 }

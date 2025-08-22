@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @Binding var query: String
+    @State private var query: String = ""
 
     @State private var isSearching: Bool = false
     @State private var searchTask: Task<Void, Never>?
@@ -45,6 +45,7 @@ struct SearchView: View {
                 .addSettings()
             }
         }
+        .searchable(text: $query, prompt: "search.prompt")
         .onChange(of: query) { _, newQuery in
             searchTask?.cancel()
             self.items = []
