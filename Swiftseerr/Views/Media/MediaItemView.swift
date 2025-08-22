@@ -208,7 +208,7 @@ struct MediaItemView: View {
     @ViewBuilder
     private var list: some View {
         VStack(spacing: 17.0) {
-            LabeledContent("release", value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
+            LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
