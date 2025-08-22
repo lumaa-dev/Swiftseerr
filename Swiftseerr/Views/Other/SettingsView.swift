@@ -18,14 +18,12 @@ struct SettingsView: View {
         List {
             Section("instances") {
                 ForEach(auths) { auth in
-                    let lessUrl: String = auth.address.replacingOccurrences(of: "https://", with: "")
-
                     Button {
                         self.viewAuth = auth
                     } label: {
                         HStack {
                             if SeerSession.shared.auth.id == auth.id {
-                                Label("\(lessUrl) (\(auth.username))", systemImage: "checkmark")
+                                Label(auth.username, systemImage: "checkmark")
                                     .foregroundStyle(Color.primary)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             } else {
