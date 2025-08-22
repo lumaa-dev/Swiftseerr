@@ -1,6 +1,49 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "add.instance" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add an instance"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter une instance"
+          }
+        }
+      }
+    },
+    "address" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse"
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "en" : {
@@ -61,6 +104,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Âge limite"
+          }
+        }
+      }
+    },
+    "copy.password" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy password"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le mot de passe"
           }
         }
       }
@@ -185,6 +244,22 @@
         }
       }
     },
+    "instances" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instances"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instances"
+          }
+        }
+      }
+    },
     "jellyseerr.url" : {
       "localizations" : {
         "en" : {
@@ -197,6 +272,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL Jellyseerr"
+          }
+        }
+      }
+    },
+    "login" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion"
           }
         }
       }
@@ -377,7 +468,40 @@
         }
       }
     },
+    "provider" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provider"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fournisseur"
+          }
+        }
+      }
+    },
+    "provider.local" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local"
+          }
+        }
+      }
+    },
     "release" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -809,6 +933,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tendance"
+          }
+        }
+      }
+    },
+    "unknown" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inconnu"
           }
         }
       }

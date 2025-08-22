@@ -124,55 +124,57 @@ struct MediaItemView: View {
                             .foregroundStyle(Color.white)
                             .pill(self.item!.requestStatus.color)
 
-                        Menu {
-                            if canManageRequests {
-                                ForEach(self.item!.requests) { req in
-                                    Menu {
-                                        if self.canManageRequests {
-                                            self.manageRequest(req)
-                                        }
+                        if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
+                            Menu {
+                                if canManageRequests {
+                                    ForEach(self.item!.requests) { req in
+                                        Menu {
+                                            if self.canManageRequests {
+                                                self.manageRequest(req)
+                                            }
 
-                                        Button(role: .destructive) {
-                                            Task {
-                                                if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                                    let newItem = try? await self.fetchItem()
-                                                    await MainActor.run {
-                                                        withAnimation{
-                                                            self.item = newItem
+                                            Button(role: .destructive) {
+                                                Task {
+                                                    if let http = await self.deleteRequest(req), http.statusCode == 204 {
+                                                        let newItem = try? await self.fetchItem()
+                                                        await MainActor.run {
+                                                            withAnimation{
+                                                                self.item = newItem
+                                                            }
                                                         }
                                                     }
                                                 }
+                                            } label: {
+                                                Label("request.delete", systemImage: "trash")
                                             }
                                         } label: {
-                                            Label("request.delete", systemImage: "trash")
+                                            Text("request.by-\(req.requestedBy.username)")
                                         }
-                                    } label: {
-                                        Text("request.by-\(req.requestedBy.username)")
                                     }
-                                }
-                            } else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
-                                Button(role: .destructive) {
-                                    Task {
-                                        if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                            let newItem = try? await self.fetchItem()
-                                            await MainActor.run {
-                                                withAnimation{
-                                                    self.item = newItem
+                                } else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
+                                    Button(role: .destructive) {
+                                        Task {
+                                            if let http = await self.deleteRequest(req), http.statusCode == 204 {
+                                                let newItem = try? await self.fetchItem()
+                                                await MainActor.run {
+                                                    withAnimation{
+                                                        self.item = newItem
+                                                    }
                                                 }
                                             }
                                         }
+                                    } label: {
+                                        Label("request.delete", systemImage: "trash")
                                     }
-                                } label: {
-                                    Label("request.delete", systemImage: "trash")
                                 }
+                            } label: {
+                                Image(systemName: "ellipsis")
+                                    .foregroundStyle(Color.primary)
+                                    .padding(7.0)
                             }
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .foregroundStyle(Color.primary)
-                                .padding(7.0)
+                            .menuStyle(.button)
+                            .buttonBorderShape(.circle)
                         }
-                        .menuStyle(.button)
-                        .buttonBorderShape(.circle)
                     }
                 }
             }
@@ -205,51 +207,23 @@ struct MediaItemView: View {
 
     @ViewBuilder
     private var list: some View {
-        VStack(spacing: 20.0) {
-            HStack {
-                Text("release")
-
-                Spacer()
-
-                Text(self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
-                    .foregroundStyle(Color.secondary)
-            }
+        VStack(spacing: 17.0) {
+            LabeledContent("release", value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
 
-                HStack {
-                    Text("duration")
-
-                    Spacer()
-
-                    Text("duration.m-\(duration)")
-                        .foregroundStyle(Color.secondary)
-                }
+                LabeledContent("duration", value: String(localized: "duration.m-\(duration)"))
             } else if let seasonsCount = self.item!.seasonsCount, let episodesCount = self.item!.episodesCount {
                 Divider()
 
-                HStack {
-                    Text("duration")
-
-                    Spacer()
-
-                    Text("show.seasons-\(seasonsCount).episodes-\(episodesCount)")
-                        .foregroundStyle(Color.secondary)
-                }
+                LabeledContent("duration", value: String(localized: "show.seasons-\(seasonsCount).episodes-\(episodesCount)"))
             }
 
             if let rating = self.item!.rating {
                 Divider()
 
-                HStack {
-                    Text("content-rating")
-
-                    Spacer()
-
-                    Text(rating)
-                        .foregroundStyle(Color.secondary)
-                }
+                LabeledContent("content-rating", value: rating)
             }
         }
         .frame(width: 340, alignment: .leading)
