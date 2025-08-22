@@ -1,9 +1,10 @@
 // Made by Lumaa
 
 import Foundation
+import SwiftData
 
 class SeerSession {
-    static let shared: SeerSession = .init()
+    static var shared: SeerSession = .init()
 
     var auth: AuthInfo
     var user: User? = nil
@@ -19,7 +20,7 @@ class SeerSession {
         return result
     }
 
-    func raw(_ endpoint: Endpoint, queries: [URLQueryItem] = []) async throws -> (Data, HTTPURLResponse?, [(name: String, value: String)]) {
+    func raw(_ endpoint: Endpoint, queries: [URLQueryItem] = [], useCookies: Bool = true) async throws -> (Data, HTTPURLResponse?, [(name: String, value: String)]) {
         var strUrl: String = endpoint.path()
         var q: [URLQueryItem] = endpoint.queryItems() ?? []
         q.append(contentsOf: queries)
@@ -44,19 +45,21 @@ class SeerSession {
             encoder.outputFormatting = .sortedKeys
             req.httpBody = try encoder.encode(json)
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            print("Sending JSON: \(json)")
         }
         
-        if let authorization {
+        if let authorization, useCookies {
             print("[SeerSession] Cookie header set")
             req.setValue("connect.sid=\(authorization)", forHTTPHeaderField: "Cookie")
         }
 
         let cookieStorage: HTTPCookieStorage = .init()
-        cookieStorage.cookieAcceptPolicy = .always
+        cookieStorage.cookieAcceptPolicy = useCookies ? .always : .never
 
         let config = URLSessionConfiguration.default
-        config.httpCookieAcceptPolicy = .always
-        config.httpShouldSetCookies = true
+        config.httpCookieAcceptPolicy = useCookies ? .always : .never
+        config.httpShouldSetCookies = useCookies
         config.httpCookieStorage = cookieStorage
 
         let session = URLSession(configuration: config)
@@ -65,11 +68,6 @@ class SeerSession {
 
         var cookies: [(name: String, value: String)] = []
         if let http = res as? HTTPURLResponse {
-//            print("🔍 Response Headers:")
-//            for (key, value) in http.allHeaderFields {
-//                print("  \(key): \(value)")
-//            }
-
             let rawResponse: String? = String(data: data, encoding: .utf8)
             print("[\(http.statusCode)] \(rawResponse ?? "*No content*")")
 
@@ -79,22 +77,18 @@ class SeerSession {
                 let s = $0.split(separator: "=")
                 return (name: "\(s[0])", value: "\(s.count > 1 ? s[1] : "")")
             }
+
+            print("Cookies received:")
+            print(cookies.map { "\($0.name): \($0.value)" })
         }
 
         return (data, res as? HTTPURLResponse, cookies)
     }
 
-    func saveAuth() throws {
-        let data: Data = try JSONEncoder().encode(self.auth)
-        UserDefaults.standard.set(data, forKey: "auth")
-        print("[SeerSession] - Saved auth")
-    }
-
-    func loadAuth() throws -> AuthInfo {
-        guard let data: Data = UserDefaults.standard.data(forKey: "auth") else { throw SeerrError() }
-        self.auth = try JSONDecoder().decode(AuthInfo.self, from: data)
-        print("[SeerSession] - Loaded auth")
-        return self.auth
+    func clear() {
+        self.auth = .init()
+        self.authorization = nil
+        self.user = nil
     }
 
     enum OnboardingSteps: CaseIterable, Equatable {

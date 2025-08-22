@@ -501,7 +501,6 @@
       }
     },
     "release" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

@@ -1,8 +1,11 @@
 // Made by Lumaa
 
 import SwiftUI
+import SwiftData
 
 struct OnboardingView: View {
+    @Environment(\.modelContext) private var modelContext: ModelContext
+
     @Binding var onboarding: SeerSession.OnboardingSteps
 
     @State private var seerrUrl: String = ""
@@ -28,6 +31,10 @@ struct OnboardingView: View {
             default:
                 return false
         }
+    }
+
+    init(onboarding: Binding<SeerSession.OnboardingSteps>) {
+        self._onboarding = onboarding
     }
 
     var body: some View {
@@ -84,7 +91,7 @@ struct OnboardingView: View {
     }
 
     @ViewBuilder
-    var stepView: some View {
+    private var stepView: some View {
         switch self.onboarding {
             case .url:
                 TextField("jellyseerr.url", text: $seerrUrl)
@@ -140,7 +147,7 @@ struct OnboardingView: View {
         }
     }
 
-    func stepAction(onSuccess: () -> Void) async throws {
+    private func stepAction(onSuccess: () -> Void) async throws {
         defer { withAnimation { self.onboardingBusy = false } }
         withAnimation { self.onboardingBusy = true }
 
@@ -162,7 +169,7 @@ struct OnboardingView: View {
         } else if self.onboarding == .login(self.selection) {
             let endpoint: Login = self.selection == .jellyfin ? Login.jellyfin(username: self.username, password: self.password) : Login.local(email: self.username, password: self.password)
 
-            let (data, res, cookies) = try await SeerSession.shared.raw(endpoint)
+            let (data, res, cookies) = try await SeerSession.shared.raw(endpoint, useCookies: false)
             let code = res?.statusCode ?? -1
 
             if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], code == 200 {
@@ -176,7 +183,7 @@ struct OnboardingView: View {
                     SeerSession.shared.authorization = sid.value
                     SeerSession.shared.user = .init(data: json)
 
-                    try SeerSession.shared.saveAuth()
+                    modelContext.insert(SeerSession.shared.auth)
 
                     UserDefaults.standard.set(true, forKey: "onboarded")
                     onSuccess()
