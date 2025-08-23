@@ -2,11 +2,14 @@
 
 import Foundation
 
-struct DiscoverItem: Decodable, Identifiable, Equatable {
+struct DiscoverItem: Identifiable, Equatable {
     let id: Int
     let name: String
     let imagePath: String?
     let type: ItemType
+
+    var requestStatus: MediaStatus
+    var inWatchList: Bool
 
     var image: URL? {
         guard let imagePath else { return nil }
@@ -17,11 +20,20 @@ struct DiscoverItem: Decodable, Identifiable, Equatable {
         return URL(string: "\(SeerSession.shared.auth.address)/\(self.type == .movie ? "movie" : "tv")/\(self.id)")
     }
 
-    init(id: Int, name: String, imagePath: String, type: ItemType) {
+    init(
+        id: Int,
+        name: String,
+        imagePath: String?,
+        type: ItemType,
+        requestStatus: MediaStatus = .unknown,
+        inWatchList: Bool = false
+    ) {
         self.id = id
         self.name = name
         self.imagePath = imagePath
         self.type = type
+        self.requestStatus = requestStatus
+        self.inWatchList = inWatchList
     }
 
     init(data: [String: Any]) {
@@ -31,6 +43,22 @@ struct DiscoverItem: Decodable, Identifiable, Equatable {
         self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
         self.name = data[self.type == .movie ? "title" : "name"] as? String ?? data[self.type == .movie ? "originalTitle" : "originalName"] as! String
         self.imagePath = data["posterPath"] as? String
+
+        if let mediaInfo = data["mediaInfo"] as? [String: Any] {
+            self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
+            self.inWatchList = !(mediaInfo["watchlists"] as? [Any] ?? []).isEmpty
+        } else {
+            print("[DiscoverItem] NO MEDIA INFO FOR \(self.name)")
+            self.requestStatus = .unknown
+            self.inWatchList = false
+        }
+    }
+
+    private static func allStatus(hd: Int, fourK: Int) -> MediaStatus {
+        let statusHd: MediaStatus = MediaStatus(rawValue: hd) ?? .unknown
+        let status4k: MediaStatus = MediaStatus(rawValue: fourK) ?? .unknown
+
+        return status4k.rawValue > 1 ? status4k : statusHd
     }
 
     func fetchMedia() async -> MediaItem? {

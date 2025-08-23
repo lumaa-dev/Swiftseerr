@@ -38,6 +38,7 @@ struct DiscoverItemRow: View {
             .frame(width: self.width)
         }
         .frame(width: self.width)
+        .mediaContext(item)
         .buttonStyle(.plain)
     }
 

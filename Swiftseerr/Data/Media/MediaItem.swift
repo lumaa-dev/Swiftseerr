@@ -65,8 +65,8 @@ struct MediaItem: Identifiable {
 
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] ?? data["media"] as? [String: Any] {
             self.id = mediaInfo["tmdbId"] as? Int ?? data["id"] as! Int
-            self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
             self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
+            self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
         } else {
             self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
             self.requests = []
@@ -85,5 +85,9 @@ struct MediaItem: Identifiable {
         let status4k: MediaStatus = MediaStatus(rawValue: fourK) ?? .unknown
 
         return status4k.rawValue > 1 ? status4k : statusHd
+    }
+
+    func toDiscover() -> DiscoverItem {
+        return .init(id: self.id, name: self.title, imagePath: self.posterPath, type: self.type, inWatchList: self.inWatchList)
     }
 }

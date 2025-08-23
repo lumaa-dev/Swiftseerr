@@ -88,7 +88,8 @@ struct DiscoverView: View {
             self.upShows = await self.fetchItems(endpoint: Discover.show, queries: [Discover.upcoming(type: .show)])
 
             for item in infolessList {
-                guard let fetchedItem = await item.fetch(), let index = self.watchlist.firstIndex(of: item) else { return }
+                guard var fetchedItem = await item.fetch(), let index = self.watchlist.firstIndex(of: item) else { return }
+                fetchedItem.inWatchList = true
                 self.watchlist[index] = fetchedItem
             }
         }
