@@ -54,6 +54,18 @@ struct SettingsView: View {
                     Text("add.instance")
                 }
             }
+
+            Section("info") {
+                Link("swiftseerr.github.repo", destination: URL(string: "https://github.com/lumaa-dev/Swiftseerr")!) 
+                .onOpenURL(prefersInApp: true)
+
+                Link("jellyseerr.github.repo", destination: URL(string: "https://github.com/fallenbagel/jellyseerr")!) 
+                .onOpenURL(prefersInApp: true)
+
+                Link("overseerr.github.repo", destination: URL(string: "https://github.com/sct/overseerr")!) 
+                .onOpenURL(prefersInApp: true)
+            }
+            .listRowBackground(Color.gray.opacity(0.2))
         }
         .navigationTitle(Text("settings"))
         .scrollContentBackground(.hidden)

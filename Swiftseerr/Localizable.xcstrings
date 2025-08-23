@@ -1,17 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@ (%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ (%2$@)"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "add.instance" : {
       "localizations" : {
         "en" : {
@@ -244,6 +233,22 @@
         }
       }
     },
+    "info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        }
+      }
+    },
     "instances" : {
       "localizations" : {
         "en" : {
@@ -256,6 +261,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instances"
+          }
+        }
+      }
+    },
+    "jellyseerr.github.repo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jellyseerr’s GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub de Jellyseerr"
           }
         }
       }
@@ -448,6 +469,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bienvenue sur Swiftseer ! Le client Jellyseerr natif et gratuit."
+          }
+        }
+      }
+    },
+    "overseerr.github.repo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overseerr’s GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub de Overseerr"
           }
         }
       }
@@ -916,6 +953,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Résumé"
+          }
+        }
+      }
+    },
+    "swiftseerr.github.repo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiftseerr’s GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub de Swiftseerr"
           }
         }
       }
