@@ -20,8 +20,10 @@ struct MediaItem: Identifiable {
     let rating: String?
     let releaseDate: Date
 
-    private let posterPath: String?
+    let posterPath: String?
     private let backPath: String?
+
+    var inWatchList: Bool
 
     var image: URL? {
         guard let posterPath else { return nil }
@@ -33,8 +35,11 @@ struct MediaItem: Identifiable {
         return URL(string: "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces\(backPath)")
     }
 
+    var webUrl: URL? {
+        return URL(string: "\(SeerSession.shared.auth.address)/\(self.type == .movie ? "movie" : "tv")/\(self.id)")
+    }
+
     init(data: [String : Any], type: ItemType) {
-        self.id = data["id"] as! Int
         self.type = type
 
         self.title = data[type == .movie ? "title" : "name"] as? String ?? data[type == .movie ? "originalTitle" : "originalName"] as! String
@@ -54,12 +59,16 @@ struct MediaItem: Identifiable {
         self.posterPath = data["posterPath"] as? String
         self.backPath = data["backdropPath"] as? String
 
+        self.inWatchList = data["onUserWatchlist"] as? Bool ?? false
+
         // CONDITIONS
 
-        if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] {
+        if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] ?? data["media"] as? [String: Any] {
+            self.id = mediaInfo["tmdbId"] as? Int ?? data["id"] as! Int
             self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
             self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
         } else {
+            self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
             self.requests = []
             self.requestStatus = .unknown
         }

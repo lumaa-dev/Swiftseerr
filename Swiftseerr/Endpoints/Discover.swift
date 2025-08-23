@@ -6,6 +6,7 @@ enum Discover: Endpoint {
     case movie
     case show
     case trending
+    case watchlist
 
     var method: HTTPMethod { .get }
 
@@ -17,6 +18,8 @@ enum Discover: Endpoint {
                 "\(api)/discover/tv"
             case .trending:
                 "\(api)/discover/trending"
+            case .watchlist:
+                "\(api)/discover/watchlist"
         }
     }
 

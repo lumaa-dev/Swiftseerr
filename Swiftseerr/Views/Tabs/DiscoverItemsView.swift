@@ -3,21 +3,20 @@
 import SwiftUI
 
 struct DiscoverItemsView: View {
-    let type: ItemType
+    let title: LocalizedStringKey
+    let endpoint: any Endpoint
 
     @State private var items: [DiscoverItem] = []
-
-    private var endpoint: Discover {
-        type == .movie ? .movie : .show
-    }
+    @State private var pages: Int = 2
 
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
 
-    init(type: ItemType) {
-        self.type = type
+    init(_ title: LocalizedStringKey, endpoint: any Endpoint) {
+        self.title = title
+        self.endpoint = endpoint
     }
 
     var body: some View {
@@ -31,11 +30,24 @@ struct DiscoverItemsView: View {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(items) { item in
                                 DiscoverItemRow(item: item)
+                                    .onAppear {
+                                        guard let lastItem = self.items.last, item == lastItem else { return }
+
+                                        Task {
+                                            let newItems: [DiscoverItem] = await self.fetchItems(page: self.pages)
+                                            if !newItems.isEmpty {
+                                                self.pages += 1
+                                                self.items.append(contentsOf: newItems)
+                                            } else {
+                                                print("[fetchItems (page \(self.pages)] Nothing new to add")
+                                            }
+                                        }
+                                    }
                             }
                         }
                         .padding()
                     }
-                    .navigationTitle(Text(type == .movie ? "movies" : "shows"))
+                    .navigationTitle(self.title)
                     .scrollContentBackground(.hidden)
                     .background {
                         Color.bgPurple.ignoresSafeArea()

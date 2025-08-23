@@ -40,6 +40,35 @@ struct MediaItemView: View {
                 }
                 .navigationTitle(Text(item.title))
                 .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem {
+                        Button {
+                            withAnimation {
+                                self.item!.inWatchList.toggle()
+                            }
+
+                            Task {
+                                let http: HTTPURLResponse? = await self.changeWatchlist()
+                                if let http, !(http.statusCode >= 200 && http.statusCode <= 208) {
+                                    self.item!.inWatchList.toggle()
+                                } else if http == nil {
+                                    self.item!.inWatchList.toggle()
+                                }
+                            }
+                        } label: {
+                            Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
+                                .contentTransition(.symbolEffect(.replace.downUp))
+                        }
+                    }
+
+                    ToolbarSpacer(.fixed)
+
+                    if let webUrl = item.webUrl {
+                        ToolbarItem {
+                            ShareLink("share.\(item.title)", item: webUrl)
+                        }
+                    }
+                }
             }
         }
         .scrollContentBackground(.hidden)
@@ -157,7 +186,7 @@ struct MediaItemView: View {
                                             if let http = await self.deleteRequest(req), http.statusCode == 204 {
                                                 let newItem = try? await self.fetchItem()
                                                 await MainActor.run {
-                                                    withAnimation{
+                                                    withAnimation {
                                                         self.item = newItem
                                                     }
                                                 }
@@ -288,6 +317,14 @@ struct MediaItemView: View {
         guard let item else { return nil }
 
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k)).1
+        return http
+    }
+
+    private func changeWatchlist() async -> HTTPURLResponse? {
+        guard let item else { return nil }
+
+        let endpoint: Watchlist = !item.inWatchList ? .remove(tmdbId: item.id) : .add(tmdbId: item.id, type: item.type, name: item.title)
+        let http: HTTPURLResponse? = try? await SeerSession.shared.raw(endpoint).1
         return http
     }
 

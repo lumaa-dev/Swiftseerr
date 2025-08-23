@@ -52,7 +52,7 @@ enum Requests: Endpoint {
         }
     }
 
-    struct CreateRequest: Encodable {
+    private struct CreateRequest: Encodable {
         let mediaId: Int
         let mediaType: String
         let is4k: Bool

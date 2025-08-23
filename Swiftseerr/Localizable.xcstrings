@@ -17,6 +17,22 @@
         }
       }
     },
+    "add.watchlist" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to your Watchlist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter à votre watchlist"
+          }
+        }
+      }
+    },
     "address" : {
       "localizations" : {
         "en" : {
@@ -345,6 +361,22 @@
         }
       }
     },
+    "my.watchlist" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Watchlist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre watchlist"
+          }
+        }
+      }
+    },
     "onboarding.login" : {
       "localizations" : {
         "en" : {
@@ -537,6 +569,22 @@
         }
       }
     },
+    "recent.requests" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent Requests"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandes récentes"
+          }
+        }
+      }
+    },
     "release" : {
       "localizations" : {
         "en" : {
@@ -549,6 +597,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Date de sortie"
+          }
+        }
+      }
+    },
+    "remove.watchlist" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from your Watchlist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlever de votre watchlist"
           }
         }
       }
@@ -805,6 +869,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paramètres"
+          }
+        }
+      }
+    },
+    "share.%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager %@"
           }
         }
       }

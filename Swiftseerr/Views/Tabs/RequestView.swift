@@ -14,7 +14,7 @@ struct RequestView: View {
                     ScrollView {
                         LazyVStack {
                             ForEach(self.requests) { req in
-                                RequestRow(request: req) { // onDelete
+                                RequestRow(req) { // onDelete
                                     withAnimation {
                                         self.requests.removeAll(where: { $0.id == req.id })
                                     }

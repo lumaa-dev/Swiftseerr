@@ -1,0 +1,40 @@
+// Made by Lumaa
+
+import SwiftUI
+
+struct NavigationVScrollItems<Content : View, Destination : View>: View {
+    let title: LocalizedStringKey
+    let destination: () -> Destination
+    let content: () -> Content
+
+    init(_ title: LocalizedStringKey, @ViewBuilder destination: @escaping () -> Destination, @ViewBuilder content: @escaping () -> Content) {
+        self.title = title
+        self.destination = destination
+        self.content = content
+    }
+
+    var body: some View {
+        LazyVStack(alignment: .leading, spacing: 8) {
+            NavigationLink {
+                self.destination()
+            } label: {
+                HStack(spacing: 12.0) {
+                    Text(title)
+                        .foregroundStyle(Color.primary)
+                        .font(.title2.bold())
+
+                    Image(systemName: "chevron.forward")
+                        .foregroundStyle(Color.secondary.opacity(0.4))
+                        .font(.callout)
+                }
+            }
+            .navigationLinkIndicatorVisibility(.hidden)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                self.content()
+            }
+            .scrollClipDisabled()
+        }
+        .padding(.horizontal)
+    }
+}

@@ -2,13 +2,13 @@
 
 import SwiftUI
 
-struct VScrollItems: View {
-    let items: [DiscoverItem]
+struct VScrollItems<Content : View>: View {
+    let content: () -> Content
     let title: LocalizedStringKey
 
-    init(_ title: LocalizedStringKey, items: [DiscoverItem]) {
+    init(_ title: LocalizedStringKey, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
-        self.items = items
+        self.content = content
     }
 
     var body: some View {
@@ -17,11 +17,7 @@ struct VScrollItems: View {
                 .font(.title2.bold())
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(items) { i in
-                        DiscoverItemRow(item: i)
-                    }
-                }
+                self.content()
             }
             .scrollClipDisabled()
         }

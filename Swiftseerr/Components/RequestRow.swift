@@ -7,6 +7,7 @@ import SwiftUI
 
 struct RequestRow: View {
     let request: MediaRequest
+    let showActions: Bool
 
     @State private var item: MediaItem?
 
@@ -16,6 +17,12 @@ struct RequestRow: View {
     private let height: CGFloat = 100
 
     let onDelete: () -> Void
+
+    init(_ request: MediaRequest, showActions: Bool = true, onDelete: @escaping () -> Void = {}) {
+        self.request = request
+        self.showActions = showActions
+        self.onDelete = onDelete
+    }
 
     var body: some View {
         if item != nil {
@@ -63,8 +70,10 @@ struct RequestRow: View {
                 .frame(width: 330, alignment: .leading)
                 .buttonStyle(.plain)
 
-                actions
-                    .frame(width: 330)
+                if showActions {
+                    actions
+                        .frame(width: 330)
+                }
             }
             .frame(width: 370, alignment: .center)
             .padding(.vertical)

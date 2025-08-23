@@ -57,13 +57,13 @@ struct ContentView: View {
             }
 
             Tab {
-                DiscoverItemsView(type: .movie)
+                DiscoverItemsView("movies", endpoint: Discover.movie)
             } label: {
                 Label("movies", systemImage: "film.stack")
             }
 
             Tab {
-                DiscoverItemsView(type: .show)
+                DiscoverItemsView("shows", endpoint: Discover.show)
             } label: {
                 Label("shows", systemImage: "play.tv")
             }
