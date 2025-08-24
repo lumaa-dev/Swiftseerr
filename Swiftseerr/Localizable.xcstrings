@@ -382,13 +382,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login"
+            "value" : "Type in your credentials for the selected provider"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connexion"
+            "value" : "Tapez vos identifiants pour le fournisseur choisi"
           }
         }
       }
@@ -398,13 +398,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Type in your credentials for the selected provider"
+            "value" : "Login"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tapez vos identifiants pour le fournisseur choisi"
+            "value" : "Connexion"
           }
         }
       }
@@ -430,22 +430,6 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login Selection"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Séléction de connexion"
-          }
-        }
-      }
-    },
-    "onboarding.provider.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
             "value" : "Select your login preference"
           }
         },
@@ -457,23 +441,23 @@
         }
       }
     },
-    "onboarding.url" : {
+    "onboarding.provider.title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jellyseerr Instance"
+            "value" : "Login Selection"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instance Jellyseerr"
+            "value" : "Séléction de connexion"
           }
         }
       }
     },
-    "onboarding.url.title" : {
+    "onboarding.url" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -485,6 +469,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tapez ci-dessous une URL valide d’une instance Jellyseerr"
+          }
+        }
+      }
+    },
+    "onboarding.url.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jellyseerr Instance"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instance Jellyseerr"
           }
         }
       }
