@@ -22,8 +22,14 @@ struct SearchView: View {
                     if isSearching {
                         ProgressView()
                             .progressViewStyle(.circular)
+                            .background {
+                                Color.bgPurple.ignoresSafeArea()
+                            }
                     } else {
                         ContentUnavailableView.search(text: query)
+                            .background {
+                                Color.bgPurple.ignoresSafeArea()
+                            }
                     }
                 }
                 .padding()
