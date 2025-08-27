@@ -49,6 +49,8 @@ struct SettingsView: View {
             .sectionActions {
                 Button {
                     SeerSession.shared.clear()
+
+                    self.newOnboard = .welcome
                     self.viewOnboard.toggle()
                 } label: {
                     Text("add.instance")
@@ -78,7 +80,7 @@ struct SettingsView: View {
                 .presentationDragIndicator(.hidden)
                 .interactiveDismissDisabled(self.unviewAuth)
         }
-        .fullScreenCover(isPresented: $viewOnboard) {
+        .sheet(isPresented: $viewOnboard) {
             self.newOnboarding()
         }
     }
