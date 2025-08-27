@@ -249,6 +249,54 @@
         }
       }
     },
+    "error.invalid-credentials" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid Credentials"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifiants incorrectes"
+          }
+        }
+      }
+    },
+    "error.invalid-instance" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL is not a Jellyseerr URL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’URL n’est pas une URL Jellyseerr"
+          }
+        }
+      }
+    },
+    "error.unknown" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Error"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreur inconnue"
+          }
+        }
+      }
+    },
     "info" : {
       "localizations" : {
         "en" : {
@@ -420,7 +468,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochain étape"
+            "value" : "Prochaine étape"
           }
         }
       }
@@ -430,13 +478,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select your login preference"
+            "value" : "Select your login preference between the available ones below"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez votre préférence de connexion"
+            "value" : "Choisissez votre préférence de connexion parmi les choix disponible ci-dessous"
           }
         }
       }
@@ -446,13 +494,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login Selection"
+            "value" : "Provider Selection"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Séléction de connexion"
+            "value" : "Séléction du fournisseur"
           }
         }
       }
@@ -494,13 +542,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Swiftseerr! The native and free Jellyseerr client."
+            "value" : "Welcome to Swiftseerr! The native, open-source and free Jellyseerr client. Swiftseerr allows you to do everything that’s possible on Jellyseerr but on your iPhone!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue sur Swiftseer ! Le client Jellyseerr natif et gratuit."
+            "value" : "Bienvenue sur Swiftseer ! Le client Jellyseerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Jellyseerr mais sur votre iPhone !"
           }
         }
       }

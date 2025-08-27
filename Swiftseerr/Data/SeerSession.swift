@@ -1,6 +1,7 @@
 // Made by Lumaa
 
 import Foundation
+import SwiftUI
 import SwiftData
 
 class SeerSession {
@@ -125,6 +126,49 @@ class SeerSession {
                     String(localized: "onboarding.login")
                 default:
                     ""
+            }
+        }
+
+        @ViewBuilder
+        var badge: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 14.0)
+                    .fill(self.color)
+                    .frame(width: 50.0, height: 50.0)
+
+                Image(systemName: self.symbol)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 30.0, height: 30.0)
+                    .foregroundStyle(Color.primary)
+            }
+        }
+
+        private var color: Color {
+            switch self {
+                case .welcome:
+                    Color.accentPurple
+                case .url, .provider:
+                    Color.gray
+                case .login:
+                    Color.orange
+                case .complete:
+                    Color.green
+            }
+        }
+
+        private var symbol: String {
+            switch self {
+                case .welcome:
+                    "hand.wave.fill"
+                case .url:
+                    "server.rack"
+                case .provider:
+                    "externaldrive.badge.person.crop"
+                case .login:
+                    "person.crop.square.filled.and.at.rectangle.fill"
+                case .complete:
+                    "checkmark"
             }
         }
 

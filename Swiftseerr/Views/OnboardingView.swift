@@ -17,6 +17,18 @@ struct OnboardingView: View {
     @State private var password: String = ""
 
     @State private var onboardingBusy: Bool = false
+    @State private var onboardingError: Bool = false
+
+    private var localizedError: String {
+        switch self.onboarding {
+            case .url:
+                String(localized: "error.invalid-instance")
+            case .login:
+                String(localized: "error.invalid-credentials")
+            default:
+                String(localized: "error.unknown")
+        }
+    }
 
     private var isStepCompleted: Bool {
         switch self.onboarding {
@@ -38,56 +50,56 @@ struct OnboardingView: View {
     }
 
     var body: some View {
-        VStack {
-            Text(onboarding.title)
-                .font(.title.bold())
-                .lineLimit(1)
-                .contentTransition(.numericText(countsDown: true))
+        ZStack {
+            Color.bgPurple
+                .ignoresSafeArea()
 
-            Text(onboarding.description)
-                .font(.callout)
-                .lineLimit(3, reservesSpace: true)
-                .padding(.vertical)
+            VStack {
+                Spacer()
 
-            Spacer()
+                VStack(alignment: .leading, spacing: 24.0) {
+                    VStack(alignment: .leading, spacing: 6.0) {
+                        onboarding.badge
 
-            self.stepView
+                        Text(onboarding.title)
+                            .font(.title.bold())
+                            .lineLimit(1)
+                            .contentTransition(.numericText(countsDown: true))
+                            .multilineTextAlignment(.leading)
 
-            Spacer()
+                        Text(onboarding.description)
+                            .font(.callout)
+                            .multilineTextAlignment(.leading)
+                    }
 
-            Button {
-                let allCases: [SeerSession.OnboardingSteps] = SeerSession.OnboardingSteps.allCases
-                let isLogin: Bool = SeerSession.OnboardingSteps.isLogin(self.onboarding)
-                let curI: Int = allCases.firstIndex(of: isLogin ? .login(nil) : self.onboarding) ?? -1
+                    self.stepView
 
-                Task {
-                    do {
-                        try await self.stepAction() {
-                            withAnimation {
-                                let nextOnboard: SeerSession.OnboardingSteps = allCases[min(curI + 1, allCases.count - 1)]
-
-                                if nextOnboard == .login(nil) {
-                                    self.onboarding = .login(self.selection)
-                                } else {
-                                    self.onboarding = nextOnboard
-                                }
-                            }
-                        }
-                    } catch {
-                        print("[Step Error] - \(error)")
+                    if self.onboardingError {
+                        Label(self.localizedError, systemImage: "xmark.seal")
+                            .foregroundStyle(Color.primary)
+                            .padding(8.0)
+                            .background(Color.red, in: .capsule)
                     }
                 }
-            } label: {
-                HStack(alignment: .center, spacing: 10) {
-                    Text("onboarding.next")
-                    Image(systemName: "arrow.forward")
+                .padding(18.0)
+                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30.0, style: .continuous))
+
+                Spacer()
+
+                Button {
+                    self.nextStep()
+                } label: {
+                    HStack(alignment: .center, spacing: 10) {
+                        Text("onboarding.next")
+                        Image(systemName: "arrow.forward")
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 40)
                 }
-                .frame(maxWidth: .infinity, minHeight: 40)
+                .disabled(self.onboardingBusy || !self.isStepCompleted)
+                .buttonStyle(.glassProminent)
             }
-            .disabled(self.onboardingBusy || !self.isStepCompleted)
-            .buttonStyle(.glassProminent)
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -95,55 +107,89 @@ struct OnboardingView: View {
         switch self.onboarding {
             case .url:
                 TextField("jellyseerr.url", text: $seerrUrl)
-                    .padding()
+                    .textFieldStyle(.roundedBorder)
                     .textContentType(.URL)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
                     .textInputFormattingControlVisibility(.hidden, for: .all)
-                    .glassEffect(.regular.interactive())
+                    .clipShape(.capsule)
+                    .submitLabel(.next)
+                    .onSubmit {
+                        guard self.isStepCompleted && !self.onboardingBusy else { return }
+                        self.nextStep()
+                    }
             case .provider:
-                VStack {
+                VStack(alignment: .leading, spacing: 6.0) {
                     ForEach(AuthInfo.Providers.allCases, id: \.self) { provider in
+                        let selCol: Color = self.selection == provider ? Color.accentPurple : Color.gray.opacity(0.6)
                         Button {
-                            self.selection = provider
+                            withAnimation(.spring) {
+                                self.selection = provider
+                            }
                         } label: {
                             Text(String("Login with \(provider)"))
+                                .font(.body)
+                                .frame(maxWidth: .infinity, minHeight: 50.0)
+                                .background(selCol, in: .capsule)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.plain)
                     }
                 }
             case .login(let p):
-                VStack(spacing: 30) {
-                    switch p {
-                        case .jellyfin:
-                            TextField("username", text: $username)
-                                .padding()
-                                .textContentType(.username)
-                                .keyboardType(.asciiCapable)
-                                .textInputFormattingControlVisibility(.hidden, for: .all)
-                                .textInputAutocapitalization(.never)
-                                .glassEffect(.regular.interactive())
-                        case .local:
-                            TextField("email", text: $username)
-                                .padding()
-                                .textContentType(.emailAddress)
-                                .keyboardType(.asciiCapable)
-                                .textInputFormattingControlVisibility(.hidden, for: .all)
-                                .textInputAutocapitalization(.never)
-                                .glassEffect(.regular.interactive())
-                        default:
-                            EmptyView()
-                    }
+                VStack(alignment: .leading, spacing: 6.0) {
+                    let isJelly: Bool = p == .jellyfin
+
+                    TextField(isJelly ? "username" : "email", text: $username)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(isJelly ? .username : .emailAddress)
+                        .keyboardType(.asciiCapable)
+                        .textInputFormattingControlVisibility(.hidden, for: .all)
+                        .textInputAutocapitalization(.never)
+                        .clipShape(.capsule)
 
                     SecureField("password", text: $password)
-                        .padding()
+                        .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
                         .keyboardType(.asciiCapable)
                         .textInputFormattingControlVisibility(.hidden, for: .all)
-                        .glassEffect(.regular.interactive())
+                        .clipShape(.capsule)
+                        .submitLabel(.go)
+                        .onSubmit {
+                            guard self.isStepCompleted && !self.onboardingBusy else { return }
+                            self.nextStep()
+                        }
                 }
             default:
                 EmptyView()
+        }
+    }
+
+    private func nextStep() {
+        let allCases: [SeerSession.OnboardingSteps] = SeerSession.OnboardingSteps.allCases
+        let isLogin: Bool = SeerSession.OnboardingSteps.isLogin(self.onboarding)
+        let curI: Int = allCases.firstIndex(of: isLogin ? .login(nil) : self.onboarding) ?? -1
+
+        Task {
+            do {
+                try await self.stepAction() {
+                    withAnimation {
+                        self.onboardingError = false
+
+                        let nextOnboard: SeerSession.OnboardingSteps = allCases[min(curI + 1, allCases.count - 1)]
+
+                        if nextOnboard == .login(nil) {
+                            self.onboarding = .login(self.selection)
+                        } else {
+                            self.onboarding = nextOnboard
+                        }
+                    }
+                }
+            } catch {
+                print("[Step Error] - \(error)")
+                withAnimation {
+                    self.onboardingError = true
+                }
+            }
         }
     }
 
@@ -152,6 +198,10 @@ struct OnboardingView: View {
         withAnimation { self.onboardingBusy = true }
 
         if self.onboarding == .url {
+            if !self.seerrUrl.starts(with: "https://") {
+                self.seerrUrl = "https://\(self.seerrUrl)"
+            }
+
             self.seerrUrl.replace(/\/*$/, with: "")
             let (data, res, _) = try await SeerSession.shared.raw(Identify.status(url: self.seerrUrl))
             let code = res?.statusCode ?? -1
