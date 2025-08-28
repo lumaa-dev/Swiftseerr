@@ -6,6 +6,9 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.isSearching) private var isSearching: Bool
 
+    @AppStorage("MyTabViewCustomization")
+    private var customization: TabViewCustomization
+
     @Query private var auths: [AuthInfo]
 
     @State private var onboarding: SeerSession.OnboardingSteps = .complete
@@ -55,30 +58,43 @@ struct ContentView: View {
             } label: {
                 Label("discover", systemImage: "sparkles")
             }
-
-            Tab {
-                DiscoverItemsView("movies", endpoint: Discover.movie)
-            } label: {
-                Label("movies", systemImage: "film.stack")
-            }
-
-            Tab {
-                DiscoverItemsView("shows", endpoint: Discover.show)
-            } label: {
-                Label("shows", systemImage: "play.tv")
-            }
+            .customizationID("discover")
 
             Tab {
                 RequestView()
             } label: {
                 Label("requests", systemImage: "clock")
             }
+            .customizationID("requests")
 
             Tab(role: .search) {
                 SearchView()
             }
+
+            TabSection("movies") {
+                Tab {
+                    DiscoverItemsView("movies", endpoint: Discover.movie)
+                } label: {
+                    Label("movies", systemImage: "film.stack")
+                }
+                .customizationID("movies")
+            }
+            .customizationID("movies-tab")
+
+            TabSection("shows") {
+                Tab {
+                    DiscoverItemsView("shows", endpoint: Discover.show)
+                } label: {
+                    Label("shows", systemImage: "play.tv")
+                }
+                .customizationID("shows")
+            }
+            .customizationID("shows-tab")
         }
+        .tabViewStyle(.sidebarAdaptable)
+        .tabViewCustomization($customization)
         .tabBarMinimizeBehavior(.onScrollDown)
+        .defaultAdaptableTabBarPlacement(.tabBar)
     }
 
     //MARK: - Methods

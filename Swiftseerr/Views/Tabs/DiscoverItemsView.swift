@@ -9,10 +9,13 @@ struct DiscoverItemsView: View {
     @State private var items: [DiscoverItem] = []
     @State private var pages: Int = 2
 
-    private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
+    private var columns: [GridItem] {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return [GridItem(.adaptive(minimum: 200), spacing: 16)]
+        } else {
+            return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        }
+    }
 
     init(_ title: LocalizedStringKey, endpoint: any Endpoint) {
         self.title = title
@@ -30,6 +33,7 @@ struct DiscoverItemsView: View {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(items) { item in
                                 DiscoverItemRow(item: item)
+                                    .frame(maxWidth: .infinity)
                                     .onAppear {
                                         guard let lastItem = self.items.last, item == lastItem else { return }
 

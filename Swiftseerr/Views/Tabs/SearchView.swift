@@ -19,17 +19,13 @@ struct SearchView: View {
         NavigationStack {
             if self.items.isEmpty {
                 ZStack {
+                    Color.bgPurple.ignoresSafeArea()
+                    
                     if isSearching {
                         ProgressView()
                             .progressViewStyle(.circular)
-                            .background {
-                                Color.bgPurple.ignoresSafeArea()
-                            }
                     } else {
                         ContentUnavailableView.search(text: query)
-                            .background {
-                                Color.bgPurple.ignoresSafeArea()
-                            }
                     }
                 }
                 .padding()
