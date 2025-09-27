@@ -5,6 +5,7 @@ import SwiftUI
 struct DiscoverItemsView: View {
     let title: LocalizedStringKey
     let endpoint: any Endpoint
+    let query: [URLQueryItem]
 
     @State private var items: [DiscoverItem] = []
     @State private var pages: Int = 2
@@ -17,9 +18,10 @@ struct DiscoverItemsView: View {
         }
     }
 
-    init(_ title: LocalizedStringKey, endpoint: any Endpoint) {
+    init(_ title: LocalizedStringKey, endpoint: any Endpoint, additionalQueries: [URLQueryItem] = []) {
         self.title = title
         self.endpoint = endpoint
+        self.query = additionalQueries
     }
 
     var body: some View {
@@ -66,7 +68,10 @@ struct DiscoverItemsView: View {
     }
 
     func fetchItems(page: Int = 1) async -> [DiscoverItem] {
-        guard let (data, _, _) = try? await SeerSession.shared.raw(self.endpoint, queries: [.init(name: "page", value: "\(page)")]), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        var q: [URLQueryItem] = [.init(name: "page", value: "\(page)")]
+        q.append(contentsOf: self.query)
+
+        guard let (data, _, _) = try? await SeerSession.shared.raw(self.endpoint, queries: q), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return []
         }
 

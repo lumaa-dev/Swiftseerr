@@ -52,6 +52,15 @@ struct ContentView: View {
 
     @ViewBuilder
     private var tabs: some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.bigTabs
+        } else {
+            self.smallTabs
+        }
+    }
+
+    @ViewBuilder
+    private var bigTabs: some View {
         TabView {
             Tab {
                 DiscoverView()
@@ -67,32 +76,100 @@ struct ContentView: View {
             }
             .customizationID("requests")
 
+            Tab {
+                DiscoverItemsView("upcoming.shows", endpoint: Discover.trending)
+            } label: {
+                Label("trending", systemImage: "chart.line.uptrend.xyaxis")
+            }
+            .customizationID("trending")
+
             Tab(role: .search) {
                 SearchView()
             }
+            .customizationBehavior(.disabled, for: .automatic, .sidebar, .tabBar)
 
-            TabSection("movies") {
+            TabSection("all.movies") {
                 Tab {
                     DiscoverItemsView("movies", endpoint: Discover.movie)
                 } label: {
                     Label("movies", systemImage: "film.stack")
                 }
                 .customizationID("movies")
-            }
-            .customizationID("movies-tab")
 
-            TabSection("shows") {
+                Tab {
+                    DiscoverItemsView(
+                        "upcoming.movies",
+                        endpoint: Discover.movie,
+                        additionalQueries: [Discover.upcoming(type: .movie)]
+                    )
+                } label: {
+                    Label("upcoming.movies", systemImage: "calendar.badge.clock")
+                }
+                .customizationID("upcoming.movies")
+            }
+
+            TabSection("all.shows") {
                 Tab {
                     DiscoverItemsView("shows", endpoint: Discover.show)
                 } label: {
                     Label("shows", systemImage: "play.tv")
                 }
                 .customizationID("shows")
+
+                Tab {
+                    DiscoverItemsView(
+                        "upcoming.shows",
+                        endpoint: Discover.show,
+                        additionalQueries: [Discover.upcoming(type: .show)]
+                    )
+                } label: {
+                    Label("upcoming.shows", systemImage: "globe.badge.clock")
+                }
+                .customizationID("upcoming.shows")
             }
-            .customizationID("shows-tab")
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabViewCustomization($customization)
+        .defaultAdaptableTabBarPlacement(.tabBar)
+        .tabBarMinimizeBehavior(.onScrollDown)
+        .onAppear {
+            customization.resetSectionOrder()
+            customization.resetVisibility()
+        }
+    }
+
+    @ViewBuilder
+    private var smallTabs: some View {
+        TabView {
+            Tab {
+                DiscoverView()
+            } label: {
+                Label("discover", systemImage: "sparkles")
+            }
+
+            Tab {
+                DiscoverItemsView("movies", endpoint: Discover.movie)
+            } label: {
+                Label("movies", systemImage: "film.stack")
+            }
+
+            Tab {
+                DiscoverItemsView("shows", endpoint: Discover.show)
+            } label: {
+                Label("shows", systemImage: "play.tv")
+            }
+
+            Tab {
+                RequestView()
+            } label: {
+                Label("requests", systemImage: "clock")
+            }
+
+            Tab(role: .search) {
+                SearchView()
+            }
+        }
+        .tabViewStyle(.tabBarOnly)
         .tabBarMinimizeBehavior(.onScrollDown)
         .defaultAdaptableTabBarPlacement(.tabBar)
     }
