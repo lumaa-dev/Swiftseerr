@@ -409,6 +409,22 @@
         }
       }
     },
+    "media.no-name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Unnamed)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Sans nom)"
+          }
+        }
+      }
+    },
     "movie" : {
       "localizations" : {
         "en" : {

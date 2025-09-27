@@ -41,7 +41,7 @@ struct DiscoverItem: Identifiable, Equatable {
         self.type = strType == "movie" ? .movie : .show
 
         self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
-        self.name = data[self.type == .movie ? "title" : "name"] as? String ?? data[self.type == .movie ? "originalTitle" : "originalName"] as! String
+        self.name = data[self.type == .movie ? "title" : "name"] as? String ?? data[self.type == .movie ? "originalTitle" : "originalName"] as? String ?? String(localized: "media.no-name")
         self.imagePath = data["posterPath"] as? String
 
         if let mediaInfo = data["mediaInfo"] as? [String: Any] {
