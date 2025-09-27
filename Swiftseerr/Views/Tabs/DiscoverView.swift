@@ -63,6 +63,7 @@ struct DiscoverView: View {
                         }
                     }
                     .navigationTitle(Text("discover"))
+                    .toolbarTitleDisplayMode(.inlineLarge)
                     .scrollContentBackground(.hidden)
                     .background {
                         Color.bgPurple.ignoresSafeArea()

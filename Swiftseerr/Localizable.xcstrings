@@ -49,6 +49,38 @@
         }
       }
     },
+    "all.movies" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All movies"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les films"
+          }
+        }
+      }
+    },
+    "all.shows" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All shows"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les séries"
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "en" : {

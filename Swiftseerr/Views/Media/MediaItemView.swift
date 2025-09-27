@@ -115,6 +115,7 @@ struct MediaItemView: View {
             }
             .safeAreaPadding(.top, 120)
         }
+        .stretchy()
     }
 
     private var info: some View {

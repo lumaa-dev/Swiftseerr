@@ -23,6 +23,7 @@ struct RequestView: View {
                         }
                     }
                     .navigationTitle(Text("requests"))
+                    .toolbarTitleDisplayMode(.inlineLarge)
                     .scrollContentBackground(.hidden)
                     .background {
                         Color.bgPurple.ignoresSafeArea()

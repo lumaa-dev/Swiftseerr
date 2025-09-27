@@ -54,6 +54,7 @@ struct DiscoverItemsView: View {
                         .padding()
                     }
                     .navigationTitle(self.title)
+                    .toolbarTitleDisplayMode(.inlineLarge)
                     .scrollContentBackground(.hidden)
                     .background {
                         Color.bgPurple.ignoresSafeArea()

@@ -40,6 +40,7 @@ struct SearchView: View {
                     .padding()
                 }
                 .navigationTitle("search")
+                .toolbarTitleDisplayMode(.inlineLarge)
                 .scrollContentBackground(.hidden)
                 .background {
                     Color.bgPurple.ignoresSafeArea()
