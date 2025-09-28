@@ -73,8 +73,16 @@ struct MediaItem: Identifiable {
             self.requestStatus = .unknown
         }
 
-        if let c: [String: Any] = data["contentRatings"] as? [String: Any], let ratings: [[String: Any]] = c["results"] as? [[String: Any]], let localRating = ratings.filter({ ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }).first {
+        if let c = data["contentRatings"] as? [String: Any],
+           let ratings = c["results"] as? [[String: Any]],
+           let localRating = ratings.first(where: { ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }) {
             self.rating = localRating["rating"] as? String
+        } else if let rels = data["releases"] as? [String: Any],
+                  let res = rels["results"] as? [[String: Any]],
+                  let cntry = res.first(where: { ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }),
+                  let dates = cntry["release_dates"] as? [[String: Any]],
+                  let cert = dates.compactMap({ $0["certification"] as? String }).first {
+            self.rating = cert
         } else {
             self.rating = nil
         }
