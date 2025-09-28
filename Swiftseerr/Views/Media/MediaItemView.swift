@@ -10,6 +10,9 @@ struct MediaItemView: View {
     @State private var item: MediaItem? = nil
     @State private var hideContent: Bool = false
 
+    @State private var errorAlert: Bool = false
+    @State private var errorString: String? = nil
+
     let id: Int
     let type: ItemType
 
@@ -85,12 +88,15 @@ struct MediaItemView: View {
         .task {
             if let newItem = try? await self.fetchItem() {
                 self.item = newItem
-                #if targetEnvironment(simulator)
-                self.hideContent = false
-                #else
                 await self.verifyAge()
-                #endif
             }
+        }
+        .alert("error", isPresented: $errorAlert) {
+            Button(role: .cancel) {
+                self.dismiss()
+            }
+        } message: {
+            Text(errorString ?? "error.unknown")
         }
     }
 
@@ -266,7 +272,7 @@ struct MediaItemView: View {
                 LabeledContent("duration", value: String(localized: "show.seasons-\(seasonsCount).episodes-\(episodesCount)"))
             }
 
-            if let rating = self.item!.rating {
+            if let rating = self.item!.rating, !rating.isEmpty {
                 Divider()
 
                 LabeledContent("content-rating", value: rating)
@@ -337,7 +343,7 @@ struct MediaItemView: View {
         print("[verifyAge] Hidden content, asking for \(minAge)+ age")
 
         do {
-            let response = try await requestAgeRange(ageGates: minAge, 18, 21)
+            let response = try await requestAgeRange(ageGates: minAge)
 
             switch response {
                 case .declinedSharing:
@@ -353,7 +359,10 @@ struct MediaItemView: View {
                     self.hideContent = true
             }
         } catch {
-            print(error)
+            print(error.localizedDescription)
+            
+            self.errorString = error.localizedDescription
+            self.errorAlert = true
         }
     }
 
