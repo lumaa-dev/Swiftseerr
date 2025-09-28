@@ -28,7 +28,6 @@ struct SearchView: View {
                         ContentUnavailableView.search(text: query)
                     }
                 }
-                .padding()
                 .addSettings()
             } else {
                 ScrollView {
@@ -75,7 +74,10 @@ struct SearchView: View {
                                 let type: String = $0["mediaType"] as! String
 
                                 if ["movie", "tv"].contains(type) {
-                                    return .init(data: $0)
+                                    let viewBlacklist: Bool = SeerSession.shared.user?.hasPermission(Permission.viewBlacklist) ?? false
+                                    let m: DiscoverItem = .init(data: $0)
+                                    
+                                    return m.requestStatus != .blacklisted || viewBlacklist ? m : nil
                                 }
                                 return nil
                             }

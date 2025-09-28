@@ -79,7 +79,9 @@ struct DiscoverItemsView: View {
         let results: [[String: Any]]? = json["results"] as? [[String: Any]]
 
         if results?.isEmpty == false {
-            let fetched: [DiscoverItem] = results!.map { .init(data: $0) }
+            let viewBlacklist: Bool = SeerSession.shared.user?.hasPermission(Permission.viewBlacklist) ?? false
+            
+            let fetched: [DiscoverItem] = results!.map { .init(data: $0) }.filter { $0.requestStatus != .blacklisted || viewBlacklist }
             return fetched
         }
         return []
