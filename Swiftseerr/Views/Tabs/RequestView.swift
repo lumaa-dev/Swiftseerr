@@ -22,6 +22,7 @@ struct RequestView: View {
                             }
                         }
                     }
+                    .addSettings()
                     .navigationTitle(Text("requests"))
                     .toolbarTitleDisplayMode(.inlineLarge)
                     .scrollContentBackground(.hidden)
