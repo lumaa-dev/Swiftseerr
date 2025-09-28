@@ -1,9 +1,14 @@
 // Made by Lumaa
 
 import SwiftUI
+import DeclaredAgeRange
 
 struct MediaItemView: View {
+    @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.requestAgeRange) private var requestAgeRange: DeclaredAgeRangeAction
+
     @State private var item: MediaItem? = nil
+    @State private var hideContent: Bool = false
 
     let id: Int
     let type: ItemType
@@ -59,6 +64,7 @@ struct MediaItemView: View {
                             Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
                                 .contentTransition(.symbolEffect(.replace.downUp))
                         }
+                        .disabled(self.hideContent)
                     }
 
                     ToolbarSpacer(.fixed)
@@ -79,6 +85,11 @@ struct MediaItemView: View {
         .task {
             if let newItem = try? await self.fetchItem() {
                 self.item = newItem
+                #if targetEnvironment(simulator)
+                self.hideContent = false
+                #else
+                await self.verifyAge()
+                #endif
             }
         }
     }
@@ -89,6 +100,7 @@ struct MediaItemView: View {
                 image
                     .resizable()
                     .scaledToFill()
+                    .blur(radius: self.hideContent ? 8.0 : 0)
             } placeholder: {
                 Rectangle()
                     .fill(Color.bgPurple)
@@ -135,6 +147,7 @@ struct MediaItemView: View {
                             Text("request")
                         }
                         .buttonStyle(.borderedProminent)
+                        .disabled(self.hideContent)
 
                         Button {
                             Task {
@@ -147,6 +160,7 @@ struct MediaItemView: View {
                         } label: {
                             Image(systemName: "4k.tv")
                         }
+                        .disabled(self.hideContent)
                         .buttonBorderShape(.circle)
                         .buttonStyle(.bordered)
                     } else {
@@ -219,6 +233,7 @@ struct MediaItemView: View {
                     .foregroundStyle(Color.secondary)
                     .font(.callout.width(.condensed))
                     .multilineTextAlignment(.leading)
+                    .shouldRedact(self.hideContent)
             }
 
             if !self.item!.overview.isEmpty {
@@ -229,6 +244,7 @@ struct MediaItemView: View {
                     Text(self.item!.overview)
                         .font(.body.italic())
                         .multilineTextAlignment(.leading)
+                        .shouldRedact(self.hideContent)
                 }
             }
         }
@@ -314,6 +330,33 @@ struct MediaItemView: View {
         throw SeerrError()
     }
 
+    private func verifyAge() async {
+        guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
+        self.hideContent = true
+
+        print("[verifyAge] Hidden content, asking for \(minAge)+ age")
+
+        do {
+            let response = try await requestAgeRange(ageGates: minAge, 18, 21)
+
+            switch response {
+                case .declinedSharing:
+                    print("[verifyAge] Declined age verification")
+                    self.hideContent = true // double "true" just in case
+                case let .sharing(range):
+                    if let lowerBound = range.lowerBound, lowerBound >= minAge {
+                        print("[verifyAge] Verified age perfectly")
+                        self.hideContent = false
+                    }
+                @unknown default:
+                    print("[verifyAge] Default case :(")
+                    self.hideContent = true
+            }
+        } catch {
+            print(error)
+        }
+    }
+
     private func request(is4k: Bool = false) async -> HTTPURLResponse? {
         guard let item else { return nil }
 
@@ -356,5 +399,16 @@ struct MediaItemView: View {
         }
 
         return emoji
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func shouldRedact(_ redact: Bool = true) -> some View {
+        if redact {
+            self.redacted(reason: .placeholder)
+        } else {
+            self
+        }
     }
 }
