@@ -24,7 +24,7 @@ struct User: Identifiable, Equatable {
     /// the admin permission, true will always be returned from this check!
     ///
     /// - Parameters:
-    ///   - permissions: Single permission or array of permissions
+    ///   - permissions: Single ``Permission`` or array of ``Permission``s
     ///   - value: User's current permission value
     ///   - options: Extra options to control permission check behavior (mainly for arrays)
     /// - Returns: Boolean indicating if the user has the specified permission(s)
