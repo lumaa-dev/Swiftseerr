@@ -31,6 +31,9 @@ struct RequestView: View {
                     }
                 }
             } else {
+                Color.bgPurple
+                    .ignoresSafeArea()
+
                 ProgressView()
                     .progressViewStyle(.circular)
             }

@@ -122,15 +122,22 @@ struct OnboardingView: View {
                 VStack(alignment: .leading, spacing: 6.0) {
                     ForEach(AuthInfo.Providers.allCases, id: \.self) { provider in
                         let selCol: Color = self.selection == provider ? Color.accentPurple : Color.gray.opacity(0.6)
+
                         Button {
                             withAnimation(.spring) {
                                 self.selection = provider
                             }
                         } label: {
-                            Text(String("Login with \(provider)"))
-                                .font(.body)
-                                .frame(maxWidth: .infinity, minHeight: 50.0)
-                                .background(selCol, in: .capsule)
+                            Label {
+                                Text(provider.string)
+                                    .font(.body)
+                                    .frame(maxWidth: .infinity, minHeight: 50.0)
+                            } icon: {
+                                provider.symbol
+                                    .font(.body)
+                            }
+                            .padding(.horizontal)
+                            .background(selCol, in: .capsule)
                         }
                         .buttonStyle(.plain)
                     }

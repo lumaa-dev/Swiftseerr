@@ -28,6 +28,7 @@ struct DiscoverItemRow: View {
                         .padding(6)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .mediaContext(item)
 
                 Text(item.name)
                     .font(.system(size: 14))
@@ -38,7 +39,6 @@ struct DiscoverItemRow: View {
             .frame(width: self.width)
         }
         .frame(width: self.width)
-        .mediaContext(item)
         .buttonStyle(.plain)
     }
 

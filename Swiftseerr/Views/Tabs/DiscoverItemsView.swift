@@ -27,6 +27,9 @@ struct DiscoverItemsView: View {
     var body: some View {
         ZStack {
             if self.items.isEmpty {
+                Color.bgPurple
+                    .ignoresSafeArea()
+                
                 ProgressView()
                     .progressViewStyle(.circular)
             } else {

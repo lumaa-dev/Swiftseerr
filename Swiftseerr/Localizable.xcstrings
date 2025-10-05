@@ -441,6 +441,22 @@
         }
       }
     },
+    "more-actions" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More actions"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus d'actions"
+          }
+        }
+      }
+    },
     "movie" : {
       "localizations" : {
         "en" : {
@@ -613,6 +629,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bienvenue sur Swiftseer ! Le client Jellyseerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Jellyseerr mais sur votre iPhone !"
+          }
+        }
+      }
+    },
+    "open.jellyfin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Jellyfin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans Jellyfin"
           }
         }
       }
@@ -1013,22 +1045,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paramètres"
-          }
-        }
-      }
-    },
-    "share.%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Partager %@"
           }
         }
       }

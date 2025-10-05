@@ -18,6 +18,9 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if loading {
+                Color.bgPurple
+                    .ignoresSafeArea()
+                
                 ProgressView()
                     .progressViewStyle(.circular)
             } else {

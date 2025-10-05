@@ -70,6 +70,7 @@ struct SettingsView: View {
             .listRowBackground(Color.gray.opacity(0.2))
         }
         .navigationTitle(Text("settings"))
+        .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background {
             Color.bgPurple.ignoresSafeArea()

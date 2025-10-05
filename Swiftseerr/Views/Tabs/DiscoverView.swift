@@ -71,6 +71,9 @@ struct DiscoverView: View {
                     .addSettings()
                 }
             } else {
+                Color.bgPurple
+                    .ignoresSafeArea()
+
                 ProgressView()
                     .progressViewStyle(.circular)
             }

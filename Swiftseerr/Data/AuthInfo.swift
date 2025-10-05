@@ -1,6 +1,6 @@
 // Made by Lumaa
 
-import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
@@ -54,6 +54,15 @@ final class AuthInfo: Codable, Identifiable {
                     "Jellyfin"
                 case .local:
                     String(localized: "provider.local")
+            }
+        }
+
+        var symbol: Image {
+            switch self {
+                case .jellyfin:
+                    Image(.jellyfin)
+                case .local:
+                    Image(systemName: "person.crop.circle.dashed")
             }
         }
     }

@@ -10,8 +10,11 @@ struct MediaItem: Identifiable {
     let tagline: String
     let overview: String
 
-    var requestStatus: MediaStatus
+    var requestHd: MediaStatus
+    var request4k: MediaStatus
     var requests: [MediaRequest]
+
+    var jellyfin: URL?
 
     let seasonsCount: Int?
     let episodesCount: Int?
@@ -24,6 +27,10 @@ struct MediaItem: Identifiable {
     private let backPath: String?
 
     var inWatchList: Bool
+
+    var requestStatus: MediaStatus {
+        return self.request4k.rawValue > 1 ? self.request4k : self.requestHd
+    }
 
     var image: URL? {
         guard let posterPath else { return nil }
@@ -65,12 +72,16 @@ struct MediaItem: Identifiable {
 
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] ?? data["media"] as? [String: Any] {
             self.id = mediaInfo["tmdbId"] as? Int ?? data["id"] as! Int
+            self.jellyfin = URL(string: mediaInfo["mediaUrl"] as? String ?? "")
+            self.requestHd = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .unknown
+            self.request4k = MediaStatus(rawValue: mediaInfo["status4k"] as! Int) ?? .unknown
             self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
-            self.requestStatus = Self.allStatus(hd: mediaInfo["status"] as! Int, fourK: mediaInfo["status4k"] as! Int)
         } else {
             self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
+            self.jellyfin = nil
+            self.requestHd = .unknown
+            self.request4k = .unknown
             self.requests = []
-            self.requestStatus = .unknown
         }
 
         if let c = data["contentRatings"] as? [String: Any],
@@ -98,4 +109,68 @@ struct MediaItem: Identifiable {
     func toDiscover() -> DiscoverItem {
         return .init(id: self.id, name: self.title, imagePath: self.posterPath, type: self.type, inWatchList: self.inWatchList)
     }
+
+    // Memberwise initializer initializing all stored properties
+    init(
+        id: Int,
+        type: ItemType,
+        title: String,
+        tagline: String,
+        overview: String,
+        requestHd: MediaStatus,
+        request4k: MediaStatus,
+        requests: [MediaRequest],
+        jellyfin: URL?,
+        seasonsCount: Int?,
+        episodesCount: Int?,
+        runtime: Int?,
+        rating: String?,
+        releaseDate: Date,
+        posterPath: String?,
+        backPath: String?,
+        inWatchList: Bool
+    ) {
+        self.id = id
+        self.type = type
+        self.title = title
+        self.tagline = tagline
+        self.overview = overview
+        self.requestHd = requestHd
+        self.request4k = request4k
+        self.requests = requests
+        self.jellyfin = jellyfin
+        self.seasonsCount = seasonsCount
+        self.episodesCount = episodesCount
+        self.runtime = runtime
+        self.rating = rating
+        self.releaseDate = releaseDate
+        self.posterPath = posterPath
+        self.backPath = backPath
+        self.inWatchList = inWatchList
+    }
+
+    // Stock example for UI redaction/placeholders
+    static var redacted: MediaItem = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return MediaItem(
+            id: 244786,
+            type: .movie,
+            title: "Whiplash",
+            tagline: "The road to greatness can take you to the edge.",
+            overview: "A promising young drummer enrolls at a cut-throat music conservatory where an abusive instructor pushes him to the brink of his ability and his sanity.",
+            requestHd: .unknown,
+            request4k: .unknown,
+            requests: [],
+            jellyfin: nil,
+            seasonsCount: nil,
+            episodesCount: nil,
+            runtime: 107,
+            rating: "R",
+            releaseDate: formatter.date(from: "2014-10-10") ?? Date(timeIntervalSince1970: 0),
+            posterPath: nil,
+            backPath: nil,
+            inWatchList: false
+        )
+    }()
 }

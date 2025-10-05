@@ -8,6 +8,7 @@ struct MediaItemView: View {
     @Environment(\.requestAgeRange) private var requestAgeRange: DeclaredAgeRangeAction
 
     @State private var item: MediaItem? = nil
+    @State private var loadedData: Bool = false
     @State private var hideContent: Bool = false
 
     @State private var errorAlert: Bool = false
@@ -24,13 +25,15 @@ struct MediaItemView: View {
         return user.hasPermission(Permission.manageRequests)
     }
 
-    init(item: MediaItem) {
+    init(_ item: MediaItem) {
         self.item = item
         self.id = item.id
         self.type = item.type
+        self.loadedData = true
     }
 
     init(mediaId: Int, type: ItemType) {
+        self.item = .redacted
         self.id = mediaId
         self.type = type
     }
@@ -67,15 +70,46 @@ struct MediaItemView: View {
                             Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
                                 .contentTransition(.symbolEffect(.replace.downUp))
                         }
-                        .disabled(self.hideContent)
+                        .disabled(self.hideContent || !self.loadedData)
                     }
 
-                    ToolbarSpacer(.fixed)
 
-                    if let webUrl = item.webUrl {
-                        ToolbarItem {
-                            ShareLink("share.\(item.title)", item: webUrl)
+                    ToolbarItem {
+                        Menu {
+                            Button {
+                                withAnimation {
+                                    self.item!.inWatchList.toggle()
+                                }
+
+                                Task {
+                                    let http: HTTPURLResponse? = await self.changeWatchlist()
+                                    if let http, !(http.statusCode >= 200 && http.statusCode <= 208) {
+                                        self.item!.inWatchList.toggle()
+                                    } else if http == nil {
+                                        self.item!.inWatchList.toggle()
+                                    }
+                                }
+                            } label: {
+                                Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
+                                    .contentTransition(.symbolEffect(.replace.downUp))
+                            }
+                            .disabled(self.hideContent || !self.loadedData)
+
+                            Divider()
+
+                            if let jellyfin = item.jellyfin {
+                                Link(destination: jellyfin) {
+                                    Label("open.jellyfin", image: .jellyfin)
+                                }
+                            }
+
+                            if let webUrl = item.webUrl {
+                                ShareLink(item: webUrl)
+                            }
+                        } label: {
+                            Label("more-actions", systemImage: "ellipsis")
                         }
+                        .disabled(self.hideContent || !self.loadedData)
                     }
                 }
             }
@@ -88,7 +122,12 @@ struct MediaItemView: View {
         .task {
             if let newItem = try? await self.fetchItem() {
                 self.item = newItem
-                await self.verifyAge()
+                withAnimation {
+                    self.loadedData = true
+                    #if !targetEnvironment(simulator)
+                    await self.verifyAge()
+                    #endif
+                }
             }
         }
         .alert("error", isPresented: $errorAlert) {
@@ -116,7 +155,9 @@ struct MediaItemView: View {
                 LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
             }
 
-            AsyncImage(url: item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png")) { image in
+            let imgUrl: URL? = self.loadedData ? item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png") : item?.image
+
+            AsyncImage(url: imgUrl) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -145,7 +186,7 @@ struct MediaItemView: View {
                             Task {
                                 if let http: HTTPURLResponse = await self.request(), http.statusCode == 201 {
                                     withAnimation {
-                                        self.item!.requestStatus = .pending
+                                        self.item!.requestHd = .pending
                                     }
                                 }
                             }
@@ -153,20 +194,20 @@ struct MediaItemView: View {
                             Text("request")
                         }
                         .buttonStyle(.borderedProminent)
-                        .disabled(self.hideContent)
+                        .disabled(self.hideContent || !self.loadedData)
 
                         Button {
                             Task {
                                 if let http: HTTPURLResponse = await self.request(is4k: true), http.statusCode == 201 {
                                     withAnimation {
-                                        self.item!.requestStatus = .pending
+                                        self.item!.request4k = .pending
                                     }
                                 }
                             }
                         } label: {
                             Image(systemName: "4k.tv")
                         }
-                        .disabled(self.hideContent)
+                        .disabled(self.hideContent || !self.loadedData)
                         .buttonBorderShape(.circle)
                         .buttonStyle(.bordered)
                     } else {
@@ -176,6 +217,12 @@ struct MediaItemView: View {
 
                         if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
                             Menu {
+                                if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
+                                    Link(destination: jellyfin) {
+                                        Label("open.jellyfin", image: .jellyfin)
+                                    }
+                                }
+                                
                                 if canManageRequests {
                                     ForEach(self.item!.requests) { req in
                                         Menu {
@@ -224,6 +271,15 @@ struct MediaItemView: View {
                             }
                             .menuStyle(.button)
                             .buttonBorderShape(.circle)
+                            .disabled(self.hideContent || !self.loadedData)
+                        } else {
+                            if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
+                                Link(destination: jellyfin) {
+                                    Label("open.jellyfin", image: .jellyfin)
+                                        .labelStyle(.iconOnly)
+                                        .padding(.leading, 5)
+                                }
+                            }
                         }
                     }
                 }
@@ -234,12 +290,13 @@ struct MediaItemView: View {
                 Text(self.item!.title)
                     .font(.title.bold())
                     .multilineTextAlignment(.leading)
+                    .shouldRedact(!self.loadedData)
 
                 Text(self.item!.tagline)
                     .foregroundStyle(Color.secondary)
                     .font(.callout.width(.condensed))
                     .multilineTextAlignment(.leading)
-                    .shouldRedact(self.hideContent)
+                    .shouldRedact(self.hideContent || !self.loadedData)
             }
 
             if !self.item!.overview.isEmpty {
@@ -250,7 +307,7 @@ struct MediaItemView: View {
                     Text(self.item!.overview)
                         .font(.body.italic())
                         .multilineTextAlignment(.leading)
-                        .shouldRedact(self.hideContent)
+                        .shouldRedact(self.hideContent || !self.loadedData)
                 }
             }
         }
@@ -261,21 +318,25 @@ struct MediaItemView: View {
     private var list: some View {
         VStack(spacing: 17.0) {
             LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
+                .shouldRedact(!self.loadedData)
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "duration.m-\(duration)"))
+                    .shouldRedact(!self.loadedData)
             } else if let seasonsCount = self.item!.seasonsCount, let episodesCount = self.item!.episodesCount {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "show.seasons-\(seasonsCount).episodes-\(episodesCount)"))
+                    .shouldRedact(!self.loadedData)
             }
 
             if let rating = self.item!.rating, !rating.isEmpty {
                 Divider()
 
                 LabeledContent("content-rating", value: rating)
+                    .shouldRedact(!self.loadedData)
             }
         }
         .frame(width: 340, alignment: .leading)
