@@ -338,31 +338,33 @@ struct MediaItemView: View {
 
     private func verifyAge() async {
         guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
-        self.hideContent = true
 
-        print("[verifyAge] Hidden content, asking for \(minAge)+ age")
-
-        do {
-            let response = try await requestAgeRange(ageGates: minAge)
-
-            switch response {
-                case .declinedSharing:
-                    print("[verifyAge] Declined age verification")
-                    self.hideContent = true // double "true" just in case
-                case let .sharing(range):
-                    if let lowerBound = range.lowerBound, lowerBound >= minAge {
-                        print("[verifyAge] Verified age perfectly")
-                        self.hideContent = false
-                    }
-                @unknown default:
-                    print("[verifyAge] Default case :(")
-                    self.hideContent = true
-            }
-        } catch {
-            print(error.localizedDescription)
+        if MediaRating.prepareAsk(for: minAge) {
+            self.hideContent = true
+            print("[verifyAge] Hidden content, asking for \(minAge)+ age")
             
-            self.errorString = error.localizedDescription
-            self.errorAlert = true
+            do {
+                let response = try await requestAgeRange(ageGates: minAge)
+                
+                switch response {
+                    case .declinedSharing:
+                        print("[verifyAge] Declined age verification")
+                        self.hideContent = true // double "true" just in case
+                    case let .sharing(range):
+                        if let lowerBound = range.lowerBound, lowerBound >= minAge {
+                            print("[verifyAge] Verified age perfectly")
+                            self.hideContent = false
+                        }
+                    @unknown default:
+                        print("[verifyAge] Default case :(")
+                        self.hideContent = true
+                }
+            } catch {
+                print(error.localizedDescription)
+                
+                self.errorString = error.localizedDescription
+                self.errorAlert = true
+            }
         }
     }
 

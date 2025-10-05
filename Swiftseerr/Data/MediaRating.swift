@@ -432,4 +432,15 @@ struct MediaRating {
         }
         return nil
     }
+
+    static func defineDefault(_ default: Int) {
+        let oldDefault: Int = UserDefaults.standard.integer(forKey: "ageCheck")
+        if oldDefault < `default` {
+            UserDefaults.standard.set(`default`, forKey: "ageCheck")
+        }
+    }
+
+    static func prepareAsk(for age: Int) -> Bool {
+        return UserDefaults.standard.integer(forKey: "ageCheck") < age
+    }
 }
