@@ -122,12 +122,10 @@ struct MediaItemView: View {
         .task {
             if let newItem = try? await self.fetchItem() {
                 self.item = newItem
-                withAnimation {
-                    self.loadedData = true
-                    #if !targetEnvironment(simulator)
-                    await self.verifyAge()
-                    #endif
-                }
+                self.loadedData = true
+                #if !targetEnvironment(simulator)
+                await self.verifyAge()
+                #endif
             }
         }
         .alert("error", isPresented: $errorAlert) {
@@ -222,7 +220,7 @@ struct MediaItemView: View {
                                         Label("open.jellyfin", image: .jellyfin)
                                     }
                                 }
-                                
+
                                 if canManageRequests {
                                     ForEach(self.item!.requests) { req in
                                         Menu {
