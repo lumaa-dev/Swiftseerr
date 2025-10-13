@@ -6,6 +6,8 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
 
+    @AppStorage("appIcon") private var appIcon: AppIcons = .jelly
+
     @Query private var auths: [AuthInfo]
 
     @State private var viewAuth: AuthInfo? = nil
@@ -57,15 +59,19 @@ struct SettingsView: View {
                 }
             }
 
+            Section("appearence") {
+                NavigationLink(destination: Self.AppIconPicker(appIcon: $appIcon)) {
+                    Text("settings.app-icons")
+                }
+            }
+            .listRowBackground(Color.gray.opacity(0.2))
+
             Section("info") {
                 Link("swiftseerr.github.repo", destination: URL(string: "https://github.com/lumaa-dev/Swiftseerr")!) 
-                .onOpenURL(prefersInApp: true)
+                    .onOpenURL(prefersInApp: true)
 
-                Link("jellyseerr.github.repo", destination: URL(string: "https://github.com/fallenbagel/jellyseerr")!) 
-                .onOpenURL(prefersInApp: true)
-
-                Link("overseerr.github.repo", destination: URL(string: "https://github.com/sct/overseerr")!) 
-                .onOpenURL(prefersInApp: true)
+                Link("seerr.github.repo", destination: URL(string: "https://github.com/seerr-team/seerr")!)
+                    .onOpenURL(prefersInApp: true)
             }
             .listRowBackground(Color.gray.opacity(0.2))
         }
@@ -144,6 +150,52 @@ struct SettingsView: View {
                     viewOnboard = false
                 }
             }
+    }
+
+    private struct AppIconPicker: View {
+        @Binding var appIcon: AppIcons
+
+        var body: some View {
+            List {
+                Section {
+                    ForEach(AppIcons.allCases, id: \.self) { icon in
+                        Button {
+                            appIcon = icon
+                        } label: {
+                            HStack(spacing: 20.0) {
+                                icon.representation
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+
+                                Text(icon.rawValue) // maybe later change it?
+                                    .font(.title2)
+                                    .foregroundColor(Color.primary)
+
+                                if appIcon == icon {
+                                    Spacer()
+
+                                    Image(systemName: "checkmark")
+                                        .font(.callout)
+                                        .foregroundStyle(Color.accentPurple)
+                                }
+                            }
+                        }
+                    }
+                }
+                .listRowBackground(Color.gray.opacity(0.2))
+            }
+            .navigationTitle(Text("settings.app-icons"))
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background {
+                Color.bgPurple.ignoresSafeArea()
+            }
+            .onChange(of: appIcon) { oldValue, newValue in
+                guard oldValue != newValue else { return }
+                AppIcons.set(newValue)
+            }
+        }
     }
 
     // MARK: - Methods

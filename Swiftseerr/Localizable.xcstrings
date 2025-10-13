@@ -81,6 +81,22 @@
         }
       }
     },
+    "appearence" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearence"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apparence"
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "en" : {
@@ -318,13 +334,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL is not a Jellyseerr URL"
+            "value" : "URL is not a Seerr URL"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’URL n’est pas une URL Jellyseerr"
+            "value" : "L’URL n’est pas une URL Seerr"
           }
         }
       }
@@ -373,38 +389,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instances"
-          }
-        }
-      }
-    },
-    "jellyseerr.github.repo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jellyseerr’s GitHub"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub de Jellyseerr"
-          }
-        }
-      }
-    },
-    "jellyseerr.url" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jellyseerr URL"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL Jellyseerr"
           }
         }
       }
@@ -590,13 +574,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Write down below a valid Jellyseerr instance URL"
+            "value" : "Write down below a valid Seerr instance URL"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tapez ci-dessous une URL valide d’une instance Jellyseerr"
+            "value" : "Tapez ci-dessous une URL valide d’une instance Seerr"
           }
         }
       }
@@ -606,13 +590,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jellyseerr Instance"
+            "value" : "Seerr Instance"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instance Jellyseerr"
+            "value" : "Instance Seerr"
           }
         }
       }
@@ -622,13 +606,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Swiftseerr! The native, open-source and free Jellyseerr client. Swiftseerr allows you to do everything that’s possible on Jellyseerr but on your iPhone!"
+            "value" : "Welcome to Swiftseerr! The native, open-source and free Seerr client. Swiftseerr allows you to do everything that’s possible on Seerr but on your iPhone!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue sur Swiftseer ! Le client Jellyseerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Jellyseerr mais sur votre iPhone !"
+            "value" : "Bienvenue sur Swiftseer ! Le client Seerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Seerr mais sur votre iPhone !"
           }
         }
       }
@@ -645,22 +629,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir dans Jellyfin"
-          }
-        }
-      }
-    },
-    "overseerr.github.repo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Overseerr’s GitHub"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub de Overseerr"
           }
         }
       }
@@ -1033,6 +1001,38 @@
         }
       }
     },
+    "seerr.github.repo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serr’s GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub de Seerr"
+          }
+        }
+      }
+    },
+    "seerr.url" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seerr URL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de Seerr"
+          }
+        }
+      }
+    },
     "settings" : {
       "localizations" : {
         "en" : {
@@ -1045,6 +1045,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paramètres"
+          }
+        }
+      }
+    },
+    "settings.app-icons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Icons"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icônes alternatives"
           }
         }
       }

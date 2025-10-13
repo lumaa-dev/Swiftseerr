@@ -106,7 +106,7 @@ struct OnboardingView: View {
     private var stepView: some View {
         switch self.onboarding {
             case .url:
-                TextField("jellyseerr.url", text: $seerrUrl)
+                TextField("seerr.url", text: $seerrUrl)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.URL)
                     .keyboardType(.URL)
