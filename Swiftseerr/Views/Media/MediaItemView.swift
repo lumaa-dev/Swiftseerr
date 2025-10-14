@@ -49,7 +49,7 @@ struct MediaItemView: View {
                     list
                         .padding(.top, 30.0)
                 }
-                .navigationTitle(Text(item.title))
+                .navigationTitle(Text(self.loadedData ? item.title : String("")))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem {
@@ -188,7 +188,7 @@ struct MediaItemView: View {
                                         [Permission.autoApprove, typedPermission],
                                         options: .or
                                     ) ?? false ? .processing : .pending
-                                    
+
                                     withAnimation {
                                         self.item!.requestHd = nextState
                                     }
@@ -208,7 +208,7 @@ struct MediaItemView: View {
                                         [Permission.autoApprove4K, typedPermission],
                                         options: .or
                                     ) ?? false ? .processing : .pending
-                                    
+
                                     withAnimation {
                                         self.item!.request4k = nextState
                                     }
