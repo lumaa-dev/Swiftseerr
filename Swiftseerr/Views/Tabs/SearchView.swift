@@ -28,7 +28,6 @@ struct SearchView: View {
                         ContentUnavailableView.search(text: query)
                     }
                 }
-                .addSettings()
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 16) {
@@ -44,7 +43,6 @@ struct SearchView: View {
                 .background {
                     Color.bgPurple.ignoresSafeArea()
                 }
-                .addSettings()
             }
         }
         .searchable(text: $query, prompt: "search.prompt")
