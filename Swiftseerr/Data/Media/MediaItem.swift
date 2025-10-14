@@ -26,6 +26,9 @@ struct MediaItem: Identifiable {
     let posterPath: String?
     private let backPath: String?
 
+    let cast: [MediaPerson]
+    let crew: [MediaPerson]
+
     var inWatchList: Bool
 
     var requestStatus: MediaStatus {
@@ -97,6 +100,23 @@ struct MediaItem: Identifiable {
         } else {
             self.rating = nil
         }
+
+        if let credits = data["credits"] as? [String: Any] {
+            if let crew = credits["crew"] as? [[String: Any]] {
+                self.crew = crew.map { .init(data: $0, isCast: false) }
+            } else {
+                self.crew = []
+            }
+
+            if let cast = credits["cast"] as? [[String: Any]] {
+                self.cast = cast.map { .init(data: $0, isCast: true) }
+            } else {
+                self.cast = []
+            }
+        } else {
+            self.crew = []
+            self.cast = []
+        }
     }
 
     private static func allStatus(hd: Int, fourK: Int) -> MediaStatus {
@@ -110,7 +130,6 @@ struct MediaItem: Identifiable {
         return .init(id: self.id, name: self.title, imagePath: self.posterPath, type: self.type, inWatchList: self.inWatchList)
     }
 
-    // Memberwise initializer initializing all stored properties
     init(
         id: Int,
         type: ItemType,
@@ -147,6 +166,8 @@ struct MediaItem: Identifiable {
         self.posterPath = posterPath
         self.backPath = backPath
         self.inWatchList = inWatchList
+        self.crew = []
+        self.cast = []
     }
 
     // Stock example for UI redaction/placeholders

@@ -46,6 +46,8 @@ struct MediaItemView: View {
 
                     info
 
+                    castCrew
+
                     list
                         .padding(.top, 30.0)
                 }
@@ -137,6 +139,7 @@ struct MediaItemView: View {
         }
     }
 
+    @ViewBuilder
     private var header: some View {
         ZStack(alignment: .top) {
             AsyncImage(url: item?.backdrop) { image in
@@ -175,6 +178,7 @@ struct MediaItemView: View {
         .stretchy()
     }
 
+    @ViewBuilder
     private var info: some View {
         VStack(alignment: .leading, spacing: 25) {
             GlassEffectContainer {
@@ -354,6 +358,38 @@ struct MediaItemView: View {
         .padding(.horizontal, 15.0)
         .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
         .clipShape(RoundedRectangle(cornerRadius: 15.0))
+    }
+
+    @ViewBuilder
+    private var castCrew: some View {
+        if let item {
+            VStack(alignment: .leading, spacing: 32) {
+                if !item.cast.isEmpty {
+                    VScrollItems("cast") {
+                        GlassEffectContainer {
+                            LazyHStack {
+                                ForEach(item.cast) { c in
+                                    PersonPlate(c)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if !item.crew.isEmpty {
+                    VScrollItems("crew") {
+                        GlassEffectContainer {
+                            LazyHStack {
+                                ForEach(item.crew) { c in
+                                    PersonPlate(c)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .frame(width: 395, alignment: .leading)
+        }
     }
 
     // MARK: View Methods
