@@ -84,6 +84,7 @@ struct RequestRow: View {
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 15.0))
             }
+            .mediaContext(media: item)
         }
     }
 

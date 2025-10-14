@@ -37,6 +37,12 @@ extension View {
             }
     }
 
+    @ViewBuilder
+    func mediaContext(media: MediaItem) -> some View {
+        self
+            .mediaContext(media.toDiscover())
+    }
+
     private func request(_ item: DiscoverItem, is4k: Bool = false) async -> HTTPURLResponse? {
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k)).1
         return http
