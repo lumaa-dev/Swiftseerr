@@ -105,7 +105,7 @@ struct RequestRow: View {
                     }
                     .buttonStyle(.plain)
 
-                    if let user = SeerSession.shared.user, user.hasPermission(Permission.admin), item.requestStatus != .deleted {
+                    if let user = SeerSession.shared.user, user.hasPermission(Permission.manageRequests), item.requestStatus != .deleted {
                         Button {
                             withAnimation {
                                 self.fileDelConfirm = true

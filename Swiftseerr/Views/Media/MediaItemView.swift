@@ -183,8 +183,14 @@ struct MediaItemView: View {
                         Button {
                             Task {
                                 if let http: HTTPURLResponse = await self.request(), http.statusCode == 201 {
+                                    let typedPermission: Permission = self.item!.type == .movie ? Permission.autoApproveMovie : Permission.autoApproveTV
+                                    let nextState: MediaStatus = SeerSession.shared.user?.hasPermission(
+                                        [Permission.autoApprove, typedPermission],
+                                        options: .or
+                                    ) ?? false ? .processing : .pending
+                                    
                                     withAnimation {
-                                        self.item!.requestHd = .pending
+                                        self.item!.requestHd = nextState
                                     }
                                 }
                             }
@@ -197,8 +203,14 @@ struct MediaItemView: View {
                         Button {
                             Task {
                                 if let http: HTTPURLResponse = await self.request(is4k: true), http.statusCode == 201 {
+                                    let typedPermission: Permission = self.item!.type == .movie ? Permission.autoApprove4KMovie : Permission.autoApprove4KTV
+                                    let nextState: MediaStatus = SeerSession.shared.user?.hasPermission(
+                                        [Permission.autoApprove4K, typedPermission],
+                                        options: .or
+                                    ) ?? false ? .processing : .pending
+                                    
                                     withAnimation {
-                                        self.item!.request4k = .pending
+                                        self.item!.request4k = nextState
                                     }
                                 }
                             }
