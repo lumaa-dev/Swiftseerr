@@ -25,7 +25,8 @@ struct PersonPlate: View {
         }
         .frame(width: 150, height: 200)
         .padding()
-        .glassEffect(.regular.interactive(false), in: RoundedRectangle(cornerRadius: 20.0)) // false until nav is done
+        .background(Material.bar)
+        .clipShape(RoundedRectangle(cornerRadius: 10.0))
     }
 
     @ViewBuilder
