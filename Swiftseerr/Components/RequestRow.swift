@@ -112,7 +112,7 @@ struct RequestRow: View {
                                 self.fileDelConfirm = true
                             }
                         } label: {
-                            Label("delete.radarr", systemImage: "trash.fill")
+                            Label("delete.radarr", systemImage: "document.on.trash.fill")
                                 .foregroundStyle(Color.white)
                                 .buttonGlass(Color.red)
                         }
