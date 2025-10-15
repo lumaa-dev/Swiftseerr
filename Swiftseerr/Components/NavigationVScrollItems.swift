@@ -13,6 +13,12 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
         self.content = content
     }
 
+    init(_ title: LocalizedStringKey, destination: Destination, @ViewBuilder content: @escaping () -> Content) {
+        self.title = title
+        self.destination = { destination }
+        self.content = content
+    }
+
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 8) {
             NavigationLink {
