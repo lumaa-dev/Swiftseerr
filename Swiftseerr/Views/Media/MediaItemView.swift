@@ -47,9 +47,10 @@ struct MediaItemView: View {
                     info
 
                     castCrew
+                        .padding(.vertical, 15.0)
 
                     list
-                        .padding(.top, 30.0)
+                        .padding(.vertical, 15.0)
                 }
                 .navigationTitle(Text(self.loadedData ? item.title : String("")))
                 .navigationBarTitleDisplayMode(.inline)
@@ -356,7 +357,8 @@ struct MediaItemView: View {
         .frame(width: 340, alignment: .leading)
         .padding(.vertical)
         .padding(.horizontal, 15.0)
-        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
+//        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
+        .background(Material.ultraThin)
         .clipShape(RoundedRectangle(cornerRadius: 15.0))
     }
 
@@ -365,17 +367,15 @@ struct MediaItemView: View {
         if let item {
             VStack(alignment: .leading, spacing: 32) {
                 if !item.cast.isEmpty {
-                    VScrollItems("cast") {
-                        GlassEffectContainer {
-                            HStack {
-                                if item.cast.count > 8 {
-                                    ForEach(item.cast[0...8]) { c in
-                                        PersonPlate(c)
-                                    }
-                                } else {
-                                    ForEach(item.cast) { c in
-                                        PersonPlate(c)
-                                    }
+                    NavigationVScrollItems("cast", destination: MediaPersonsView(with: item.cast, title: "cast")) {
+                        HStack {
+                            if item.cast.count > 8 {
+                                ForEach(item.cast[0...8]) { c in
+                                    PersonPlate(c)
+                                }
+                            } else {
+                                ForEach(item.cast) { c in
+                                    PersonPlate(c)
                                 }
                             }
                         }
@@ -383,17 +383,15 @@ struct MediaItemView: View {
                 }
 
                 if !item.crew.isEmpty {
-                    VScrollItems("crew") {
-                        GlassEffectContainer {
-                            HStack {
-                                if item.crew.count > 8 {
-                                    ForEach(item.crew[0...8]) { c in
-                                        PersonPlate(c)
-                                    }
-                                } else {
-                                    ForEach(item.crew) { c in
-                                        PersonPlate(c)
-                                    }
+                    NavigationVScrollItems("crew", destination: MediaPersonsView(with: item.crew, title: "crew")) {
+                        HStack {
+                            if item.crew.count > 8 {
+                                ForEach(item.crew[0...8]) { c in
+                                    PersonPlate(c)
+                                }
+                            } else {
+                                ForEach(item.crew) { c in
+                                    PersonPlate(c)
                                 }
                             }
                         }
