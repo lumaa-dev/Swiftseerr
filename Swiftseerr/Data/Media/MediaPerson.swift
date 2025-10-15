@@ -3,7 +3,7 @@
 import Foundation
 
 struct MediaPerson: Identifiable {
-    var id: Int
+    var id: String
     var name: String
     /// Crew department or Character's name
     var description: String
@@ -20,7 +20,7 @@ struct MediaPerson: Identifiable {
     init(data: [String: Any], isCast: Bool = true) {
         self.isCast = isCast
 
-        self.id = data["id"] as! Int
+        self.id = "\(UUID().uuidString)_\(data["id"] as! Int)"
         self.personId = data["creditId"] as! String
         self.name = data["name"] as! String
         self.description = data[isCast ? "character" : "department"] as! String
