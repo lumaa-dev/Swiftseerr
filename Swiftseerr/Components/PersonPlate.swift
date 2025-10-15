@@ -25,7 +25,7 @@ struct PersonPlate: View {
         }
         .frame(width: 150, height: 200)
         .padding()
-        .background(Material.bar)
+        .background(Material.ultraThin)
         .clipShape(RoundedRectangle(cornerRadius: 10.0))
     }
 
