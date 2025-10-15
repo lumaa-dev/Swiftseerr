@@ -367,9 +367,15 @@ struct MediaItemView: View {
                 if !item.cast.isEmpty {
                     VScrollItems("cast") {
                         GlassEffectContainer {
-                            LazyHStack {
-                                ForEach(item.cast) { c in
-                                    PersonPlate(c)
+                            HStack {
+                                if item.cast.count > 8 {
+                                    ForEach(item.cast[0...8]) { c in
+                                        PersonPlate(c)
+                                    }
+                                } else {
+                                    ForEach(item.cast) { c in
+                                        PersonPlate(c)
+                                    }
                                 }
                             }
                         }
@@ -379,9 +385,15 @@ struct MediaItemView: View {
                 if !item.crew.isEmpty {
                     VScrollItems("crew") {
                         GlassEffectContainer {
-                            LazyHStack {
-                                ForEach(item.crew) { c in
-                                    PersonPlate(c)
+                            HStack {
+                                if item.crew.count > 8 {
+                                    ForEach(item.crew[0...8]) { c in
+                                        PersonPlate(c)
+                                    }
+                                } else {
+                                    ForEach(item.crew) { c in
+                                        PersonPlate(c)
+                                    }
                                 }
                             }
                         }
