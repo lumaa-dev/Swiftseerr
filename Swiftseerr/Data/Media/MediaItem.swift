@@ -127,7 +127,14 @@ struct MediaItem: Identifiable {
     }
 
     func toDiscover() -> DiscoverItem {
-        return .init(id: self.id, name: self.title, imagePath: self.posterPath, type: self.type, inWatchList: self.inWatchList)
+        return .init(
+            id: self.id,
+            name: self.title,
+            imagePath: self.posterPath,
+            type: self.type,
+            requestStatus: self.requestStatus,
+            inWatchList: self.inWatchList
+        )
     }
 
     init(
