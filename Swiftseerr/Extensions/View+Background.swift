@@ -12,10 +12,10 @@ extension View {
     }
 
     @ViewBuilder
-    func pill(_ tint: Color = Color.accentColor) -> some View {
+    func pill(_ tint: Color = Color.accentColor, multiply: CGFloat = 1.0) -> some View {
         self
-            .padding(.vertical, 7.0)
-            .padding(.horizontal, 15.0)
+            .padding(.vertical, 7.0 * multiply)
+            .padding(.horizontal, 15.0 * multiply)
             .background(tint)
             .clipShape(Capsule())
     }

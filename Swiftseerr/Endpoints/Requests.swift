@@ -4,7 +4,7 @@ import Foundation
 
 enum Requests: Endpoint {
     case all(_ page: Int = 1, limit: Int = 10)
-    case create(id: Int, type: ItemType, is4k: Bool)
+    case create(id: Int, type: ItemType, is4k: Bool = false, seasons: [Int] = [])
     case media(id: Int)
     case updateStatus(id: Int, status: Self.Status)
     case delete(id: Int)
@@ -45,8 +45,8 @@ enum Requests: Endpoint {
 
     var jsonValue: (any Encodable)? {
         switch self {
-            case .create(let id, let type, let is4k):
-                return CreateRequest(mediaId: id, mediaType: type, is4k: is4k)
+            case .create(let id, let type, let is4k, let seasons):
+                return CreateRequest(mediaId: id, mediaType: type, is4k: is4k, seasons: type == .show ? seasons : nil)
             default:
                 return nil
         }
@@ -56,11 +56,13 @@ enum Requests: Endpoint {
         let mediaId: Int
         let mediaType: String
         let is4k: Bool
+        let seasons: [Int]?
 
-        init(mediaId: Int, mediaType: ItemType, is4k: Bool) {
+        init(mediaId: Int, mediaType: ItemType, is4k: Bool = false, seasons: [Int]? = nil) {
             self.mediaId = mediaId
             self.mediaType = mediaType.rawValue
             self.is4k = is4k
+            self.seasons = seasons
         }
     }
 

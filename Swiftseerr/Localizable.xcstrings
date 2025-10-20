@@ -521,6 +521,22 @@
         }
       }
     },
+    "no.season" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Season 404"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saison 404"
+          }
+        }
+      }
+    },
     "onboarding.login" : {
       "localizations" : {
         "en" : {
@@ -1033,6 +1049,22 @@
         }
       }
     },
+    "seasons-picker.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the seasons to request"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez les saisons à demander"
+          }
+        }
+      }
+    },
     "seerr.github.repo" : {
       "localizations" : {
         "en" : {
@@ -1109,6 +1141,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Série"
+          }
+        }
+      }
+    },
+    "show.episodes-%lld" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episode"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episodes"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld épisode"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld épisodes"
+                }
+              }
+            }
           }
         }
       }

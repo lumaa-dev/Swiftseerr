@@ -5,7 +5,7 @@ import SwiftUI
 enum Media: Endpoint {
     case get(id: Int, type: ItemType)
     case ratings(id: Int, type: ItemType)
-    case season(id: Int, seasonId: Int)
+    case season(item: MediaItem, season: ShowSeason.About)
 
     var method: HTTPMethod { .get }
 
@@ -15,8 +15,8 @@ enum Media: Endpoint {
                 "\(api)/\(type == .movie ? "movie" : "tv")/\(id)"
             case .ratings(let id, let type):
                 "\(api)/\(type == .movie ? "movie" : "tv")/\(id)/ratings"
-            case .season(let id, let seasonId):
-                "\(api)/tv/\(id)/season/\(seasonId)"
+            case .season(let item, let season):
+                "\(api)/tv/\(item.id)/season/\(season.seasonNumber)"
         }
     }
 }

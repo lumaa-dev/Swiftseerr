@@ -23,7 +23,7 @@ extension View {
                     } label: {
                         Label("request.hd", systemImage: "tray.and.arrow.down")
                     }
-                    .disabled(item.requestStatus != .unknown)
+                    .disabled(item.requestStatus != .unknown || item.type == .show)
 
                     Button {
                         Task {
@@ -32,7 +32,7 @@ extension View {
                     } label: {
                         Label("request.4k", systemImage: "4k.tv")
                     }
-                    .disabled(item.requestStatus != .unknown)
+                    .disabled(item.requestStatus != .unknown || item.type == .show)
                 }
             }
     }

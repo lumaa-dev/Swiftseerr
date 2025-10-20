@@ -11,6 +11,12 @@ struct MediaItemView: View {
     @State private var loadedData: Bool = false
     @State private var hideContent: Bool = false
 
+    @State private var showingSeason: ShowSeason.About? = nil
+
+    // requesting seasons
+    @State private var requestingSeason: Bool = false
+    @State private var requestingSeason4k: Bool = false
+
     @State private var errorAlert: Bool = false
     @State private var errorString: String? = nil
 
@@ -46,6 +52,9 @@ struct MediaItemView: View {
 
                     info
 
+                    seasons
+                        .padding(.vertical, 15.0)
+
                     castCrew
                         .padding(.vertical, 15.0)
 
@@ -54,6 +63,17 @@ struct MediaItemView: View {
                 }
                 .navigationTitle(Text(self.loadedData ? item.title : String("")))
                 .navigationBarTitleDisplayMode(.inline)
+                .sheet(item: $showingSeason) { season in
+                    ShowSeasonView(item: item, season: season)
+                }
+                .sheet(isPresented: $requestingSeason) {
+                    SeasonsPicker(seasons: item.seasons, disabledSeasons: Array(item.availableSeasons.keys)) { selection in
+                        await self.requestButton(is4k: self.requestingSeason4k, with: selection)
+                    }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.hidden)
+                    .presentationBackground(Color.bgPurple)
+                }
                 .toolbar {
                     ToolbarItem {
                         Button {
@@ -184,19 +204,14 @@ struct MediaItemView: View {
         VStack(alignment: .leading, spacing: 25) {
             GlassEffectContainer {
                 HStack {
-                    if self.item!.requestStatus == .unknown {
+                    if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
                         Button {
                             Task {
-                                if let http: HTTPURLResponse = await self.request(), http.statusCode == 201 {
-                                    let typedPermission: Permission = self.item!.type == .movie ? Permission.autoApproveMovie : Permission.autoApproveTV
-                                    let nextState: MediaStatus = SeerSession.shared.user?.hasPermission(
-                                        [Permission.autoApprove, typedPermission],
-                                        options: .or
-                                    ) ?? false ? .processing : .pending
-
-                                    withAnimation {
-                                        self.item!.requestHd = nextState
-                                    }
+                                if self.item!.type == .movie {
+                                    await self.requestButton(is4k: false)
+                                } else {
+                                    self.requestingSeason.toggle()
+                                    self.requestingSeason4k = false
                                 }
                             }
                         } label: {
@@ -207,16 +222,11 @@ struct MediaItemView: View {
 
                         Button {
                             Task {
-                                if let http: HTTPURLResponse = await self.request(is4k: true), http.statusCode == 201 {
-                                    let typedPermission: Permission = self.item!.type == .movie ? Permission.autoApprove4KMovie : Permission.autoApprove4KTV
-                                    let nextState: MediaStatus = SeerSession.shared.user?.hasPermission(
-                                        [Permission.autoApprove4K, typedPermission],
-                                        options: .or
-                                    ) ?? false ? .processing : .pending
-
-                                    withAnimation {
-                                        self.item!.request4k = nextState
-                                    }
+                                if self.item!.type == .movie {
+                                    await self.requestButton(is4k: false)
+                                } else {
+                                    self.requestingSeason.toggle()
+                                    self.requestingSeason4k = true
                                 }
                             }
                         } label: {
@@ -239,7 +249,7 @@ struct MediaItemView: View {
                                 }
 
                                 if canManageRequests {
-                                    ForEach(self.item!.requests) { req in
+                                    ForEach(self.item!.requests.filter { $0.status != .partiallyAvailable || $0.status != .available }) { req in
                                         Menu {
                                             if self.canManageRequests {
                                                 self.manageRequest(req)
@@ -360,6 +370,44 @@ struct MediaItemView: View {
 //        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
         .background(Material.ultraThin)
         .clipShape(RoundedRectangle(cornerRadius: 15.0))
+    }
+
+    @ViewBuilder
+    private var seasons: some View {
+        if let item, !item.seasons.isEmpty {
+            VStack(alignment: .leading) {
+                ForEach(item.seasons.sorted { $0.seasonNumber < $1.seasonNumber }) { season in
+                    Button {
+                        self.showingSeason = season
+                    } label: {
+                        HStack {
+                            Text(season.name)
+                                .foregroundStyle(Color.primary)
+                                .font(.title2.bold())
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            if let s = item.availableSeasons.filter({ $0.key == season.seasonNumber }).first {
+                                Text(s.value.localized)
+                                    .font(.callout)
+                                    .foregroundStyle(Color.white)
+                                    .pill(s.value.color, multiply: 0.7)
+                            }
+
+                            Image(systemName: "arrow.up.right")
+                                .foregroundStyle(Color.secondary.opacity(0.5))
+                                .font(.callout)
+                        }
+                        .padding(10.0)
+                        .background(Material.ultraThin)
+                        .clipShape(Capsule())
+                        .padding(.horizontal)
+                    }
+                }
+            }
+            .frame(width: 395, alignment: .leading)
+        }
     }
 
     @ViewBuilder
@@ -485,11 +533,30 @@ struct MediaItemView: View {
         }
     }
 
-    private func request(is4k: Bool = false) async -> HTTPURLResponse? {
+    private func request(is4k: Bool = false, with seasons: [ShowSeason.About] = []) async -> HTTPURLResponse? {
         guard let item else { return nil }
 
-        let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k)).1
+        let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.create(id: item.id, type: item.type, is4k: is4k, seasons: seasons.map { $0.seasonNumber })).1
         return http
+    }
+
+    private func requestButton(is4k: Bool = false, with seasons: [ShowSeason.About] = []) async {
+        guard let item else { return }
+
+        let canRequest: Bool = item.type == .movie || (item.type == .show && !seasons.isEmpty)
+
+        if canRequest, let http: HTTPURLResponse = await self.request(is4k: is4k, with: seasons), http.statusCode == 201 {
+            let typedPermission: Permission = item.type == .movie ? Permission.autoApproveMovie : Permission.autoApproveTV
+            let nextState: MediaStatus = SeerSession.shared.user?.hasPermission(
+                [Permission.autoApprove, typedPermission],
+                options: .or
+            ) ?? false ? .processing : .pending
+
+            withAnimation {
+                self.item!.requestHd = nextState
+                self.item!.availableSeasons
+            }
+        }
     }
 
     private func changeWatchlist() async -> HTTPURLResponse? {

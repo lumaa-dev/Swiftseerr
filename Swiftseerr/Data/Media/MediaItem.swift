@@ -20,6 +20,9 @@ struct MediaItem: Identifiable {
     let episodesCount: Int?
     let runtime: Int?
 
+    let seasons: [ShowSeason.About]
+    let availableSeasons: [Int: MediaStatus]
+
     let rating: String?
     let releaseDate: Date
 
@@ -60,11 +63,7 @@ struct MediaItem: Identifiable {
         self.episodesCount = data["numberOfEpisodes"] as? Int
         self.runtime = data["runtime"] as? Int
 
-        let releaseStr: String = data[type == .movie ? "releaseDate" : "firstAirDate"] as! String
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-
-        self.releaseDate = dateFormatter.date(from: releaseStr) ?? .init(timeIntervalSince1970: 0)
+        self.releaseDate = (data[type == .movie ? "releaseDate" : "firstAirDate"] as! String).seerrDate ?? .init(timeIntervalSince1970: 0)
 
         self.posterPath = data["posterPath"] as? String
         self.backPath = data["backdropPath"] as? String
@@ -76,15 +75,30 @@ struct MediaItem: Identifiable {
         if let mediaInfo: [String: Any] = data["mediaInfo"] as? [String: Any] ?? data["media"] as? [String: Any] {
             self.id = mediaInfo["tmdbId"] as? Int ?? data["id"] as! Int
             self.jellyfin = URL(string: mediaInfo["mediaUrl"] as? String ?? "")
+
             self.requestHd = MediaStatus(rawValue: mediaInfo["status"] as! Int) ?? .unknown
             self.request4k = MediaStatus(rawValue: mediaInfo["status4k"] as! Int) ?? .unknown
             self.requests = (mediaInfo["requests"] as! [[String: Any]]).map { .init(data: $0) }
+
+            if let requestSeasons: [[String: Any]] = mediaInfo["seasons"] as? [[String: Any]] {
+                self.availableSeasons = Dictionary(uniqueKeysWithValues: requestSeasons.compactMap { season in
+                    guard let num = season["seasonNumber"] as? Int else { return nil }
+                    let hdStatus = MediaStatus(rawValue: season["status"] as? Int ?? -1) ?? .unknown
+                    let fourKStatus = MediaStatus(rawValue: season["status4k"] as? Int ?? -1) ?? .unknown
+
+                    let overall = Self.allStatus(hd: hdStatus.rawValue, fourK: fourKStatus.rawValue)
+                    return (num, overall)
+                })
+            } else {
+                self.availableSeasons = [:]
+            }
         } else {
             self.id = data["tmdbId"] as? Int ?? data["id"] as! Int
             self.jellyfin = nil
             self.requestHd = .unknown
             self.request4k = .unknown
             self.requests = []
+            self.availableSeasons = [:]
         }
 
         if let c = data["contentRatings"] as? [String: Any],
@@ -116,6 +130,14 @@ struct MediaItem: Identifiable {
         } else {
             self.crew = []
             self.cast = []
+        }
+
+        // TV SHOW SPECIFIC
+
+        if self.type == .show, let seasonsData: [[String: Any]] = data["seasons"] as? [[String: Any]] {
+            self.seasons = seasonsData.map { .init(data: $0) }
+        } else {
+            self.seasons = []
         }
     }
 
@@ -173,14 +195,18 @@ struct MediaItem: Identifiable {
         self.posterPath = posterPath
         self.backPath = backPath
         self.inWatchList = inWatchList
+
         self.crew = []
         self.cast = []
+        self.seasons = []
+        self.availableSeasons = [:]
     }
 
     // Stock example for UI redaction/placeholders
     static var redacted: MediaItem = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+
         return MediaItem(
             id: 244786,
             type: .movie,
@@ -202,3 +228,4 @@ struct MediaItem: Identifiable {
         )
     }()
 }
+
