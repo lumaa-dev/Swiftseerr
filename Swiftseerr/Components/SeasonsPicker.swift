@@ -16,6 +16,19 @@ struct SeasonsPicker: View {
         NavigationStack {
             ScrollView {
                 VStack {
+                    let allSelected: Bool = self.selectedSeasons.count == self.seasons.filter { !self.disabledSeasons.contains($0.seasonNumber) }.count
+
+                    Button {
+                        if allSelected {
+                            self.selectedSeasons = []
+                        } else {
+                            self.selectedSeasons = self.seasons.filter { !self.disabledSeasons.contains($0.seasonNumber) }
+                        }
+                    } label: {
+                        self.seasonLabel(.init(name: String(localized: "all.seasons")), isSelected: allSelected)
+                    }
+                    .padding(.bottom, 20.0)
+
                     ForEach(self.seasons) { season in
                         self.seasonToggle(season)
                     }
@@ -56,26 +69,31 @@ struct SeasonsPicker: View {
                 self.selectedSeasons.append(season)
             }
         } label: {
-            HStack {
-                Text(season.name)
-                    .foregroundStyle(Color.primary)
-                    .font(.title2.bold())
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                if selected {
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(Color.accentPurple)
-                        .font(.callout)
-                }
-            }
-            .padding(10.0)
-            .background(Material.ultraThin)
-            .clipShape(Capsule())
-            .padding(.horizontal)
-            .opacity(disabled ? 0.25 : 1.0)
+            self.seasonLabel(season, isSelected: selected, isDisabled: disabled)
         }
         .disabled(disabled)
+    }
+
+    @ViewBuilder
+    private func seasonLabel(_ season: ShowSeason.About, isSelected: Bool = false, isDisabled: Bool = false) -> some View {
+        HStack {
+            Text(season.name)
+                .foregroundStyle(Color.primary)
+                .font(.title2.bold())
+                .multilineTextAlignment(.leading)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(Color.accentPurple)
+                    .font(.callout)
+            }
+        }
+        .padding(10.0)
+        .background(Material.ultraThin)
+        .clipShape(Capsule())
+        .padding(.horizontal)
+        .opacity(isDisabled ? 0.25 : 1.0)
     }
 }

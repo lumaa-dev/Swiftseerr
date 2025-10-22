@@ -65,6 +65,22 @@
         }
       }
     },
+    "all.seasons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select everything"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout sélectionner"
+          }
+        }
+      }
+    },
     "all.shows" : {
       "localizations" : {
         "en" : {
@@ -1054,13 +1070,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select the seasons to request"
+            "value" : "Request seasons"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez les saisons à demander"
+            "value" : "Demander des saisons"
           }
         }
       }

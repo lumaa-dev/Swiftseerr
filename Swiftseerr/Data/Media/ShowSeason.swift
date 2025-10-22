@@ -73,7 +73,7 @@ struct ShowSeason: Identifiable {
             self.airDate = (data["airDate"] as? String)?.seerrDate
         }
 
-        init(id: Int, name: String, seasonNumber: Int, episodeNumber: Int, airDate: Date) {
+        init(id: Int = Int.random(in: 0...9999), name: String, seasonNumber: Int = 0, episodeNumber: Int = 0, airDate: Date = Date.now) {
             self.id = id
             self.name = name
             self.seasonNumber = seasonNumber
