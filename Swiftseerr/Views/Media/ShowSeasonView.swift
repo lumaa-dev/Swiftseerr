@@ -36,8 +36,8 @@ struct ShowSeasonView: View {
                                 self.episodeView(episode)
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(width: 395)
                 } else {
                     ContentUnavailableView("no.season", systemImage: "rectangle.stack.slash")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
