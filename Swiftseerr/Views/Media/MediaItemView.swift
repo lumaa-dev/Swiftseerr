@@ -207,8 +207,8 @@ struct MediaItemView: View {
                     if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
                         Button {
                             Task {
-                                if self.item!.type == .movie {
-                                    await self.requestButton(is4k: false)
+                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+                                    await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
                                 } else {
                                     self.requestingSeason.toggle()
                                     self.requestingSeason4k = false
@@ -222,8 +222,8 @@ struct MediaItemView: View {
 
                         Button {
                             Task {
-                                if self.item!.type == .movie {
-                                    await self.requestButton(is4k: false)
+                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+                                    await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
                                 } else {
                                     self.requestingSeason.toggle()
                                     self.requestingSeason4k = true
@@ -554,7 +554,6 @@ struct MediaItemView: View {
 
             withAnimation {
                 self.item!.requestHd = nextState
-                self.item!.availableSeasons
             }
         }
     }
