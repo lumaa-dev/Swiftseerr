@@ -10,11 +10,12 @@ struct SettingsView: View {
 
     @Query private var auths: [AuthInfo]
 
+    @State private var unviewAuth: Bool = false
     @State private var viewAuth: AuthInfo? = nil
     @State private var viewOnboard: Bool = false
     @State private var newOnboard: SeerSession.OnboardingSteps = .welcome
 
-    @State private var unviewAuth: Bool = false
+    @State private var viewUrl: String? = nil
 
     var body: some View {
         List {
@@ -67,11 +68,19 @@ struct SettingsView: View {
             .listRowBackground(Color.gray.opacity(0.2))
 
             Section("info") {
-                Link("swiftseerr.github.repo", destination: URL(string: "https://github.com/lumaa-dev/Swiftseerr")!) 
-                    .onOpenURL(prefersInApp: true)
+                if let url = URL(string: "https://github.com/lumaa-dev/Swiftseerr") {
+                    Link("swiftseerr.github.repo", destination: url)
+                    .environment(\.openURL, OpenURLAction { _ in
+                        return self.openLink(url)
+                    })
+                }
 
-                Link("seerr.github.repo", destination: URL(string: "https://github.com/seerr-team/seerr")!)
-                    .onOpenURL(prefersInApp: true)
+                if let url = URL(string: "https://github.com/seerr-team/seerr") {
+                    Link("seerr.github.repo", destination: url)
+                    .environment(\.openURL, OpenURLAction { _ in
+                        return self.openLink(url)
+                    })
+                }
             }
             .listRowBackground(Color.gray.opacity(0.2))
         }
@@ -89,6 +98,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $viewOnboard) {
             self.newOnboarding()
+        }
+        .sheet(item: $viewUrl) { url in
+            CleanWebView(URL(string: url))
         }
     }
 
@@ -222,6 +234,15 @@ struct SettingsView: View {
             throw SeerrError()
         }
     }
+
+    private func openLink(_ url: URL?) -> OpenURLAction.Result {
+        self.viewUrl = url?.absoluteString
+        return .handled
+    }
+}
+
+extension String: @retroactive Identifiable {
+    public var id: String { return self }
 }
 
 #Preview {

@@ -697,6 +697,22 @@
         }
       }
     },
+    "open.safari" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Safari"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans Safari"
+          }
+        }
+      }
+    },
     "password" : {
       "localizations" : {
         "en" : {
