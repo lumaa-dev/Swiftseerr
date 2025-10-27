@@ -146,9 +146,7 @@ struct MediaItemView: View {
             if let newItem = try? await self.fetchItem() {
                 self.item = newItem
                 self.loadedData = true
-                #if !targetEnvironment(simulator)
                 await self.verifyAge()
-                #endif
             }
         }
         .alert("error", isPresented: $errorAlert) {
@@ -505,8 +503,9 @@ struct MediaItemView: View {
         guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
 
         if MediaRating.prepareAsk(for: minAge) {
+            print("[verifyAge] Hiding content, asking for \(minAge)+ age")
+#if !targetEnvironment(simulator)
             self.hideContent = true
-            print("[verifyAge] Hidden content, asking for \(minAge)+ age")
             
             do {
                 let response = try await requestAgeRange(ageGates: minAge)
@@ -515,6 +514,7 @@ struct MediaItemView: View {
                     case .declinedSharing:
                         print("[verifyAge] Declined age verification")
                         self.hideContent = true // double "true" just in case
+                        throw SeerrError()
                     case let .sharing(range):
                         if let lowerBound = range.lowerBound, lowerBound >= minAge {
                             print("[verifyAge] Verified age perfectly")
@@ -523,6 +523,7 @@ struct MediaItemView: View {
                     @unknown default:
                         print("[verifyAge] Default case :(")
                         self.hideContent = true
+                        throw SeerrError()
                 }
             } catch {
                 print(error.localizedDescription)
@@ -530,6 +531,7 @@ struct MediaItemView: View {
                 self.errorString = error.localizedDescription
                 self.errorAlert = true
             }
+#endif
         }
     }
 
