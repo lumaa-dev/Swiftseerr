@@ -427,6 +427,7 @@ struct MediaRating {
                 }
             }
         } else if var rating = media.rating {
+            print("[MediaRating] Using normal rating which is \(rating)")
             rating.replace(/\++/, with: "") // remove all + in "13+" or "+13" for example
             return Int(rating)
         }
