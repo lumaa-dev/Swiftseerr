@@ -390,6 +390,7 @@ struct MediaItemView: View {
                                 Text(s.value.localized)
                                     .font(.callout)
                                     .foregroundStyle(Color.white)
+                                    .lineLimit(1)
                                     .pill(s.value.color, multiply: 0.7)
                             }
 
@@ -401,7 +402,9 @@ struct MediaItemView: View {
                         .background(Material.ultraThin)
                         .clipShape(Capsule())
                         .padding(.horizontal)
+                        .shouldRedact(self.hideContent || !self.loadedData)
                     }
+                    .disabled(self.hideContent || !self.loadedData)
                 }
             }
             .frame(width: 395, alignment: .leading)
