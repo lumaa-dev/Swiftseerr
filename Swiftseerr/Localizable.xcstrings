@@ -225,6 +225,54 @@
         }
       }
     },
+    "def-age" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defined Age"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Âge défini"
+          }
+        }
+      }
+    },
+    "def-age.footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When viewing a movie or TV show with an age limit, you will be prompted to confirm your age range. Swiftseerr doesn’t know your birthday or your exact age."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lors du visionnage d’un film ou d’une série avec une limite d’âge, il vous sera demandé de confirmer votre tranche d’âge. Swiftseerr ne connaît ni votre date de naissance ni votre âge exact."
+          }
+        }
+      }
+    },
+    "def-age.reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Defined Age"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser l’âge défini"
+          }
+        }
+      }
+    },
     "delete.radarr" : {
       "localizations" : {
         "en" : {

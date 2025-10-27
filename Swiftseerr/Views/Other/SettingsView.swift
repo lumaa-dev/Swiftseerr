@@ -19,70 +19,13 @@ struct SettingsView: View {
 
     var body: some View {
         List {
-            Section("instances") {
-                ForEach(auths) { auth in
-                    Button {
-                        self.viewAuth = auth
-                    } label: {
-                        HStack {
-                            if SeerSession.shared.auth.id == auth.id {
-                                Label(auth.username, systemImage: "checkmark")
-                                    .foregroundStyle(Color.primary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            } else {
-                                Text(auth.username)
-                                    .foregroundStyle(Color.primary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
+            self.instances
 
-                            Image(systemName: "chevron.forward")
-                                .foregroundStyle(Color.secondary.opacity(0.4))
-                        }
-                    }
-                    .deleteDisabled(auths.count <= 1)
-                }
-                .onDelete { indices in
-                    for index in indices {
-                        let auth = auths[index]
-                        modelContext.delete(auth)
-                    }
-                }
-            }
-            .listRowBackground(Color.gray.opacity(0.2))
-            .sectionActions {
-                Button {
-                    SeerSession.shared.clear()
+            self.appearence
 
-                    self.newOnboard = .welcome
-                    self.viewOnboard.toggle()
-                } label: {
-                    Text("add.instance")
-                }
-            }
+            self.defAge
 
-            Section("appearence") {
-                NavigationLink(destination: Self.AppIconPicker(appIcon: $appIcon)) {
-                    Text("settings.app-icons")
-                }
-            }
-            .listRowBackground(Color.gray.opacity(0.2))
-
-            Section("info") {
-                if let url = URL(string: "https://github.com/lumaa-dev/Swiftseerr") {
-                    Link("swiftseerr.github.repo", destination: url)
-                    .environment(\.openURL, OpenURLAction { _ in
-                        return self.openLink(url)
-                    })
-                }
-
-                if let url = URL(string: "https://github.com/seerr-team/seerr") {
-                    Link("seerr.github.repo", destination: url)
-                    .environment(\.openURL, OpenURLAction { _ in
-                        return self.openLink(url)
-                    })
-                }
-            }
-            .listRowBackground(Color.gray.opacity(0.2))
+            self.info
         }
         .navigationTitle(Text("settings"))
         .navigationBarTitleDisplayMode(.inline)
@@ -102,6 +45,99 @@ struct SettingsView: View {
         .sheet(item: $viewUrl) { url in
             CleanWebView(URL(string: url))
         }
+    }
+
+    // MARK: - Settings Sections
+    @ViewBuilder
+    private var instances: some View {
+        Section("instances") {
+            ForEach(auths) { auth in
+                Button {
+                    self.viewAuth = auth
+                } label: {
+                    HStack {
+                        if SeerSession.shared.auth.id == auth.id {
+                            Label(auth.username, systemImage: "checkmark")
+                                .foregroundStyle(Color.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            Text(auth.username)
+                                .foregroundStyle(Color.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
+                        Image(systemName: "chevron.forward")
+                            .foregroundStyle(Color.secondary.opacity(0.4))
+                    }
+                }
+                .deleteDisabled(auths.count <= 1)
+            }
+            .onDelete { indices in
+                for index in indices {
+                    let auth = auths[index]
+                    modelContext.delete(auth)
+                }
+            }
+        }
+        .listRowBackground(Color.gray.opacity(0.2))
+        .sectionActions {
+            Button {
+                SeerSession.shared.clear()
+
+                self.newOnboard = .welcome
+                self.viewOnboard.toggle()
+            } label: {
+                Text("add.instance")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var appearence: some View {
+        Section("appearence") {
+            NavigationLink(destination: Self.AppIconPicker(appIcon: $appIcon)) {
+                Text("settings.app-icons")
+            }
+        }
+        .listRowBackground(Color.gray.opacity(0.2))
+    }
+
+    @ViewBuilder
+    private var defAge: some View {
+        Section(header: Text("def-age"), footer: Text("def-age.footer")) {
+            let definedAge: Int = UserDefaults.standard.integer(forKey: "ageCheck")
+            LabeledContent("def-age", value: definedAge > 0 ? "\(definedAge)" : "Unknown")
+        }
+        .sectionActions {
+            Button(role: .destructive) {
+                UserDefaults.standard.removeObject(forKey: "ageCheck")
+            } label: {
+                Label("def-age.reset", systemImage: "figure.child.and.lock.fill")
+                    .foregroundStyle(Color.red)
+            }
+            .tint(Color.red)
+        }
+        .listRowBackground(Color.gray.opacity(0.2))
+    }
+
+    @ViewBuilder
+    private var info: some View {
+        Section("info") {
+            if let url = URL(string: "https://github.com/lumaa-dev/Swiftseerr") {
+                Link("swiftseerr.github.repo", destination: url)
+                    .environment(\.openURL, OpenURLAction { _ in
+                        return self.openLink(url)
+                    })
+            }
+
+            if let url = URL(string: "https://github.com/seerr-team/seerr") {
+                Link("seerr.github.repo", destination: url)
+                    .environment(\.openURL, OpenURLAction { _ in
+                        return self.openLink(url)
+                    })
+            }
+        }
+        .listRowBackground(Color.gray.opacity(0.2))
     }
 
     // MARK: - View method
