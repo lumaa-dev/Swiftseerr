@@ -7,9 +7,12 @@ struct NotifSettingsView: View {
     @State private var grantedNotifs: Bool = false
     @State private var validated: Bool = false
 
+    @State private var prevServerUrl: String? = nil
+    @State private var prevAuth: String? = nil
     @State private var serverUrl: String = ""
     @State private var auth: String = ""
 
+    @State private var viewUrl: String? = nil
     @State private var delAlert: Bool = false
 
     var body: some View {
@@ -22,7 +25,7 @@ struct NotifSettingsView: View {
                         .textInputAutocapitalization(.never)
                         .textInputFormattingControlVisibility(.hidden, for: .all)
                         .onChange(of: serverUrl) { oldValue, newValue in
-                            guard !newValue.isEmpty else { return }
+                            guard !newValue.isEmpty, newValue != self.prevServerUrl else { return }
 
                             if self.validated && oldValue != newValue {
                                 self.delAlert = true
@@ -80,6 +83,22 @@ struct NotifSettingsView: View {
                 }
                 .listRowBackground(Color.gray.opacity(0.2))
             }
+
+            Section(footer: Text("settings.notifications.seerrapn")) {
+                if let url = URL(string: "https://github.com/lumaa-dev/SeerrAPN") {
+                    Link("seerrapn.github.repo", destination: url)
+                        .environment(\.openURL, OpenURLAction { _ in
+                            return self.openLink(url)
+                        })
+                }
+            }
+            .listRowBackground(Color.gray.opacity(0.2))
+        }
+        .navigationTitle(Text("settings.notifications"))
+        .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background {
+            Color.bgPurple.ignoresSafeArea()
         }
         .alert("settings.notifications.delete", isPresented: $delAlert) {
             Button(role: .cancel) {
@@ -89,15 +108,17 @@ struct NotifSettingsView: View {
 
             Button(role: .destructive) {
                 Task {
-                    _ = await self.deleteToken()
+                    let del = await self.deleteToken()
 
-                    UserDefaults.standard.removeObject(forKey: "notifUrl")
-                    UserDefaults.standard.removeObject(forKey: "notifAuth")
+                    if del {
+                        UserDefaults.standard.removeObject(forKey: "notifUrl")
+                        UserDefaults.standard.removeObject(forKey: "notifAuth")
 
-                    self.validated = false
-                    self.serverUrl = ""
-                    self.auth = ""
-                    self.delAlert = false
+                        self.validated = false
+                        self.serverUrl = ""
+                        self.auth = ""
+                        self.delAlert = false
+                    }
                 }
             } label: {
                 Text("delete")
@@ -105,10 +126,12 @@ struct NotifSettingsView: View {
         }  message: {
             Text("settings.notifications.delete.message")
         }
+        .sheet(item: $viewUrl) { url in
+            CleanWebView(URL(string: url))
+        }
         .onAppear {
             AppDelegate.requestNotifications { granted in
                 self.grantedNotifs = granted
-                print(self.grantedNotifs ? "Granted connard" : "NOT GRANDED??? fils de pute")
             }
 
             guard self.grantedNotifs else { return }
@@ -118,8 +141,16 @@ struct NotifSettingsView: View {
 
             if !self.serverUrl.isEmpty {
                 self.validated = true
+
+                self.prevServerUrl = self.serverUrl
+                self.prevAuth = self.auth
             }
         }
+    }
+
+    private func openLink(_ url: URL?) -> OpenURLAction.Result {
+        self.viewUrl = url?.absoluteString
+        return .handled
     }
 }
 
