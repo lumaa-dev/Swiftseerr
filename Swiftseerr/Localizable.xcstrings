@@ -273,6 +273,22 @@
         }
       }
     },
+    "delete" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
     "delete.radarr" : {
       "localizations" : {
         "en" : {
@@ -597,6 +613,82 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Saison 404"
+          }
+        }
+      }
+    },
+    "notification.media_available-%@" : {
+      "comment" : "MEDIA_AVAILABLE",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is now available"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est maintenant disponible"
+          }
+        }
+      }
+    },
+    "notification.media_declined-%@" : {
+      "comment" : "MEDIA_DECLINED",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ has been declined"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a été refusé"
+          }
+        }
+      }
+    },
+    "notification.media_pending-%1$@.%2$@" : {
+      "comment" : "MEDIA_PENDING notification",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ requested %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a demandé %2$@"
+          }
+        }
+      }
+    },
+    "notification.test" : {
+      "comment" : "Seerr test notification",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testing notifications, all clear!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test des notifications, tout est bon !"
           }
         }
       }
@@ -1205,6 +1297,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Icônes alternatives"
+          }
+        }
+      }
+    },
+    "settings.notifications" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "settings.notifications.auth" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authentication Header"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entête d’authentification"
+          }
+        }
+      }
+    },
+    "settings.notifications.delete" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change notification server?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer de serveur de notification ?"
+          }
+        }
+      }
+    },
+    "settings.notifications.delete.message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You won’t receive notifications anymore until you have set a new SeerrAPN URL."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous ne recevrez plus de notification jusqu’à avoir mis un nouvel URL SeerrAPN."
+          }
+        }
+      }
+    },
+    "settings.notifications.server-url" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SeerrAPN URL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL du SeerrAPN"
           }
         }
       }
