@@ -4,6 +4,7 @@ import SwiftUI
 
 struct NotifSettingsView: View {
 
+    @State private var grantedNotifs: Bool = false
     @State private var validated: Bool = false
 
     @State private var serverUrl: String = ""
@@ -28,7 +29,7 @@ struct NotifSettingsView: View {
                                 self.serverUrl = newValue
                             }
                         }
-                        .disabled(!AppDelegate.hasNotifications)
+                        .disabled(!self.grantedNotifs)
 
                     Button {
                         if !self.serverUrl.starts(with: "https://") {
@@ -41,9 +42,13 @@ struct NotifSettingsView: View {
 
                         Task {
                             let validUrl = await self.isValid(url: serverUrl, auth: auth)
+                            print(validUrl ? "[NotifSettingsView] Valid url" : "[NotifSettingsView] Unvalidated url boohoo")
 
                             if validUrl {
-                                self.validated = await self.sendToken() // validate fully whenever the token is on the other side (server)
+                                // validate fully whenever the token is on the other side (server)
+                                self.validated = await self.sendToken(url: serverUrl, auth: auth)
+                                print(self.validated ? "[NotifSettingsView] VALID URL & TOKEN SENT" : "[NotifSettingsView] Unsent token boohoo")
+
                                 if self.validated {
                                     UserDefaults.standard.set(serverUrl, forKey: "notifUrl")
                                     UserDefaults.standard.set(auth, forKey: "notifAuth")
@@ -52,11 +57,12 @@ struct NotifSettingsView: View {
                         }
                     } label: {
                         Image(systemName: "paperplane")
+                            .imageScale(.small)
                     }
                     .buttonStyle(.plain)
-                    .padding(10.0)
-                    .background(Color.accentPurple)
-                    .clipShape(Circle())
+                    .padding(7.5)
+                    .background(self.serverUrl.isEmpty || self.validated ? Color.gray : Color.accentPurple)
+                    .clipShape(Capsule())
                     .disabled(self.serverUrl.isEmpty || self.validated)
                 }
 
@@ -76,7 +82,10 @@ struct NotifSettingsView: View {
             }
         }
         .alert("settings.notifications.delete", isPresented: $delAlert) {
-            Button(role: .cancel) {}
+            Button(role: .cancel) {
+                self.serverUrl = UserDefaults.standard.string(forKey: "notifUrl") ?? ""
+                self.auth = UserDefaults.standard.string(forKey: "notifAuth") ?? ""
+            }
 
             Button(role: .destructive) {
                 Task {
@@ -97,13 +106,18 @@ struct NotifSettingsView: View {
             Text("settings.notifications.delete.message")
         }
         .onAppear {
+            AppDelegate.requestNotifications { granted in
+                self.grantedNotifs = granted
+                print(self.grantedNotifs ? "Granted connard" : "NOT GRANDED??? fils de pute")
+            }
+
+            guard self.grantedNotifs else { return }
+
             self.serverUrl = UserDefaults.standard.string(forKey: "notifUrl") ?? ""
             self.auth = UserDefaults.standard.string(forKey: "notifAuth") ?? ""
 
             if !self.serverUrl.isEmpty {
                 self.validated = true
-            } else {
-                AppDelegate.requestNotifications()
             }
         }
     }
@@ -131,8 +145,8 @@ extension NotifSettingsView {
         return false
     }
 
-    func sendToken() async -> Bool {
-        guard let notifUrl: String = UserDefaults.standard.string(forKey: "notifUrl"), let auth: String = UserDefaults.standard.string(forKey: "notifAuth"), let urll: URL = URL(string: "\(notifUrl)/token") else {
+    func sendToken(url: String, auth: String = "") async -> Bool {
+        guard let urll: URL = URL(string: "\(url)/token") else {
             return false
         }
 

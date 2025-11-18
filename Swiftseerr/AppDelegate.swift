@@ -17,8 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var deviceToken: String = ""
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Self.requestNotifications()
-        
+        Self.requestNotifications {_ in}
+
         return true
     }
     
@@ -30,12 +30,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Got deviceToken")
     }
 
-    static func requestNotifications() {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        AppDelegate.failedToken = false
+        print(error)
+    }
+
+    static func requestNotifications(completionHandler: (Bool) -> Void) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             Task { @MainActor in
                 if granted {
                     print("GRANTED NOTIF")
-#if !WIDGET
+                    
                     try await UNUserNotificationCenter.current().setBadgeCount(0)
                     UIApplication.shared.registerForRemoteNotifications()
                     AppDelegate.hasNotifications = true
@@ -43,8 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                     if let deviceToken = UserDefaults.standard.string(forKey: "deviceToken") {
                         AppDelegate.deviceToken = deviceToken
+                    } else {
+                        print("MISSING DEVICETOKEN")
                     }
-#endif
+
                 } else {
                     print("DENIED NOTIF")
                     AppDelegate.hasNotifications = false
@@ -52,5 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
+
+        completionHandler(AppDelegate.hasNotifications)
     }
 }

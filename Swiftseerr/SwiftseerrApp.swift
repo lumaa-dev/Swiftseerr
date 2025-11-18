@@ -5,6 +5,8 @@ import SwiftData
 
 @main
 struct SwiftseerrApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate: AppDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()

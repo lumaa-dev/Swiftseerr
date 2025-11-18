@@ -21,6 +21,13 @@ struct SettingsView: View {
         List {
             self.instances
 
+            NavigationLink {
+                NotifSettingsView()
+            } label: {
+                Text("settings.notifications")
+            }
+            .listRowBackground(Color.gray.opacity(0.2))
+
             self.appearence
 
             self.defAge
