@@ -1269,6 +1269,22 @@
         }
       }
     },
+    "seerrapn.github.repo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SeerrAPN’s GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub de SeerrAPN"
+          }
+        }
+      }
+    },
     "settings" : {
       "localizations" : {
         "en" : {
@@ -1361,6 +1377,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vous ne recevrez plus de notification jusqu’à avoir mis un nouvel URL SeerrAPN."
+          }
+        }
+      }
+    },
+    "settings.notifications.seerrapn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) is a self-hostable notification service to send webhook notifications to your iPhone through Swiftseerr."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) est un service de notification auto-hébergeable pour envoyer des notifications webhook vers votre iPhone grâce à Swiftseerr. "
           }
         }
       }
