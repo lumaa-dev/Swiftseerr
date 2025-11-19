@@ -12,6 +12,11 @@ struct NotifSettingsView: View {
     @State private var serverUrl: String = ""
     @State private var auth: String = ""
 
+    // filters
+    @AppStorage("notif-filter.medPend") private var medPendNotify: Bool = true // 1
+    @AppStorage("notif-filter.medAvalble") private var medAvalbleNotify: Bool = true // 2
+    @AppStorage("notif-filter.medDen") private var medDenNotify: Bool = true // 4
+
     @State private var viewUrl: String? = nil
     @State private var delAlert: Bool = false
 
@@ -77,12 +82,35 @@ struct NotifSettingsView: View {
             }
             .listRowBackground(Color.gray.opacity(0.2))
 
-            if self.validated {
-                Section {
-                    Text(String("Filtres notifs bientôt"))
+            Section(header: Text("notification.filter")) {
+                Toggle(isOn: $medPendNotify) {
+                    Text("notification.filter.pending")
                 }
-                .listRowBackground(Color.gray.opacity(0.2))
+                .disabled(!self.validated)
+                .onChange(of: medPendNotify) { _, _ in
+                    print("[NotifSettingsView] Updating pending")
+                    self.updateFilter()
+                }
+
+                Toggle(isOn: $medAvalbleNotify) {
+                    Text("notification.filter.available")
+                }
+                .disabled(!self.validated)
+                .onChange(of: medAvalbleNotify) { _, _ in
+                    print("[NotifSettingsView] Updating available")
+                    self.updateFilter()
+                }
+
+                Toggle(isOn: $medDenNotify) {
+                    Text("notification.filter.denied")
+                }
+                .disabled(!self.validated)
+                .onChange(of: medDenNotify) { _, _ in
+                    print("[NotifSettingsView] Updating denied")
+                    self.updateFilter()
+                }
             }
+            .listRowBackground(Color.gray.opacity(0.2))
 
             Section(footer: Text("settings.notifications.seerrapn")) {
                 if let url = URL(string: "https://github.com/lumaa-dev/SeerrAPN") {
@@ -152,6 +180,27 @@ struct NotifSettingsView: View {
         self.viewUrl = url?.absoluteString
         return .handled
     }
+
+    private func updateFilter() {
+        var newNotif: Int = 0
+
+        newNotif += self.medPendNotify ? 1 : 0
+        newNotif += self.medAvalbleNotify ? 2 : 0
+        newNotif += self.medDenNotify ? 4 : 0
+
+        Task {
+            let updated: Bool = await self.updatedNotify(newNotif)
+            if updated {
+                print("[NotifSettingsView] Woohoo! Updated filters!")
+            } else {
+                print("[NotifSettingsView] NOT updated filters")
+            }
+        }
+    }
+
+    private func boolDiff(_ bool: Bool, defaultKey: String) -> Bool {
+        return bool != UserDefaults.standard.bool(forKey: defaultKey)
+    }
 }
 
 extension NotifSettingsView {
@@ -184,6 +233,30 @@ extension NotifSettingsView {
         var req: URLRequest = .init(url: urll, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 300)
         req.setValue(auth, forHTTPHeaderField: "Authorization")
         req.httpBody = "deviceToken=\(AppDelegate.deviceToken)".data(using: .utf8)
+        req.httpMethod = "POST"
+
+        do {
+            let res: URLResponse = try await URLSession.shared.data(for: req).1
+            if let http = res as? HTTPURLResponse {
+                return http.statusCode == 200
+            } else {
+                return false
+            }
+        } catch {
+            print(error)
+        }
+
+        return false
+    }
+
+    func updatedNotify(_ newNotify: Int = 0) async -> Bool {
+        guard let url: String = UserDefaults.standard.string(forKey: "notifUrl"), let auth: String = UserDefaults.standard.string(forKey: "notifAuth"), let urll: URL = URL(string: "\(url)/notify") else {
+            return false
+        }
+
+        var req: URLRequest = .init(url: urll, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 300)
+        req.setValue(auth, forHTTPHeaderField: "Authorization")
+        req.httpBody = "deviceToken=\(AppDelegate.deviceToken)&notify=\(newNotify)".data(using: .utf8)
         req.httpMethod = "POST"
 
         do {
