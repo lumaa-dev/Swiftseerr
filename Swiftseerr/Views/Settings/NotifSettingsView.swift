@@ -75,7 +75,7 @@ struct NotifSettingsView: View {
                 }
 
                 TextField("settings.notifications.auth", text: $auth)
-                    .keyboardType(.asciiCapableNumberPad)
+                    .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.never)
                     .textInputFormattingControlVisibility(.hidden, for: .all)
                     .disabled(self.serverUrl.isEmpty)
