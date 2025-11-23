@@ -31,7 +31,7 @@ struct ShowSeasonView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let season {
                     ScrollView {
-                        VStack(alignment: .center, spacing: 15.0) {
+                        LazyVStack(alignment: .center, spacing: 15.0) {
                             ForEach(season.episodes) { episode in
                                 self.episodeView(episode)
                             }
