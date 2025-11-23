@@ -68,6 +68,20 @@ struct DiscoverView: View {
                     .background {
                         Color.bgPurple.ignoresSafeArea()
                     }
+                    .refreshable {
+                        self.requests = await self.fetchRequests()
+                        let infolessList: [DiscoverItem] = await self.fetchItems(endpoint: Discover.watchlist)
+
+                        for item in infolessList {
+                            guard var fetchedItem = await item.fetch(), let index = self.watchlist.firstIndex(of: item) else { return }
+                            fetchedItem.inWatchList = true
+                            if index <= self.watchlist.count - 1 {
+                                self.watchlist[index] = fetchedItem
+                            } else {
+                                self.watchlist.append(fetchedItem)
+                            }
+                        }
+                    }
                     .addSettings()
                 }
             } else {
