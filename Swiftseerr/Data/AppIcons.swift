@@ -5,6 +5,7 @@ import SwiftUI
 enum AppIcons: String, Equatable, Hashable, CaseIterable {
     case jelly = "Jellyseerr"
     case over = "Overseerr"
+    case overjelly = "OverJelly"
 
     static func set(_ icon: Self) {
         UIApplication.shared.setAlternateIconName(icon.rawValue)
@@ -16,6 +17,8 @@ enum AppIcons: String, Equatable, Hashable, CaseIterable {
                 Image(.jellyseerr)
             case .over:
                 Image(.overseerr)
+            case .overjelly:
+                Image(.overJelly)
         }
     }
 }
