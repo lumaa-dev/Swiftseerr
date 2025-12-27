@@ -681,6 +681,25 @@
         }
       }
     },
+    "notification.media_auto_approved-%1$@.%2$@" : {
+      "comment" : "MEDIA_AUTO_APPROVED notification",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ has been auto-approved by %1$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ a été auto-accepté par %1$@"
+          }
+        }
+      }
+    },
     "notification.media_available-%@" : {
       "comment" : "MEDIA_AVAILABLE",
       "extractionState" : "manual",
