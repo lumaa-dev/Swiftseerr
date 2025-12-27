@@ -16,6 +16,7 @@ struct NotifSettingsView: View {
     @AppStorage("notif-filter.medPend") private var medPendNotify: Bool = true // 1
     @AppStorage("notif-filter.medAvalble") private var medAvalbleNotify: Bool = true // 2
     @AppStorage("notif-filter.medDen") private var medDenNotify: Bool = true // 4
+    @AppStorage("notif-filter.medAutoApr") private var medAutoAprNotify: Bool = true // 8
 
     @State private var viewUrl: String? = nil
     @State private var delAlert: Bool = false
@@ -109,6 +110,15 @@ struct NotifSettingsView: View {
                     print("[NotifSettingsView] Updating denied")
                     self.updateFilter()
                 }
+
+                Toggle(isOn: $medAutoAprNotify) {
+                    Text("notification.filter.denied")
+                }
+                .disabled(!self.validated)
+                .onChange(of: medAutoAprNotify) { _, _ in
+                    print("[NotifSettingsView] Updating denied")
+                    self.updateFilter()
+                }
             }
             .listRowBackground(Color.gray.opacity(0.2))
 
@@ -187,6 +197,7 @@ struct NotifSettingsView: View {
         newNotif += self.medPendNotify ? 1 : 0
         newNotif += self.medAvalbleNotify ? 2 : 0
         newNotif += self.medDenNotify ? 4 : 0
+        newNotif += self.medAutoAprNotify ? 8 : 0
 
         Task {
             let updated: Bool = await self.updatedNotify(newNotif)
