@@ -30,11 +30,11 @@ extension View {
 
     /// [Origin](https://nilcoalescing.com/blog/StretchyHeaderInSwiftUI/)
     @ViewBuilder
-    func stretchy() -> some View {
+    func stretchy(amplify: Double = 1.0) -> some View {
         visualEffect { effect, geometry in
             let currentHeight = geometry.size.height
             let scrollOffset = geometry.frame(in: .scrollView).minY
-            let positiveOffset = max(0, scrollOffset)
+            let positiveOffset = max(0, scrollOffset * amplify)
 
             let newHeight = currentHeight + positiveOffset
             let scaleFactor = newHeight / currentHeight

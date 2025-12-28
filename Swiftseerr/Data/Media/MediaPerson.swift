@@ -4,6 +4,7 @@ import Foundation
 
 struct MediaPerson: Identifiable {
     var id: String
+    var tmdbId: Int
     var name: String
     /// Crew department or Character's name
     var description: String
@@ -21,6 +22,7 @@ struct MediaPerson: Identifiable {
         self.isCast = isCast
 
         self.id = "\(UUID().uuidString)_\(data["id"] as! Int)"
+        self.tmdbId = data["id"] as! Int
         self.personId = data["creditId"] as! String
         self.name = data["name"] as! String
         self.description = data[isCast ? "character" : "department"] as! String

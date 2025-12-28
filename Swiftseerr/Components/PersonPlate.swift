@@ -10,23 +10,29 @@ struct PersonPlate: View {
     }
 
     var body: some View {
-        VStack(spacing: 10.0) {
-            profileImage
+        NavigationLink {
+            SeerrPersonView(personId: self.person.tmdbId)
+        } label: {
+            VStack(spacing: 10.0) {
+                profileImage
 
-            Text(person.name)
-                .font(.body.bold())
-                .lineLimit(1)
-                .multilineTextAlignment(.center)
+                Text(person.name)
+                    .font(.body.bold())
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
 
-            Text(person.description)
-                .font(.callout)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
+                Text(person.description)
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            .frame(width: 150, height: 200)
+            .padding()
+            .foregroundStyle(Color.primary)
+            .background(Material.ultraThin)
+            .clipShape(RoundedRectangle(cornerRadius: 10.0))
         }
-        .frame(width: 150, height: 200)
-        .padding()
-        .background(Material.ultraThin)
-        .clipShape(RoundedRectangle(cornerRadius: 10.0))
+        .navigationLinkIndicatorVisibility(.hidden)
     }
 
     @ViewBuilder
