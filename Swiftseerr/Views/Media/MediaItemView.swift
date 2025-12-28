@@ -505,6 +505,14 @@ struct MediaItemView: View {
     private func verifyAge() async {
         guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
 
+        if #available(iOS 26.2, *) {
+            let eligibility: Bool = (try? await AgeRangeService.shared.isEligibleForAgeFeatures) ?? true
+            if !eligibility {
+                self.hideContent = false
+                return
+            }
+        }
+
         if MediaRating.prepareAsk(for: minAge) {
             print("[verifyAge] Hiding content, asking for \(minAge)+ age")
 #if !targetEnvironment(simulator)
