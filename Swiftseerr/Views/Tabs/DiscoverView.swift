@@ -23,7 +23,7 @@ struct DiscoverView: View {
             if hasLoaded {
                 NavigationStack {
                     ScrollView {
-                        VStack(spacing: 32) {
+                        LazyVStack(spacing: 32) {
                             if !self.watchlist.isEmpty {
                                 VScrollItems("my.watchlist") {
                                     self.discoverH(self.watchlist)

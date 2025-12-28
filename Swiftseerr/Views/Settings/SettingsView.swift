@@ -123,6 +123,7 @@ struct SettingsView: View {
                     .foregroundStyle(Color.red)
             }
             .tint(Color.red)
+            .disabled(UserDefaults.standard.value(forKey: "ageCheck") == nil)
         }
         .listRowBackground(Color.gray.opacity(0.2))
     }
