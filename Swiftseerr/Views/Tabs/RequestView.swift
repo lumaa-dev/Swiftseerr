@@ -39,11 +39,18 @@ struct RequestView: View {
             }
         }
         .task {
-            defer { self.isLoaded = true }
-            self.isLoaded = false
-
-            self.requests = await self.fetchRequests()
+            await self.load()
         }
+        .refreshable {
+            await self.load()
+        }
+    }
+
+    private func load() async {
+        defer { self.isLoaded = true }
+        self.isLoaded = false
+
+        self.requests = await self.fetchRequests()
     }
 
     func fetchRequests(_ page: Int = 1) async -> [MediaRequest] {
