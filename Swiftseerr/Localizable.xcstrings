@@ -633,6 +633,22 @@
         }
       }
     },
+    "notification.filter.auto-approved" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-approved Requests"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandes auto-acceptés"
+          }
+        }
+      }
+    },
     "notification.filter.available" : {
       "localizations" : {
         "en" : {

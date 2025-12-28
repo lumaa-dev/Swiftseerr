@@ -112,11 +112,11 @@ struct NotifSettingsView: View {
                 }
 
                 Toggle(isOn: $medAutoAprNotify) {
-                    Text("notification.filter.denied")
+                    Text("notification.filter.auto-approved")
                 }
                 .disabled(!self.validated)
                 .onChange(of: medAutoAprNotify) { _, _ in
-                    print("[NotifSettingsView] Updating denied")
+                    print("[NotifSettingsView] Updating auto-approved")
                     self.updateFilter()
                 }
             }
