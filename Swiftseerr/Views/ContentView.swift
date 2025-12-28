@@ -31,6 +31,7 @@ struct ContentView: View {
                 }
             }
         }
+        .preferredColorScheme(ColorScheme.dark)
         .task {
             defer { self.loading = false }
             self.loading = true
