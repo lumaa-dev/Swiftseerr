@@ -4,8 +4,6 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.isSearching) private var isSearching: Bool
-
     @AppStorage("AppTabs")
     private var customization: TabViewCustomization
 
