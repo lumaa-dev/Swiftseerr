@@ -1,5 +1,5 @@
 // Made by Lumaa
-
+#if canImport(DeclaredAgeRange)
 import Foundation
 import DeclaredAgeRange
 
@@ -445,3 +445,4 @@ struct MediaRating {
         return UserDefaults.standard.integer(forKey: "ageCheck") < age
     }
 }
+#endif
