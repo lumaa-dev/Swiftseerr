@@ -7,24 +7,68 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		B94DA3D92F126F9600C27AD1 /* SwiftseerrTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftseerrTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B96F49372E48A7C0007E63A2 /* Swiftseerr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Swiftseerr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B99E82792E89539B00BAC6B2 /* Exceptions for "Swiftseerr" folder in "Swiftseerr" target */ = {
+		B94DA4942F126FC400C27AD1 /* Exceptions for "Swiftseerr" folder in "Swiftseerr" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				AppDelegate.swift,
+				AppIcon.icon,
+				Assets.xcassets,
+				Components/ButtonVScrollItems.swift,
+				Components/CleanWebView.swift,
+				Components/DiscoverItemRow.swift,
+				Components/NavigationVScrollItems.swift,
+				Components/PersonPlate.swift,
+				Components/RequestRow.swift,
+				Components/VScrollItems.swift,
+				Data/AppIcons.swift,
+				"Extensions/String+Date.swift",
+				"Extensions/URL+Query.swift",
+				"Extensions/View+Background.swift",
+				"Extensions/View+Media.swift",
+				"Extensions/View+Settings.swift",
+				Jellyseerr.icon,
+				Localizable.xcstrings,
+				OverJelly.icon,
+				Overseerr.icon,
+				SwiftseerrApp.swift,
+				Views/ContentView.swift,
+				Views/Media/MediaItemView.swift,
+				Views/Media/MediaPersonsView.swift,
+				Views/Media/SeasonsPicker.swift,
+				Views/Media/ShowSeasonView.swift,
+				Views/Other/OnboardingView.swift,
+				Views/Other/SeerrPersonView.swift,
+				Views/Settings/NotifSettingsView.swift,
+				Views/Settings/SettingsView.swift,
+				Views/Tabs/DiscoverItemsView.swift,
+				Views/Tabs/DiscoverView.swift,
+				Views/Tabs/RequestView.swift,
+				Views/Tabs/SearchView.swift,
 			);
 			target = B964EA0C2E45523A0045CB2B /* Swiftseerr */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B964EA0F2E45523A0045CB2B /* Swiftseerr */ = {
+		B94DA3D32F126E9D00C27AD1 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		B94DA3DA2F126F9600C27AD1 /* SwiftseerrTV */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SwiftseerrTV;
+			sourceTree = "<group>";
+		};
+		B94DA4722F126FC400C27AD1 /* Swiftseerr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B99E82792E89539B00BAC6B2 /* Exceptions for "Swiftseerr" folder in "Swiftseerr" target */,
+				B94DA4942F126FC400C27AD1 /* Exceptions for "Swiftseerr" folder in "Swiftseerr" target */,
 			);
 			path = Swiftseerr;
 			sourceTree = "<group>";
@@ -32,6 +76,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B94DA3D62F126F9600C27AD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B964EA0A2E45523A0045CB2B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -45,14 +96,40 @@
 		B964EA042E45523A0045CB2B = {
 			isa = PBXGroup;
 			children = (
-				B964EA0F2E45523A0045CB2B /* Swiftseerr */,
+				B94DA3D32F126E9D00C27AD1 /* Shared */,
 				B96F49372E48A7C0007E63A2 /* Swiftseerr.app */,
+				B94DA3D92F126F9600C27AD1 /* SwiftseerrTV.app */,
+				B94DA3DA2F126F9600C27AD1 /* SwiftseerrTV */,
+				B94DA4722F126FC400C27AD1 /* Swiftseerr */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B94DA3D82F126F9600C27AD1 /* SwiftseerrTV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B94DA3E12F126F9900C27AD1 /* Build configuration list for PBXNativeTarget "SwiftseerrTV" */;
+			buildPhases = (
+				B94DA3D52F126F9600C27AD1 /* Sources */,
+				B94DA3D62F126F9600C27AD1 /* Frameworks */,
+				B94DA3D72F126F9600C27AD1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B94DA3D32F126E9D00C27AD1 /* Shared */,
+				B94DA3DA2F126F9600C27AD1 /* SwiftseerrTV */,
+			);
+			name = SwiftseerrTV;
+			packageProductDependencies = (
+			);
+			productName = SwiftseerrTV;
+			productReference = B94DA3D92F126F9600C27AD1 /* SwiftseerrTV.app */;
+			productType = "com.apple.product-type.application";
+		};
 		B964EA0C2E45523A0045CB2B /* Swiftseerr */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B964EA182E45523E0045CB2B /* Build configuration list for PBXNativeTarget "Swiftseerr" */;
@@ -66,7 +143,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B964EA0F2E45523A0045CB2B /* Swiftseerr */,
+				B94DA3D32F126E9D00C27AD1 /* Shared */,
 			);
 			name = Swiftseerr;
 			packageProductDependencies = (
@@ -82,9 +159,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					B94DA3D82F126F9600C27AD1 = {
+						CreatedOnToolsVersion = 26.2;
+					};
 					B964EA0C2E45523A0045CB2B = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -106,11 +186,19 @@
 			projectRoot = "";
 			targets = (
 				B964EA0C2E45523A0045CB2B /* Swiftseerr */,
+				B94DA3D82F126F9600C27AD1 /* SwiftseerrTV */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B94DA3D72F126F9600C27AD1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B964EA0B2E45523A0045CB2B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +209,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B94DA3D52F126F9600C27AD1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B964EA092E45523A0045CB2B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -131,6 +226,68 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		B94DA3E22F126F9900C27AD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HB5P3BML86;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		B94DA3E32F126F9900C27AD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HB5P3BML86;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 		B964EA162E45523E0045CB2B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -262,8 +419,11 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Swiftseerr/Swiftseerr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = HB5P3BML86;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Swiftseerr/Info.plist;
@@ -278,20 +438,23 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -303,7 +466,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Swiftseerr/Swiftseerr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -319,26 +482,37 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B94DA3E12F126F9900C27AD1 /* Build configuration list for PBXNativeTarget "SwiftseerrTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B94DA3E22F126F9900C27AD1 /* Debug */,
+				B94DA3E32F126F9900C27AD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B964EA082E45523A0045CB2B /* Build configuration list for PBXProject "Swiftseerr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

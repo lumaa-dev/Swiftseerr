@@ -22,10 +22,14 @@ struct CleanWebView: View {
                         }
                     }
 
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .primaryAction) {
                         Button {
                             if let url {
+                                #if canImport(UIKit)
                                 UIApplication.shared.open(url)
+                                #else
+                                NSWorkspace.shared.open(url)
+                                #endif
                             }
                         } label: {
                             Label("open.safari", systemImage: "safari")

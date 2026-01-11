@@ -11,11 +11,15 @@ struct DiscoverItemsView: View {
     @State private var pages: Int = 2
 
     private var columns: [GridItem] {
+        #if canImport(UIKit)
         if UIDevice.current.userInterfaceIdiom == .pad {
             return [GridItem(.adaptive(minimum: 200), spacing: 16)]
         } else {
             return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
         }
+        #else
+        return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        #endif
     }
 
     init(_ title: LocalizedStringKey, endpoint: any Endpoint, additionalQueries: [URLQueryItem] = []) {

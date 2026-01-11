@@ -62,7 +62,9 @@ struct MediaItemView: View {
                         .padding(.vertical, 15.0)
                 }
                 .navigationTitle(Text(self.loadedData ? item.title : String("")))
+                #if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 .sheet(item: $showingSeason) { season in
                     ShowSeasonView(item: item, season: season)
                 }
@@ -505,7 +507,7 @@ struct MediaItemView: View {
     private func verifyAge() async {
         guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
 
-        if #available(iOS 26.2, *) {
+        if #available(iOS 26.2, macOS 26.2, visionOS 26.2, *) {
             let eligibility: Bool = (try? await AgeRangeService.shared.isEligibleForAgeFeatures) ?? true
             if !eligibility {
                 self.hideContent = false

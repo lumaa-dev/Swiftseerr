@@ -8,7 +8,7 @@ extension View {
     func addSettings() -> some View {
         self
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     NavigationLink {
                         SettingsView()
                     } label: {

@@ -5,7 +5,9 @@ import SwiftData
 
 @main
 struct SwiftseerrApp: App {
+    #if canImport(UIKit)
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate: AppDelegate
+    #endif
 
     var body: some Scene {
         WindowGroup {

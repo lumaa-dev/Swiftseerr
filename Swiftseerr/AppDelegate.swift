@@ -1,5 +1,5 @@
 // Made by Lumaa
-
+#if canImport(UIKit)
 import SwiftUI
 import UIKit
 import UserNotifications
@@ -63,3 +63,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(AppDelegate.hasNotifications)
     }
 }
+#endif

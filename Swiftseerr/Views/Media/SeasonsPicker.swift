@@ -36,7 +36,9 @@ struct SeasonsPicker: View {
                 .frame(width: 395, alignment: .center)
             }
             .navigationTitle(Text("seasons-picker.title"))
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .close) {

@@ -6,7 +6,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.isSearching) private var isSearching: Bool
 
-    @AppStorage("MyTabViewCustomization")
+    @AppStorage("AppTabs")
     private var customization: TabViewCustomization
 
     @Query private var auths: [AuthInfo]
@@ -56,11 +56,15 @@ struct ContentView: View {
 
     @ViewBuilder
     private var tabs: some View {
+        #if canImport(UIKit)
         if UIDevice.current.userInterfaceIdiom == .pad {
             self.bigTabs
         } else {
             self.smallTabs
         }
+        #else
+        self.bigTabs
+        #endif
     }
 
     @ViewBuilder
@@ -90,7 +94,9 @@ struct ContentView: View {
             Tab(role: .search) {
                 SearchView()
             }
+            #if os(iPadOS)
             .customizationBehavior(.disabled, for: .automatic, .sidebar, .tabBar)
+            #endif
 
             TabSection("all.movies") {
                 Tab {
@@ -134,8 +140,10 @@ struct ContentView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabViewCustomization($customization)
+        #if !os(macOS)
         .defaultAdaptableTabBarPlacement(.tabBar)
         .tabBarMinimizeBehavior(.onScrollDown)
+        #endif
         .onAppear {
             customization.resetSectionOrder()
             customization.resetVisibility()
@@ -174,8 +182,10 @@ struct ContentView: View {
             }
         }
         .tabViewStyle(.tabBarOnly)
+        #if !os(macOS)
         .tabBarMinimizeBehavior(.onScrollDown)
         .defaultAdaptableTabBarPlacement(.tabBar)
+        #endif
     }
 
     //MARK: - Methods

@@ -1,5 +1,5 @@
 // Made by Lumaa
-
+#if canImport(UIKit)
 import SwiftUI
 
 struct NotifSettingsView: View {
@@ -27,8 +27,10 @@ struct NotifSettingsView: View {
                 HStack {
                     TextField("settings.notifications.server-url", text: $serverUrl)
                         .textContentType(.URL)
+                        #if !os(macOS)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
+                        #endif
                         .textInputFormattingControlVisibility(.hidden, for: .all)
                         .onChange(of: serverUrl) { oldValue, newValue in
                             guard !newValue.isEmpty, newValue != self.prevServerUrl else { return }
@@ -76,8 +78,10 @@ struct NotifSettingsView: View {
                 }
 
                 TextField("settings.notifications.auth", text: $auth)
+                    #if !os(macOS)
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.never)
+                    #endif
                     .textInputFormattingControlVisibility(.hidden, for: .all)
                     .disabled(self.serverUrl.isEmpty)
             }
@@ -312,3 +316,4 @@ extension NotifSettingsView {
 #Preview {
     NotifSettingsView()
 }
+#endif

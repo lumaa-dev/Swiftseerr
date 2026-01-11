@@ -97,6 +97,10 @@ struct OnboardingView: View {
                 }
                 .disabled(self.onboardingBusy || !self.isStepCompleted)
                 .buttonStyle(.glassProminent)
+                .buttonBorderShape(.capsule)
+                #if os(macOS)
+                .padding(.bottom)
+                #endif
             }
             .padding(.horizontal)
         }
@@ -109,8 +113,10 @@ struct OnboardingView: View {
                 TextField("seerr.url", text: $seerrUrl)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.URL)
+                    #if !os(macOS)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
+                    #endif
                     .textInputFormattingControlVisibility(.hidden, for: .all)
                     .clipShape(.capsule)
                     .submitLabel(.next)
@@ -149,15 +155,19 @@ struct OnboardingView: View {
                     TextField(isJelly ? "username" : "email", text: $username)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(isJelly ? .username : .emailAddress)
+                        #if !os(macOS)
                         .keyboardType(.asciiCapable)
-                        .textInputFormattingControlVisibility(.hidden, for: .all)
                         .textInputAutocapitalization(.never)
+                        #endif
+                        .textInputFormattingControlVisibility(.hidden, for: .all)
                         .clipShape(.capsule)
 
                     SecureField("password", text: $password)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
+                        #if !os(macOS)
                         .keyboardType(.asciiCapable)
+                        #endif
                         .textInputFormattingControlVisibility(.hidden, for: .all)
                         .clipShape(.capsule)
                         .submitLabel(.go)

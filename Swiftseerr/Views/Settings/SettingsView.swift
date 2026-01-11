@@ -6,7 +6,9 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
 
+    #if os(iOS)
     @AppStorage("appIcon") private var appIcon: AppIcons = .jelly
+    #endif
 
     @Query private var auths: [AuthInfo]
 
@@ -21,12 +23,14 @@ struct SettingsView: View {
         List {
             self.instances
 
+            #if !os(macOS)
             NavigationLink {
                 NotifSettingsView()
             } label: {
                 Text("settings.notifications")
             }
             .listRowBackground(Color.gray.opacity(0.2))
+            #endif
 
             self.appearence
 
@@ -35,7 +39,9 @@ struct SettingsView: View {
             self.info
         }
         .navigationTitle(Text("settings"))
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .scrollContentBackground(.hidden)
         .background {
             Color.bgPurple.ignoresSafeArea()
@@ -102,9 +108,11 @@ struct SettingsView: View {
     @ViewBuilder
     private var appearence: some View {
         Section("appearence") {
+            #if os(iOS)
             NavigationLink(destination: Self.AppIconPicker(appIcon: $appIcon)) {
                 Text("settings.app-icons")
             }
+            #endif
         }
         .listRowBackground(Color.gray.opacity(0.2))
     }
@@ -159,7 +167,11 @@ struct SettingsView: View {
                 LabeledContent("password", value: String(repeating: "*", count: auth.password.count))
                     .contextMenu {
                         Button {
+                            #if canImport(UIKit)
                             UIPasteboard.general.string = auth.password
+                            #else
+                            NSPasteboard.general.setString(auth.password, forType: .string)
+                            #endif
                         } label: {
                             Label("copy.password", systemImage: "document.on.clipboard")
                         }
@@ -208,6 +220,7 @@ struct SettingsView: View {
             }
     }
 
+    #if os(iOS)
     private struct AppIconPicker: View {
         @Binding var appIcon: AppIcons
 
@@ -253,6 +266,7 @@ struct SettingsView: View {
             }
         }
     }
+    #endif
 
     // MARK: - Methods
 

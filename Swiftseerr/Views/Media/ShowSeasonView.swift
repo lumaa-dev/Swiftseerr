@@ -45,7 +45,9 @@ struct ShowSeasonView: View {
             }
             .navigationTitle(Text(self.aboutSeason.name))
             .navigationSubtitle(Text("show.episodes-\(self.aboutSeason.episodeNumber)"))
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .scrollContentBackground(.hidden)
             .background {
                 Color.bgPurple.ignoresSafeArea()

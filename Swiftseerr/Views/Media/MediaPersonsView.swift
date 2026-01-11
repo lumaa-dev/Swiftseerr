@@ -7,11 +7,15 @@ struct MediaPersonsView: View {
     let persons: [MediaPerson]
 
     private var columns: [GridItem] {
+        #if canImport(UIKit)
         if UIDevice.current.userInterfaceIdiom == .pad {
             return [GridItem(.adaptive(minimum: 200), spacing: 16)]
         } else {
             return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
         }
+        #else
+        return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        #endif
     }
 
     init(with persons: [MediaPerson], title: LocalizedStringKey) {
@@ -29,7 +33,9 @@ struct MediaPersonsView: View {
             .padding()
         }
         .navigationTitle(self.title)
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .scrollContentBackground(.hidden)
         .background {
             Color.bgPurple.ignoresSafeArea()

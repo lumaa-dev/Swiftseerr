@@ -1,5 +1,5 @@
 // Made by Lumaa
-
+#if os(iOS)
 import SwiftUI
 
 enum AppIcons: String, Equatable, Hashable, CaseIterable {
@@ -22,3 +22,4 @@ enum AppIcons: String, Equatable, Hashable, CaseIterable {
         }
     }
 }
+#endif
