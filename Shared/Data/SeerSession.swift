@@ -131,15 +131,21 @@ class SeerSession {
 
         @ViewBuilder
         var badge: some View {
+            #if os(tvOS)
+            let squareSize: CGFloat = 80.0
+            #else
+            let squareSize: CGFloat = 50.0
+            #endif
+
             ZStack {
-                RoundedRectangle(cornerRadius: 14.0)
+                ConcentricRectangle(corners: .fixed(20.0), isUniform: true)
                     .fill(self.color)
-                    .frame(width: 50.0, height: 50.0)
+                    .frame(width: squareSize, height: squareSize)
 
                 Image(systemName: self.symbol)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 30.0, height: 30.0)
+                    .frame(width: squareSize * 0.7, height: squareSize * 0.7)
                     .foregroundStyle(Color.primary)
             }
         }

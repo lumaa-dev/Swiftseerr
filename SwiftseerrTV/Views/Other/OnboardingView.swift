@@ -62,7 +62,7 @@ struct OnboardingView: View {
                         onboarding.badge
 
                         Text(onboarding.title)
-                            .font(.title.bold())
+                            .font(.title2.bold())
                             .lineLimit(1)
                             .contentTransition(.numericText(countsDown: true))
                             .multilineTextAlignment(.leading)
@@ -98,9 +98,7 @@ struct OnboardingView: View {
                 .disabled(self.onboardingBusy || !self.isStepCompleted)
                 .buttonStyle(.glassProminent)
                 .buttonBorderShape(.capsule)
-                #if os(macOS)
-                .padding(.bottom)
-                #endif
+                .tint(Color.accentPurple)
             }
             .padding(.horizontal)
         }
@@ -112,10 +110,8 @@ struct OnboardingView: View {
             case .url:
                 TextField("seerr.url", text: $seerrUrl)
                     .textContentType(.URL)
-                    #if !os(macOS)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
-                    #endif
                     .textInputFormattingControlVisibility(.hidden, for: .all)
                     .clipShape(.capsule)
                     .submitLabel(.next)
@@ -136,15 +132,19 @@ struct OnboardingView: View {
                             Label {
                                 Text(provider.string)
                                     .font(.body)
-                                    .frame(maxWidth: .infinity, minHeight: 50.0)
+                                    .foregroundStyle(Color.primary)
+                                    .frame(maxWidth: .infinity, minHeight: 75.0)
                             } icon: {
                                 provider.symbol
                                     .font(.body)
+                                    .foregroundStyle(Color.primary)
                             }
                             .padding(.horizontal)
-                            .background(selCol, in: .capsule)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.capsule)
+                        .background(selCol)
+                        .clipShape(Capsule())
                     }
                 }
             case .login(let p):
