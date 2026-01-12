@@ -2,7 +2,13 @@
   "images" : [
     {
       "filename" : "TV_back.png",
-      "idiom" : "tv"
+      "idiom" : "tv",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "TV_back@x2.png",
+      "idiom" : "tv",
+      "scale" : "2x"
     }
   ],
   "info" : {

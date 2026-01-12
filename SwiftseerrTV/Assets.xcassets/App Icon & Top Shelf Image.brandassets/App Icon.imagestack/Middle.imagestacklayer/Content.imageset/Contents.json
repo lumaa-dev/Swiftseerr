@@ -2,7 +2,13 @@
   "images" : [
     {
       "filename" : "TV_middle.png",
-      "idiom" : "tv"
+      "idiom" : "tv",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "TV_middle@x2.png",
+      "idiom" : "tv",
+      "scale" : "2x"
     }
   ],
   "info" : {
