@@ -7,12 +7,14 @@ struct MediaPersonsView: View {
     let persons: [MediaPerson]
 
     private var columns: [GridItem] {
-        #if canImport(UIKit)
+        #if canImport(UIKit) && os(iOS)
         if UIDevice.current.userInterfaceIdiom == .pad {
             return [GridItem(.adaptive(minimum: 200), spacing: 16)]
         } else {
             return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
         }
+        #elseif os(tvOS) || os(macOS)
+        return [GridItem(.adaptive(minimum: 200), spacing: 24)]
         #else
         return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
         #endif
@@ -33,10 +35,10 @@ struct MediaPersonsView: View {
             .padding()
         }
         .navigationTitle(self.title)
-        #if !os(macOS)
+        #if !os(macOS) && !os(tvOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .scrollContentBackground(.hidden)
+        #endif
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
