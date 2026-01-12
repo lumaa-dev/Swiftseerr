@@ -26,7 +26,6 @@
 				SwiftseerrApp.swift,
 				Views/ContentView.swift,
 				Views/Media/MediaItemView.swift,
-				Views/Media/MediaPersonsView.swift,
 				Views/Media/ShowSeasonView.swift,
 				Views/Other/OnboardingView.swift,
 				Views/Other/SeerrPersonView.swift,

@@ -968,6 +968,46 @@
         }
       }
     },
+    "person.age-%lld" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld year old"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld years old"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld an"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ans"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "provider" : {
       "localizations" : {
         "en" : {
@@ -1399,6 +1439,9 @@
           }
         }
       }
+    },
+    "Settings" : {
+
     },
     "settings.app-icons" : {
       "localizations" : {

@@ -19,11 +19,7 @@ struct PersonPlate: View {
 
     var body: some View {
         NavigationLink {
-            #if os(tvOS) || os(macOS)
-            Text(self.person.name)
-            #else
             SeerrPersonView(personId: self.person.tmdbId)
-            #endif
         } label: {
             #if !os(tvOS)
             VStack(spacing: 10.0) {
