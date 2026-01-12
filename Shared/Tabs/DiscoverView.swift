@@ -30,6 +30,7 @@ struct DiscoverView: View {
                                 }
                             }
 
+                            #if !os(tvOS)
                             if !self.requests.isEmpty {
                                 VScrollItems("recent.requests") {
                                     HStack(spacing: 8) {
@@ -40,6 +41,7 @@ struct DiscoverView: View {
                                     }
                                 }
                             }
+                            #endif
 
                             NavigationVScrollItems("trending") {
                                 DiscoverItemsView("trending", endpoint: Discover.trending)
@@ -62,9 +64,11 @@ struct DiscoverView: View {
                             }
                         }
                     }
+                    #if !os(tvOS)
                     .navigationTitle(Text("discover"))
                     .toolbarTitleDisplayMode(.inlineLarge)
                     .scrollContentBackground(.hidden)
+                    #endif
                     .background {
                         Color.bgPurple.ignoresSafeArea()
                     }
@@ -82,7 +86,9 @@ struct DiscoverView: View {
                             }
                         }
                     }
+                    #if !os(tvOS)
                     .addSettings()
+                    #endif
                 }
             } else {
                 Color.bgPurple
@@ -151,7 +157,13 @@ struct DiscoverView: View {
 
     @ViewBuilder
     private func discoverH(_ items: [DiscoverItem]) -> some View {
-        HStack(spacing: 8) {
+        #if !os(tvOS)
+        let vspacing: CGFloat = 8.0
+        #else
+        let vspacing: CGFloat = 20.0
+        #endif
+
+        HStack(spacing: vspacing) {
             ForEach(items) { i in
                 DiscoverItemRow(item: i)
             }

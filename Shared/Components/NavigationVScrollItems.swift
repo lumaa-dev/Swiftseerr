@@ -7,6 +7,12 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
     let destination: () -> Destination
     let content: () -> Content
 
+    #if !os(tvOS)
+    let vspacing: CGFloat = 8.0
+    #else
+    let vspacing: CGFloat = 35.0
+    #endif
+
     init(_ title: LocalizedStringKey, @ViewBuilder destination: @escaping () -> Destination, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
         self.destination = destination
@@ -20,7 +26,7 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
     }
 
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 8) {
+        LazyVStack(alignment: .leading, spacing: vspacing) {
             NavigationLink {
                 self.destination()
             } label: {
@@ -35,6 +41,7 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
                 }
             }
             .navigationLinkIndicatorVisibility(.hidden)
+            .buttonStyle(.plain)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 self.content()

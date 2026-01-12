@@ -14,17 +14,27 @@ extension View {
     @ViewBuilder
     func pill(_ tint: Color = Color.accentColor, multiply: CGFloat = 1.0) -> some View {
         self
+            #if !os(tvOS)
             .padding(.vertical, 7.0 * multiply)
             .padding(.horizontal, 15.0 * multiply)
+            #else
+            .padding(.vertical, 12.0 * multiply)
+            .padding(.horizontal, 25.0 * multiply)
+            #endif
             .background(tint)
             .clipShape(Capsule())
     }
 
     @ViewBuilder
-    func glassPill(_ tint: Color = Color.accentColor, glass: Glass = .clear) -> some View {
+    func glassPill(_ tint: Color = Color.accentColor, glass: Glass = .clear, multiply: CGFloat = 1.0) -> some View {
         self
-            .padding(.vertical, 7.0)
-            .padding(.horizontal, 15.0)
+            #if !os(tvOS)
+            .padding(.vertical, 7.0 * multiply)
+            .padding(.horizontal, 15.0 * multiply)
+            #else
+            .padding(.vertical, 12.0 * multiply)
+            .padding(.horizontal, 25.0 * multiply)
+            #endif
             .glassEffect(glass.tint(tint.opacity(0.4)))
     }
 

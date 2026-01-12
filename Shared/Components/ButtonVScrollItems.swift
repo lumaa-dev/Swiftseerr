@@ -8,6 +8,12 @@ struct ButtonVScrollItems<Content : View>: View {
     let content: () -> Content
     let asNavigation: Bool
 
+    #if !os(tvOS) && !os(macOS)
+    let vspacing: CGFloat = 8.0
+    #else
+    let vspacing: CGFloat = 35.0
+    #endif
+
     init(_ title: LocalizedStringKey, asNavigation: Bool = true, onTap: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
         self.onTap = onTap
@@ -16,7 +22,7 @@ struct ButtonVScrollItems<Content : View>: View {
     }
 
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 8) {
+        LazyVStack(alignment: .leading, spacing: vspacing) {
             Button {
                 self.onTap()
             } label: {

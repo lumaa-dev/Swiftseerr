@@ -46,7 +46,11 @@ struct RequestRow: View {
         if let item {
             VStack(spacing: 16.0) {
                 NavigationLink {
+                    #if os(tvOS) || os(macOS)
+                    Text(item.title)
+                    #else
                     MediaItemView(item)
+                    #endif
                 } label: {
                     HStack(spacing: 8) {
                         poster

@@ -1,11 +1,15 @@
 // Made by Lumaa
 
 import SwiftUI
+#if canImport(DeclaredAgeRange)
 import DeclaredAgeRange
+#endif
 
 struct MediaItemView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
+    #if canImport(DeclaredAgeRange)
     @Environment(\.requestAgeRange) private var requestAgeRange: DeclaredAgeRangeAction
+    #endif
 
     @State private var item: MediaItem? = nil
     @State private var loadedData: Bool = false
@@ -46,7 +50,7 @@ struct MediaItemView: View {
 
     var body: some View {
         ScrollView {
-            if let item {
+            if item != nil {
                 VStack {
                     header
 
@@ -61,85 +65,23 @@ struct MediaItemView: View {
                     list
                         .padding(.vertical, 15.0)
                 }
-                .navigationTitle(Text(self.loadedData ? item.title : String("")))
-                #if !os(macOS)
-                .navigationBarTitleDisplayMode(.inline)
-                #endif
-                .sheet(item: $showingSeason) { season in
-                    ShowSeasonView(item: item, season: season)
+//                .sheet(item: $showingSeason) { season in
+//                    ShowSeasonView(item: item, season: season)
+//                }
+                #if os(tvOS)
+                .fullScreenCover(isPresented: $requestingSeason) {
+                    spicker
                 }
+                #else
                 .sheet(isPresented: $requestingSeason) {
-                    SeasonsPicker(seasons: item.seasons, disabledSeasons: Array(item.availableSeasons.keys)) { selection in
-                        await self.requestButton(is4k: self.requestingSeason4k, with: selection)
-                    }
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.hidden)
-                    .presentationBackground(Color.bgPurple)
+                    spicker
                 }
-                .toolbar {
-                    ToolbarItem {
-                        Button {
-                            withAnimation {
-                                self.item!.inWatchList.toggle()
-                            }
-
-                            Task {
-                                let http: HTTPURLResponse? = await self.changeWatchlist()
-                                if let http, !(http.statusCode >= 200 && http.statusCode <= 208) {
-                                    self.item!.inWatchList.toggle()
-                                } else if http == nil {
-                                    self.item!.inWatchList.toggle()
-                                }
-                            }
-                        } label: {
-                            Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
-                                .contentTransition(.symbolEffect(.replace.downUp))
-                        }
-                        .disabled(self.hideContent || !self.loadedData)
-                    }
-
-
-                    ToolbarItem {
-                        Menu {
-                            Button {
-                                withAnimation {
-                                    self.item!.inWatchList.toggle()
-                                }
-
-                                Task {
-                                    let http: HTTPURLResponse? = await self.changeWatchlist()
-                                    if let http, !(http.statusCode >= 200 && http.statusCode <= 208) {
-                                        self.item!.inWatchList.toggle()
-                                    } else if http == nil {
-                                        self.item!.inWatchList.toggle()
-                                    }
-                                }
-                            } label: {
-                                Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
-                                    .contentTransition(.symbolEffect(.replace.downUp))
-                            }
-                            .disabled(self.hideContent || !self.loadedData)
-
-                            Divider()
-
-                            if let jellyfin = item.jellyfin {
-                                Link(destination: jellyfin) {
-                                    Label("open.jellyfin", image: .jellyfin)
-                                }
-                            }
-
-                            if let webUrl = item.webUrl {
-                                ShareLink(item: webUrl)
-                            }
-                        } label: {
-                            Label("more-actions", systemImage: "ellipsis")
-                        }
-                        .disabled(self.hideContent || !self.loadedData)
-                    }
-                }
+                #endif
             }
         }
+        #if !os(tvOS)
         .scrollContentBackground(.hidden)
+        #endif
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
@@ -164,168 +106,177 @@ struct MediaItemView: View {
 
     @ViewBuilder
     private var header: some View {
-        ZStack(alignment: .top) {
-            AsyncImage(url: item?.backdrop) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .blur(radius: self.hideContent ? 8.0 : 0)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.bgPurple)
-            }
-            .frame(height: 400, alignment: .center)
-            .mask {
-                LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
-            }
-
-            let imgUrl: URL? = self.loadedData ? item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png") : item?.image
-
-            AsyncImage(url: imgUrl) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: self.posterWidth, height: self.posterHeight)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.clear)
-                    .frame(width: self.posterWidth, height: self.posterHeight)
-                    .overlay {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                    }
-            }
-            .safeAreaPadding(.top, 120)
+        AsyncImage(url: item?.backdrop) { image in
+            image
+                .resizable()
+                .scaledToFill()
+                .blur(radius: self.hideContent ? 8.0 : 0)
+        } placeholder: {
+            Rectangle()
+                .fill(Color.bgPurple)
         }
-        .stretchy()
+        .frame(maxWidth: .infinity, alignment: .center)
+        .mask {
+            LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
+        }
+        .ignoresSafeArea(.all, edges: .horizontal)
+        .overlay(alignment: .bottomLeading) {
+            VStack(alignment: .leading, spacing: 15.0) {
+                HStack {
+                    let imgUrl: URL? = self.loadedData ? item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png") : item?.image
+
+                    AsyncImage(url: imgUrl) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: self.posterWidth, height: self.posterHeight)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.clear)
+                            .frame(width: self.posterWidth, height: self.posterHeight)
+                            .overlay {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                            }
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text(self.item!.title)
+                            .font(.title.bold())
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(self.item!.tagline.isEmpty ? 2 : 1)
+                            .shouldRedact(self.hideContent || !self.loadedData)
+
+                        Text(self.item!.tagline)
+                            .foregroundStyle(Color.secondary)
+                            .font(.callout.width(.condensed))
+                            .multilineTextAlignment(.leading)
+                            .shouldRedact(self.hideContent || !self.loadedData)
+                    }
+                }
+
+                self.buttons
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var spicker: some View {
+        if let item {
+            SeasonsPicker(seasons: item.seasons, disabledSeasons: Array(item.availableSeasons.keys)) { selection in
+                await self.requestButton(is4k: self.requestingSeason4k, with: selection)
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.hidden)
+            .presentationBackground(Color.bgPurple)
+        }
+    }
+
+    @ViewBuilder
+    private var buttons: some View {
+        GlassEffectContainer {
+            HStack(spacing: 10.0) {
+                if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
+                    Button {
+                        Task {
+                            if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+                                await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
+                            } else {
+                                self.requestingSeason.toggle()
+                                self.requestingSeason4k = false
+                            }
+                        }
+                    } label: {
+                        Text("request")
+                            .foregroundStyle(Color.primary)
+                    }
+                    .tint(Color.accentPurple)
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .disabled(self.hideContent || !self.loadedData)
+
+                    Button {
+                        Task {
+                            if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+                                await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
+                            } else {
+                                self.requestingSeason.toggle()
+                                self.requestingSeason4k = true
+                            }
+                        }
+                    } label: {
+                        Text("request.4k")
+                            .foregroundStyle(Color.primary)
+                    }
+                    .disabled(self.hideContent || !self.loadedData)
+                    .buttonBorderShape(.capsule)
+                    .buttonStyle(.bordered)
+                } else {
+                    Text(self.item!.requestStatus.localized)
+                        .foregroundStyle(Color.white)
+                        .pill(self.item!.requestStatus.color)
+
+                    if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
+                        Menu {
+                            if canManageRequests {
+                                ForEach(self.item!.requests.filter { $0.status != .partiallyAvailable || $0.status != .available }) { req in
+                                    Menu {
+                                        if self.canManageRequests {
+                                            self.manageRequest(req)
+                                        }
+
+                                        Button(role: .destructive) {
+                                            Task {
+                                                if let http = await self.deleteRequest(req), http.statusCode == 204 {
+                                                    let newItem = try? await self.fetchItem()
+                                                    await MainActor.run {
+                                                        withAnimation{
+                                                            self.item = newItem
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } label: {
+                                            Label("request.delete", systemImage: "trash")
+                                        }
+                                    } label: {
+                                        Text("request.by-\(req.requestedBy.username)")
+                                    }
+                                }
+                            } else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
+                                Button(role: .destructive) {
+                                    Task {
+                                        if let http = await self.deleteRequest(req), http.statusCode == 204 {
+                                            let newItem = try? await self.fetchItem()
+                                            await MainActor.run {
+                                                withAnimation {
+                                                    self.item = newItem
+                                                }
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    Label("request.delete", systemImage: "trash")
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .foregroundStyle(Color.primary)
+                                .padding(7.0)
+                        }
+                        .menuStyle(.button)
+                        .buttonBorderShape(.circle)
+                        .disabled(self.hideContent || !self.loadedData)
+                    }
+                }
+            }
+        }
     }
 
     @ViewBuilder
     private var info: some View {
         VStack(alignment: .leading, spacing: 25) {
-            GlassEffectContainer {
-                HStack {
-                    if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
-                        Button {
-                            Task {
-                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
-                                    await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
-                                } else {
-                                    self.requestingSeason.toggle()
-                                    self.requestingSeason4k = false
-                                }
-                            }
-                        } label: {
-                            Text("request")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(self.hideContent || !self.loadedData)
-
-                        Button {
-                            Task {
-                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
-                                    await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
-                                } else {
-                                    self.requestingSeason.toggle()
-                                    self.requestingSeason4k = true
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "4k.tv")
-                        }
-                        .disabled(self.hideContent || !self.loadedData)
-                        .buttonBorderShape(.circle)
-                        .buttonStyle(.bordered)
-                    } else {
-                        Text(self.item!.requestStatus.localized)
-                            .foregroundStyle(Color.white)
-                            .pill(self.item!.requestStatus.color)
-
-                        if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
-                            Menu {
-                                if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
-                                    Link(destination: jellyfin) {
-                                        Label("open.jellyfin", image: .jellyfin)
-                                    }
-                                }
-
-                                if canManageRequests {
-                                    ForEach(self.item!.requests.filter { $0.status != .partiallyAvailable || $0.status != .available }) { req in
-                                        Menu {
-                                            if self.canManageRequests {
-                                                self.manageRequest(req)
-                                            }
-
-                                            Button(role: .destructive) {
-                                                Task {
-                                                    if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                                        let newItem = try? await self.fetchItem()
-                                                        await MainActor.run {
-                                                            withAnimation{
-                                                                self.item = newItem
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } label: {
-                                                Label("request.delete", systemImage: "trash")
-                                            }
-                                        } label: {
-                                            Text("request.by-\(req.requestedBy.username)")
-                                        }
-                                    }
-                                } else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
-                                    Button(role: .destructive) {
-                                        Task {
-                                            if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                                let newItem = try? await self.fetchItem()
-                                                await MainActor.run {
-                                                    withAnimation {
-                                                        self.item = newItem
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } label: {
-                                        Label("request.delete", systemImage: "trash")
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .foregroundStyle(Color.primary)
-                                    .padding(7.0)
-                            }
-                            .menuStyle(.button)
-                            .buttonBorderShape(.circle)
-                            .disabled(self.hideContent || !self.loadedData)
-                        } else {
-                            if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
-                                Link(destination: jellyfin) {
-                                    Label("open.jellyfin", image: .jellyfin)
-                                        .labelStyle(.iconOnly)
-                                        .padding(.leading, 5)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(width: 370, alignment: .center)
-
-            VStack(alignment: .leading) {
-                Text(self.item!.title)
-                    .font(.title.bold())
-                    .multilineTextAlignment(.leading)
-                    .shouldRedact(!self.loadedData)
-
-                Text(self.item!.tagline)
-                    .foregroundStyle(Color.secondary)
-                    .font(.callout.width(.condensed))
-                    .multilineTextAlignment(.leading)
-                    .shouldRedact(self.hideContent || !self.loadedData)
-            }
-
             if !self.item!.overview.isEmpty {
                 VStack(alignment: .leading) {
                     Text("summary")
@@ -334,44 +285,41 @@ struct MediaItemView: View {
                     Text(self.item!.overview)
                         .font(.body.italic())
                         .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .focusable()
                         .shouldRedact(self.hideContent || !self.loadedData)
                 }
+                .focusSection()
             }
         }
-        .frame(width: 370, alignment: .leading)
     }
 
     @ViewBuilder
     private var list: some View {
         VStack(spacing: 17.0) {
             LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
-                .shouldRedact(!self.loadedData)
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "duration.m-\(duration)"))
-                    .shouldRedact(!self.loadedData)
             } else if let seasonsCount = self.item!.seasonsCount, let episodesCount = self.item!.episodesCount {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "show.seasons-\(seasonsCount).episodes-\(episodesCount)"))
-                    .shouldRedact(!self.loadedData)
             }
 
             if let rating = self.item!.rating, !rating.isEmpty {
                 Divider()
 
                 LabeledContent("content-rating", value: rating)
-                    .shouldRedact(!self.loadedData)
             }
         }
-        .frame(width: 340, alignment: .leading)
+        .frame(width: 550, alignment: .leading)
         .padding(.vertical)
         .padding(.horizontal, 15.0)
-//        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
-        .background(Material.ultraThin)
-        .clipShape(RoundedRectangle(cornerRadius: 15.0))
+        .background(Color.gray.opacity(0.4))
+        .clipShape(RoundedRectangle(cornerRadius: 25.0))
     }
 
     @ViewBuilder
@@ -402,16 +350,14 @@ struct MediaItemView: View {
                                 .foregroundStyle(Color.secondary.opacity(0.5))
                                 .font(.callout)
                         }
-                        .padding(10.0)
-                        .background(Material.ultraThin)
-                        .clipShape(Capsule())
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
                         .padding(.horizontal)
                         .shouldRedact(self.hideContent || !self.loadedData)
                     }
                     .disabled(self.hideContent || !self.loadedData)
                 }
             }
-            .frame(width: 395, alignment: .leading)
         }
     }
 
@@ -420,7 +366,7 @@ struct MediaItemView: View {
         if let item {
             VStack(alignment: .leading, spacing: 32) {
                 if !item.cast.isEmpty {
-                    NavigationVScrollItems("cast", destination: MediaPersonsView(with: item.cast, title: "cast")) {
+                    VScrollItems("cast") {
                         HStack {
                             if item.cast.count > 8 {
                                 ForEach(item.cast[0...8]) { c in
@@ -436,7 +382,7 @@ struct MediaItemView: View {
                 }
 
                 if !item.crew.isEmpty {
-                    NavigationVScrollItems("crew", destination: MediaPersonsView(with: item.crew, title: "crew")) {
+                    VScrollItems("crew") {
                         HStack {
                             if item.crew.count > 8 {
                                 ForEach(item.crew[0...8]) { c in
@@ -451,7 +397,6 @@ struct MediaItemView: View {
                     }
                 }
             }
-            .frame(width: 395, alignment: .leading)
         }
     }
 

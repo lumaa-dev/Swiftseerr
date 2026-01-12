@@ -10,10 +10,19 @@ struct SearchView: View {
 
     @State private var items: [DiscoverItem] = []
 
-    private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
+    private var columns: [GridItem] {
+        #if canImport(UIKit) && os(iOS)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return [GridItem(.adaptive(minimum: 200), spacing: 16)]
+        } else {
+            return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        }
+        #elseif os(tvOS) || os(macOS)
+        return [GridItem(.adaptive(minimum: 200), spacing: 24)]
+        #else
+        return Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        #endif
+    }
 
     var body: some View {
         NavigationStack {
@@ -37,9 +46,11 @@ struct SearchView: View {
                     }
                     .padding()
                 }
+                #if !os(tvOS)
                 .navigationTitle("search")
                 .toolbarTitleDisplayMode(.inlineLarge)
                 .scrollContentBackground(.hidden)
+                #endif
                 .background {
                     Color.bgPurple.ignoresSafeArea()
                 }

@@ -33,10 +33,12 @@ struct SeasonsPicker: View {
                         self.seasonToggle(season)
                     }
                 }
+                #if !os(tvOS)
                 .frame(width: 395, alignment: .center)
+                #endif
             }
             .navigationTitle(Text("seasons-picker.title"))
-            #if !os(macOS)
+            #if !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
@@ -74,6 +76,10 @@ struct SeasonsPicker: View {
             self.seasonLabel(season, isSelected: selected, isDisabled: disabled)
         }
         .disabled(disabled)
+        #if os(tvOS)
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        #endif
     }
 
     @ViewBuilder
@@ -93,9 +99,11 @@ struct SeasonsPicker: View {
             }
         }
         .padding(10.0)
+        #if !os(tvOS)
         .background(Material.ultraThin)
         .clipShape(Capsule())
         .padding(.horizontal)
+        #endif
         .opacity(isDisabled ? 0.25 : 1.0)
     }
 }

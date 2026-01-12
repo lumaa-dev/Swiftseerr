@@ -22,7 +22,7 @@ struct ContentView: View {
                 if self.onboarding != SeerSession.OnboardingSteps.complete {
                     OnboardingView(onboarding: $onboarding)
                 } else if SeerSession.shared.authorization != nil {
-                    Text("Tabs")
+                    self.tabs
                 }
             }
         }
@@ -44,6 +44,77 @@ struct ContentView: View {
                 print(error)
             }
         }
+    }
+
+    @ViewBuilder
+    private var tabs: some View {
+        TabView {
+            Tab {
+                DiscoverView()
+            } label: {
+                Label("discover", systemImage: "sparkles")
+            }
+            .customizationID("discover")
+
+            Tab {
+                DiscoverItemsView("upcoming.shows", endpoint: Discover.trending)
+            } label: {
+                Label("trending", systemImage: "chart.line.uptrend.xyaxis")
+            }
+            .customizationID("trending")
+
+            Tab(role: .search) {
+                SearchView()
+            }
+
+            TabSection("all.movies") {
+                Tab {
+                    DiscoverItemsView("movies", endpoint: Discover.movie)
+                } label: {
+                    Label("movies", systemImage: "film.stack")
+                }
+                .customizationID("movies")
+
+                Tab {
+                    DiscoverItemsView(
+                        "upcoming.movies",
+                        endpoint: Discover.movie,
+                        additionalQueries: [Discover.upcoming(type: .movie)]
+                    )
+                } label: {
+                    Label("upcoming.movies", systemImage: "calendar.badge.clock")
+                }
+                .customizationID("upcoming.movies")
+            }
+
+            TabSection("all.shows") {
+                Tab {
+                    DiscoverItemsView("shows", endpoint: Discover.show)
+                } label: {
+                    Label("shows", systemImage: "play.tv")
+                }
+                .customizationID("shows")
+
+                Tab {
+                    DiscoverItemsView(
+                        "upcoming.shows",
+                        endpoint: Discover.show,
+                        additionalQueries: [Discover.upcoming(type: .show)]
+                    )
+                } label: {
+                    Label("upcoming.shows", systemImage: "globe.badge.clock")
+                }
+                .customizationID("upcoming.shows")
+            }
+
+            Tab {
+                SettingsView()
+            } label: {
+                Label("settings", systemImage: "gear")
+            }
+            .customizationID("settings")
+        }
+        .tabViewStyle(.sidebarAdaptable)
     }
 
     private func logIn(auth: AuthInfo) async throws {

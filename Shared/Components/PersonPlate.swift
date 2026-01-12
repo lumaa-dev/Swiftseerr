@@ -5,14 +5,27 @@ import SwiftUI
 struct PersonPlate: View {
     let person: MediaPerson
 
+    #if os(tvOS)
+    private var imageWidth: CGFloat { self.imageHeight * (1.0 / 1.5) }
+    private let imageHeight: CGFloat = 340
+    #else
+    private var imageWidth: CGFloat = 100
+    private let imageHeight: CGFloat = 100
+    #endif
+
     init(_ person: MediaPerson) {
         self.person = person
     }
 
     var body: some View {
         NavigationLink {
+            #if os(tvOS) || os(macOS)
+            Text(self.person.name)
+            #else
             SeerrPersonView(personId: self.person.tmdbId)
+            #endif
         } label: {
+            #if !os(tvOS)
             VStack(spacing: 10.0) {
                 profileImage
 
@@ -31,8 +44,19 @@ struct PersonPlate: View {
             .foregroundStyle(Color.primary)
             .background(Material.ultraThin)
             .clipShape(RoundedRectangle(cornerRadius: 10.0))
+            #else
+            profileImage
+
+            Text(person.name)
+                .font(.system(size: 21))
+                .lineLimit(2, reservesSpace: true)
+                .multilineTextAlignment(.center)
+            #endif
         }
         .navigationLinkIndicatorVisibility(.hidden)
+        #if os(tvOS)
+        .buttonStyle(.borderless)
+        #endif
     }
 
     @ViewBuilder
@@ -41,13 +65,21 @@ struct PersonPlate: View {
             image
                 .resizable()
                 .scaledToFill()
-                .frame(width: 100, height: 100)
+                .frame(width: self.imageWidth, height: self.imageHeight)
+                #if !os(tvOS)
                 .clipShape(Circle())
+                #endif
         } placeholder: {
-            Image(systemName: "person.crop.circle")
+            #if os(tvOS)
+            let sf: String = "person.crop.artframe"
+            #else
+            let sf: String = "person.crop.circle"
+            #endif
+            
+            Image(systemName: sf)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100, height: 100)
+                .frame(width: self.imageWidth, height: self.imageHeight)
                 .foregroundStyle(Color.white)
         }
     }
