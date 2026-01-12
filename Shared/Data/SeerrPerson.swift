@@ -19,7 +19,7 @@ struct SeerrPerson: Identifiable {
 
     var age: Int? {
         guard let birthday else { return nil }
-        let age: Double = (birthday.timeIntervalSince1970 - Date.now.timeIntervalSince1970) / 3600 / 24 / 365
+        let age: Double = (Date.now.timeIntervalSince1970 - birthday.timeIntervalSince1970) / 3600 / 24 / 365
         return Int(age.rounded(.down))
     }
 
