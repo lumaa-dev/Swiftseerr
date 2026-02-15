@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct MediaRequest: Identifiable {
+struct MediaRequest: Identifiable, Equatable {
     let id: Int
     let mediaId: Int?
 
