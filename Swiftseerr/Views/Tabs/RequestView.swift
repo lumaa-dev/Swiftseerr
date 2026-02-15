@@ -42,6 +42,7 @@ struct RequestView: View {
             await self.load()
         }
         .refreshable {
+			self.requests = []
             await self.load()
         }
     }
