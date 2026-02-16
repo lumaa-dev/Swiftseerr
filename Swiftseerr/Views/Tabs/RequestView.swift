@@ -17,7 +17,9 @@ struct RequestView: View {
 				if self.isLoaded && !self.requests.isEmpty  {
 					LazyVStack {
 						ForEach(self.requests) { req in
-							RequestRow(req) { // onDelete
+							let index: Int? = self.requests.firstIndex(of: req)
+
+							RequestRow(Binding(get: { req }, set: { self.requests[index!] = $0 })) { // onDelete
 								withAnimation {
 									self.requests.removeAll(where: { $0 == req })
 								}

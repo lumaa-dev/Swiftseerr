@@ -34,7 +34,7 @@ struct DiscoverView: View {
                             if !self.requests.isEmpty {
                                 VScrollItems("recent.requests") {
                                     HStack(spacing: 8) {
-                                        ForEach(self.requests) { i in
+										ForEach(self.$requests) { i in
                                             RequestRow(i, showActions: false)
                                                 .padding(.vertical, 8)
                                         }

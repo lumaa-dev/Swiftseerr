@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct RequestRow: View {
-    let request: MediaRequest
+    @Binding var request: MediaRequest
     let showActions: Bool
 
     @State private var item: MediaItem?
@@ -16,10 +16,15 @@ struct RequestRow: View {
     private var width: CGFloat { self.height * (1.0 / 1.5) }
     private let height: CGFloat = 100
 
+	private var hasPermissions: Bool {
+		let user = SeerSession.shared.user
+		return user?.hasPermission(Permission.manageRequests) ?? false
+	}
+
     let onDelete: () -> Void
 
-    init(_ request: MediaRequest, showActions: Bool = true, onDelete: @escaping () -> Void = {}) {
-        self.request = request
+    init(_ request: Binding<MediaRequest>, showActions: Bool = true, onDelete: @escaping () -> Void = {}) {
+        self._request = request
         self.showActions = showActions
         self.onDelete = onDelete
     }
@@ -97,46 +102,103 @@ struct RequestRow: View {
         if let item {
             GlassEffectContainer {
                 VStack(spacing: 8) {
-                    Button {
-                        Task {
-                            if await self.deleteRequest() {
-                                onDelete()
-                            }
-                        }
-                    } label: {
-                        Label("delete.request", systemImage: "trash.fill")
-                            .foregroundStyle(Color.white)
-                            .buttonGlass(Color.red)
-                    }
-                    .buttonStyle(.plain)
+					if hasPermissions, item.requestStatus == .pending {
+						HStack {
+							Button {
+								Task {
+									if let http = await self.updateStatus(.approve, request: request), http.statusCode == 200 {
+										self.request.status = .processing
+									}
+								}
+							} label: {
+								Label("request.accept", systemImage: "checkmark")
+									.buttonGlass(Color.green)
+							}
+							.disabled(request.status != .unknown)
 
-                    if let user = SeerSession.shared.user, user.hasPermission(Permission.manageRequests), item.requestStatus != .deleted {
-                        Button {
-                            withAnimation {
-                                self.fileDelConfirm = true
-                            }
-                        } label: {
-                            Label("delete.radarr", systemImage: "document.on.trash.fill")
-                                .foregroundStyle(Color.white)
-                                .buttonGlass(Color.red)
-                        }
-                        .buttonStyle(.plain)
-                        .confirmationDialog("confirm.delete.radarr", isPresented: $fileDelConfirm, titleVisibility: .visible) {
-                            Button(role: .destructive) {
-                                Task {
-                                    await self.deleteSonarr()
-                                }
-                            } label: {
-                                Text("delete.radarr")
-                            }
+							Button {
+								Task {
+									if let http = await self.updateStatus(.decline, request: request), http.statusCode == 200 {
+										self.request.status = .blacklisted
+									}
+								}
+							} label: {
+								Label("request.decline", systemImage: "xmark")
+									.buttonGlass(Color.red)
+							}
+							.disabled(request.status != .unknown)
 
-                            Button(role: .cancel) {} label: {
-                                Text("cancel")
-                            }
-                        } message: {
-                            Text("confirm.delete.radarr.message")
-                        }
-                    }
+							Menu {
+								Button(role: .destructive) {
+									Task {
+										if await self.deleteRequest() {
+											onDelete()
+										}
+									}
+								} label: {
+									Label("delete.request", systemImage: "trash.fill")
+								}
+
+								Button(role: .destructive) {
+									Task {
+										await self.deleteSonarr()
+									}
+								} label: {
+									Label("delete.radarr", systemImage: "document.on.trash.fill")
+								}
+								.disabled(item.requestStatus == .deleted)
+							} label: {
+								Label("delete", systemImage: "ellipsis")
+									.labelStyle(.iconOnly)
+									.frame(width: 40, height: 40)
+									.foregroundStyle(Color.white)
+									.glassEffect(.clear.interactive().tint(Color.black.opacity(0.4)))
+							}
+						}
+					}
+
+					if (hasPermissions && item.requestStatus != .pending) || !hasPermissions {
+						Button {
+							Task {
+								if await self.deleteRequest() {
+									onDelete()
+								}
+							}
+						} label: {
+							Label("delete.request", systemImage: "trash.fill")
+								.foregroundStyle(Color.white)
+								.buttonGlass(Color.red)
+						}
+						.buttonStyle(.plain)
+
+						if let user = SeerSession.shared.user, user.hasPermission(Permission.manageRequests), item.requestStatus != .deleted {
+							Button {
+								withAnimation {
+									self.fileDelConfirm = true
+								}
+							} label: {
+								Label("delete.radarr", systemImage: "document.on.trash.fill")
+									.foregroundStyle(Color.white)
+									.buttonGlass(Color.red)
+							}
+							.buttonStyle(.plain)
+							.confirmationDialog("confirm.delete.radarr", isPresented: $fileDelConfirm, titleVisibility: .visible) {
+								Button(role: .destructive) {
+									Task {
+										await self.deleteSonarr()
+									}
+								} label: {
+									Text("delete.radarr")
+								}
+
+								Button(role: .cancel) {} label: {
+									Text("cancel")
+								}
+							} message: {
+								Text("confirm.delete.radarr.message")
+							}
+						}
+					}
                 }
             }
         }
@@ -189,12 +251,18 @@ struct RequestRow: View {
 
         return code == 204
     }
+
+	private func updateStatus(_ status: Requests.Status, request: MediaRequest) async -> HTTPURLResponse? {
+		let http: HTTPURLResponse? = try? await SeerSession.shared.raw(Requests.updateStatus(id: request.id, status: status)).1
+		return http
+	}
 }
 
 private extension View {
     @ViewBuilder
     func buttonGlass(_ tint: Color = Color.accentColor) -> some View {
         self
+			.foregroundStyle(Color.white)
             .frame(maxWidth: .infinity, minHeight: 40)
             .glassEffect(.clear.interactive().tint(tint.opacity(0.4)))
     }

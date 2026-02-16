@@ -6,7 +6,7 @@ struct MediaRequest: Identifiable, Equatable {
     let id: Int
     let mediaId: Int?
 
-    let status: MediaStatus
+    var status: MediaStatus
     let requestedBy: User
     let type: ItemType
 
