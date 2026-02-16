@@ -1441,7 +1441,7 @@
       }
     },
     "Settings" : {
-
+      "shouldTranslate" : false
     },
     "settings.app-icons" : {
       "localizations" : {
