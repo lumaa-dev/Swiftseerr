@@ -11,8 +11,22 @@ class SeerSession {
     var user: User? = nil
     var authorization: String? = nil
 
+	private var session: URLSession
+
     init(auth: AuthInfo = .init()) {
         self.auth = auth
+
+		let cookieStorage: HTTPCookieStorage = .init()
+		cookieStorage.cookieAcceptPolicy = .always
+
+		let config = URLSessionConfiguration.default
+		config.httpCookieAcceptPolicy = .always
+		config.httpShouldSetCookies = true
+		config.httpCookieStorage = cookieStorage
+		config.timeoutIntervalForRequest = 10.0
+		config.timeoutIntervalForResource = 10.0
+
+		self.session = URLSession(configuration: config)
     }
 
     func call<Response: Decodable>(_ endpoint: Endpoint, queries: [URLQueryItem] = []) async throws -> Response {
@@ -51,39 +65,33 @@ class SeerSession {
         }
         
         if let authorization, useCookies {
-            print("[SeerSession] Cookie header set")
+            print("[SeerSession] Cookie header set \(authorization)")
             req.setValue("connect.sid=\(authorization)", forHTTPHeaderField: "Cookie")
         }
 
-        let cookieStorage: HTTPCookieStorage = .init()
-        cookieStorage.cookieAcceptPolicy = useCookies ? .always : .never
+		let (data, res) = try await session.data(for: req)
 
-        let config = URLSessionConfiguration.default
-        config.httpCookieAcceptPolicy = useCookies ? .always : .never
-        config.httpShouldSetCookies = useCookies
-        config.httpCookieStorage = cookieStorage
+		var cookies: [(name: String, value: String)] = []
+		if let http = res as? HTTPURLResponse {
+			let rawResponse: String? = String(data: data, encoding: .utf8)
+			print("[\(http.statusCode)] \(rawResponse ?? "*No content*")")
 
-        let session = URLSession(configuration: config)
+			let stringCookies = http.value(forHTTPHeaderField: "Set-Cookie") ?? ""
+			let arrayCookies = stringCookies.split(separator: /(; ?)+/)
+			cookies = arrayCookies.map {
+				let s = $0.split(separator: "=")
+				return (name: "\(s[0])", value: "\(s.count > 1 ? s[1] : "")")
+			}
 
-        let (data, res) = try await session.data(for: req)
+			print("Cookies received:")
+			print(cookies.map { "\($0.name): \($0.value)" })
 
-        var cookies: [(name: String, value: String)] = []
-        if let http = res as? HTTPURLResponse {
-            let rawResponse: String? = String(data: data, encoding: .utf8)
-            print("[\(http.statusCode)] \(rawResponse ?? "*No content*")")
+			if http.statusCode < 200 || http.statusCode > 299 {
+				print("[Error \(http.statusCode)] \(String(data: data, encoding: .utf8) ?? "No error returned")")
+			}
+		}
 
-            let stringCookies = http.value(forHTTPHeaderField: "Set-Cookie") ?? ""
-            let arrayCookies = stringCookies.split(separator: /(; ?)+/)
-            cookies = arrayCookies.map {
-                let s = $0.split(separator: "=")
-                return (name: "\(s[0])", value: "\(s.count > 1 ? s[1] : "")")
-            }
-
-            print("Cookies received:")
-            print(cookies.map { "\($0.name): \($0.value)" })
-        }
-
-        return (data, res as? HTTPURLResponse, cookies)
+		return (data, res as? HTTPURLResponse, cookies)
     }
 
     func clear() {
@@ -193,3 +201,13 @@ class SeerSession {
         }
     }
 }
+
+/*
+ // premiere execution (ou changement filtre)
+
+ [SeerSession] GET https://jellyseerr.brebond.com/api/v1/request?skip=0&take=10&sort=added&sortDirection=desc&filter=all&mediaType=all
+ [SeerSession] Cookie header set
+ [200] (données de réponses)
+
+
+ */
