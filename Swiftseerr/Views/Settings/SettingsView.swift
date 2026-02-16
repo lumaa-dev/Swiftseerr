@@ -285,13 +285,32 @@ struct SettingsView: View {
                     SeerSession.shared.user = .init(data: json)
                 }
 
+				if auth.provider! == .local {
+					try await self.getMe() // workaround until https://github.com/seerr-team/seerr/pull/2456
+				}
+
                 print("[logIn] Cookie bound \(sid.value)")
+				print("[logIn] Switched username: \(SeerSession.shared.user!.username) with \(SeerSession.shared.user!.permission)")
                 UserDefaults.standard.set(true, forKey: "onboarded")
             }
         } else {
             throw SeerrError()
         }
     }
+
+	private func getMe() async throws {
+		guard let user = SeerSession.shared.user, user.permission <= 0 else { return }
+
+		let (data, res, _) = try await SeerSession.shared.raw(Identify.me)
+		let code = res?.statusCode ?? -1
+
+		if let json = try JSONSerialization.jsonObject(with: data) as? [String : Any], code == 200 {
+			SeerSession.shared.user = .init(data: json)
+			print("[getMe] Updated user")
+		} else {
+			throw SeerrError()
+		}
+	}
 
     private func openLink(_ url: URL?) -> OpenURLAction.Result {
         self.viewUrl = url?.absoluteString
