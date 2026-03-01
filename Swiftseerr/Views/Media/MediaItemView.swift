@@ -5,6 +5,7 @@ import DeclaredAgeRange
 
 struct MediaItemView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
+	@Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.requestAgeRange) private var requestAgeRange: DeclaredAgeRangeAction
 
     @State private var item: MediaItem? = nil
@@ -168,16 +169,17 @@ struct MediaItemView: View {
             AsyncImage(url: item?.backdrop) { image in
                 image
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .blur(radius: self.hideContent ? 8.0 : 0)
             } placeholder: {
                 Rectangle()
                     .fill(Color.bgPurple)
             }
-            .frame(height: 400, alignment: .center)
+			.frame(maxWidth: .infinity, alignment: .center)
             .mask {
                 LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
             }
+			.backgroundExtensionEffect()
 
             let imgUrl: URL? = self.loadedData ? item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png") : item?.image
 
@@ -311,7 +313,7 @@ struct MediaItemView: View {
                     }
                 }
             }
-            .frame(width: 370, alignment: .center)
+			.padding(.horizontal)
 
             VStack(alignment: .leading) {
                 Text(self.item!.title)
@@ -338,7 +340,7 @@ struct MediaItemView: View {
                 }
             }
         }
-        .frame(width: 370, alignment: .leading)
+		.padding(.horizontal)
     }
 
     @ViewBuilder
@@ -366,7 +368,6 @@ struct MediaItemView: View {
                     .shouldRedact(!self.loadedData)
             }
         }
-        .frame(width: 340, alignment: .leading)
         .padding(.vertical)
         .padding(.horizontal, 15.0)
 //        .background(Color(uiColor: UIColor.tertiarySystemBackground).opacity(0.4))
@@ -411,7 +412,6 @@ struct MediaItemView: View {
                     .disabled(self.hideContent || !self.loadedData)
                 }
             }
-            .frame(width: 395, alignment: .leading)
         }
     }
 
@@ -451,7 +451,6 @@ struct MediaItemView: View {
                     }
                 }
             }
-            .frame(width: 395, alignment: .leading)
         }
     }
 
