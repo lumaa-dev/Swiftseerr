@@ -4,8 +4,9 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @AppStorage("AppTabs")
-    private var customization: TabViewCustomization
+	@Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    @AppStorage("AppTabs") private var customization: TabViewCustomization
 
     @Query private var auths: [AuthInfo]
 
@@ -55,7 +56,7 @@ struct ContentView: View {
     @ViewBuilder
     private var tabs: some View {
         #if canImport(UIKit)
-        if UIDevice.current.userInterfaceIdiom == .pad {
+		if UIDevice.current.userInterfaceIdiom == .pad && self.horizontalSizeClass == .regular {
             self.bigTabs
         } else {
             self.smallTabs
