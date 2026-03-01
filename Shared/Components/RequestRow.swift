@@ -99,7 +99,7 @@ struct RequestRow: View {
 
     @ViewBuilder
     var actions: some View {
-        if let item {
+        if var item {
             GlassEffectContainer {
                 VStack(spacing: 8) {
 					if hasPermissions, item.requestStatus == .pending {
@@ -107,7 +107,11 @@ struct RequestRow: View {
 							Button {
 								Task {
 									if let http = await self.updateStatus(.approve, request: request), http.statusCode == 200 {
+										item.requestHd = item.requestHd == .pending ? .processing : item.requestHd
+										item.request4k = item.request4k == .pending ? .processing : item.request4k
 										self.request.status = .processing
+
+										self.item = item
 									}
 								}
 							} label: {
@@ -119,7 +123,11 @@ struct RequestRow: View {
 							Button {
 								Task {
 									if let http = await self.updateStatus(.decline, request: request), http.statusCode == 200 {
+										item.requestHd = item.requestHd == .pending ? .blacklisted : item.requestHd
+										item.request4k = item.request4k == .pending ? .blacklisted : item.request4k
 										self.request.status = .blacklisted
+
+										self.item = item
 									}
 								}
 							} label: {
