@@ -21,11 +21,7 @@ struct DiscoverItemRow: View {
                 self.poster
 
                 Text(item.name)
-                    #if !os(macOS)
                     .font(.system(size: 14))
-                    #else
-                    .font(.system(size: 21))
-                    #endif
                     .foregroundStyle(Color.primary)
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)

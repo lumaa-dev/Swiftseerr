@@ -7,11 +7,13 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
     let destination: () -> Destination
     let content: () -> Content
 
-    #if !os(tvOS)
-    let vspacing: CGFloat = 8.0
-    #else
-    let vspacing: CGFloat = 35.0
-    #endif
+	#if !os(tvOS) && !os(macOS)
+	let vspacing: CGFloat = 8.0
+	#elseif os(tvOS)
+	let vspacing: CGFloat = 35.0
+	#else
+	let vspacing: CGFloat = 12.0
+	#endif
 
     init(_ title: LocalizedStringKey, @ViewBuilder destination: @escaping () -> Destination, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
@@ -33,7 +35,11 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
                 HStack(spacing: 12.0) {
                     Text(title)
                         .foregroundStyle(Color.primary)
-                        .font(.title2.bold())
+						#if !os(macOS)
+						.font(.title2.bold())
+						#else
+						.font(.title.bold())
+						#endif
 
                     Image(systemName: "chevron.forward")
                         .foregroundStyle(Color.secondary.opacity(0.4))
