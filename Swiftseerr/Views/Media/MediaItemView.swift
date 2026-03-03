@@ -206,113 +206,112 @@ struct MediaItemView: View {
     @ViewBuilder
     private var info: some View {
         VStack(alignment: .leading, spacing: 25) {
-            GlassEffectContainer {
-                HStack {
-                    if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
-                        Button {
-                            Task {
-                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
-                                    await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
-                                } else {
-                                    self.requestingSeason.toggle()
-                                    self.requestingSeason4k = false
-                                }
-                            }
-                        } label: {
-                            Text("request")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(self.hideContent || !self.loadedData)
+			HStack {
+				if self.item!.requestStatus == .unknown || self.item!.requestStatus == .partiallyAvailable {
+					Button {
+						Task {
+							if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+								await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
+							} else {
+								self.requestingSeason.toggle()
+								self.requestingSeason4k = false
+							}
+						}
+					} label: {
+						Text("request")
+					}
+					.buttonStyle(.borderedProminent)
+					.disabled(self.hideContent || !self.loadedData)
 
-                        Button {
-                            Task {
-                                if self.item!.type == .movie || self.item!.seasons.count <= 1 {
-                                    await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
-                                } else {
-                                    self.requestingSeason.toggle()
-                                    self.requestingSeason4k = true
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "4k.tv")
-                        }
-                        .disabled(self.hideContent || !self.loadedData)
-                        .buttonBorderShape(.circle)
-                        .buttonStyle(.bordered)
-                    } else {
-                        Text(self.item!.requestStatus.localized)
-                            .foregroundStyle(Color.white)
-                            .pill(self.item!.requestStatus.color)
+					Button {
+						Task {
+							if self.item!.type == .movie || self.item!.seasons.count <= 1 {
+								await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
+							} else {
+								self.requestingSeason.toggle()
+								self.requestingSeason4k = true
+							}
+						}
+					} label: {
+						Image(systemName: "4k.tv")
+					}
+					.disabled(self.hideContent || !self.loadedData)
+					.buttonBorderShape(.circle)
+					.buttonStyle(.bordered)
+				} else {
+					Text(self.item!.requestStatus.localized)
+						.foregroundStyle(Color.white)
+						.pill(self.item!.requestStatus.color)
 
-                        if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
-                            Menu {
-                                if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
-                                    Link(destination: jellyfin) {
-                                        Label("open.jellyfin", image: .jellyfin)
-                                    }
-                                }
+					if self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first != nil || canManageRequests {
+						Menu {
+							if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
+								Link(destination: jellyfin) {
+									Label("open.jellyfin", image: .jellyfin)
+								}
+							}
 
-                                if canManageRequests {
-                                    ForEach(self.item!.requests.filter { $0.status != .partiallyAvailable || $0.status != .available }) { req in
-                                        Menu {
-                                            if self.canManageRequests {
-                                                self.manageRequest(req)
-                                            }
+							if canManageRequests {
+								ForEach(self.item!.requests.filter { $0.status != .partiallyAvailable || $0.status != .available }) { req in
+									Menu {
+										if self.canManageRequests {
+											self.manageRequest(req)
+										}
 
-                                            Button(role: .destructive) {
-                                                Task {
-                                                    if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                                        let newItem = try? await self.fetchItem()
-                                                        await MainActor.run {
-                                                            withAnimation{
-                                                                self.item = newItem
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } label: {
-                                                Label("request.delete", systemImage: "trash")
-                                            }
-                                        } label: {
-                                            Text("request.by-\(req.requestedBy.username)")
-                                        }
-                                    }
-                                } else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
-                                    Button(role: .destructive) {
-                                        Task {
-                                            if let http = await self.deleteRequest(req), http.statusCode == 204 {
-                                                let newItem = try? await self.fetchItem()
-                                                await MainActor.run {
-                                                    withAnimation {
-                                                        self.item = newItem
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } label: {
-                                        Label("request.delete", systemImage: "trash")
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .foregroundStyle(Color.primary)
-                                    .padding(7.0)
-                            }
-                            .menuStyle(.button)
-                            .buttonBorderShape(.circle)
-                            .disabled(self.hideContent || !self.loadedData)
-                        } else {
-                            if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
-                                Link(destination: jellyfin) {
-                                    Label("open.jellyfin", image: .jellyfin)
-                                        .labelStyle(.iconOnly)
-                                        .padding(.leading, 5)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+										Button(role: .destructive) {
+											Task {
+												if let http = await self.deleteRequest(req), http.statusCode == 204 {
+													let newItem = try? await self.fetchItem()
+													await MainActor.run {
+														withAnimation{
+															self.item = newItem
+														}
+													}
+												}
+											}
+										} label: {
+											Label("request.delete", systemImage: "trash")
+										}
+									} label: {
+										Text("request.by-\(req.requestedBy.username)")
+									}
+								}
+							} else if let req: MediaRequest = self.item!.requests.filter({ $0.requestedBy == SeerSession.shared.user }).first {
+								Button(role: .destructive) {
+									Task {
+										if let http = await self.deleteRequest(req), http.statusCode == 204 {
+											let newItem = try? await self.fetchItem()
+											await MainActor.run {
+												withAnimation {
+													self.item = newItem
+												}
+											}
+										}
+									}
+								} label: {
+									Label("request.delete", systemImage: "trash")
+								}
+							}
+						} label: {
+							Image(systemName: "ellipsis")
+								.foregroundStyle(Color.primary)
+								.padding(7.0)
+						}
+						.menuStyle(.button)
+						.buttonBorderShape(.circle)
+						.disabled(self.hideContent || !self.loadedData)
+					} else {
+						if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
+							Link(destination: jellyfin) {
+								Label("open.jellyfin", image: .jellyfin)
+									.labelStyle(.iconOnly)
+									.padding(.leading, 5)
+							}
+						}
+					}
+				}
+			}
+			.frame(maxWidth: .infinity, alignment: .center)
 			.padding(.horizontal)
 
             VStack(alignment: .leading) {
