@@ -56,7 +56,8 @@ struct RequestView: View {
 			.navigationTitle(Text("requests"))
 			.toolbarTitleDisplayMode(.inlineLarge)
 			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
+				ToolbarItem(placement: .primaryAction) {
+					#if !os(macOS)
 					Menu {
 						Picker("requests.filter", selection: $activeFilter) {
 							ForEach(Self.Filters.allCases, id: \.self) { filter in
@@ -67,6 +68,19 @@ struct RequestView: View {
 					} label: {
 						Label("requests.filter", systemImage: "line.3.horizontal.decrease")
 					}
+					#else
+					Picker(selection: $activeFilter) {
+						ForEach(Self.Filters.allCases, id: \.self) { filter in
+							Text(filter.localized)
+								.tag(filter)
+						}
+						.fixedSize()
+					} label: {
+						Label("requests.filter", systemImage: "line.3.horizontal.decrease")
+							.labelStyle(.iconOnly)
+					}
+					.pickerStyle(.menu)
+					#endif
 				}
 			}
 			.scrollContentBackground(.hidden)

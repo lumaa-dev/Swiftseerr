@@ -38,7 +38,7 @@ struct SeasonsPicker: View {
                 #endif
             }
             .navigationTitle(Text("seasons-picker.title"))
-            #if !os(tvOS)
+            #if !os(tvOS) && !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {

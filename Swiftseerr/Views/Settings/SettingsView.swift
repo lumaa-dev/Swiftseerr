@@ -20,7 +20,7 @@ struct SettingsView: View {
     @State private var viewUrl: String? = nil
 
     var body: some View {
-        List {
+        Form {
             self.instances
 
             #if !os(macOS)
@@ -43,6 +43,7 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .scrollContentBackground(.hidden)
+		.formStyle(.grouped)
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
@@ -84,6 +85,9 @@ struct SettingsView: View {
                     }
                 }
                 .deleteDisabled(auths.count <= 1)
+				#if os(macOS)
+				.buttonStyle(.plain)
+				#endif
             }
             .onDelete { indices in
                 for index in indices {
@@ -107,18 +111,20 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var appearence: some View {
+#if os(iOS)
         Section("appearence") {
-            #if os(iOS)
             NavigationLink(destination: Self.AppIconPicker(appIcon: $appIcon)) {
                 Text("settings.app-icons")
             }
-            #endif
         }
         .listRowBackground(Color.gray.opacity(0.2))
+#endif
     }
 
     @ViewBuilder
     private var defAge: some View {
+		let undefinedAge: Bool = UserDefaults.standard.value(forKey: "ageCheck") == nil
+
         Section(header: Text("def-age"), footer: Text("def-age.footer")) {
             let definedAge: Int = UserDefaults.standard.integer(forKey: "ageCheck")
             LabeledContent("def-age", value: definedAge > 0 ? "\(definedAge)" : "Unknown")
@@ -129,9 +135,14 @@ struct SettingsView: View {
             } label: {
                 Label("def-age.reset", systemImage: "figure.child.and.lock.fill")
                     .foregroundStyle(Color.red)
+				#if os(macOS)
+					.labelStyle(.titleOnly)
+					.frame(minWidth: 100.0)
+					.opacity(undefinedAge ? 0.35 : 1.0)
+				#endif
             }
-            .tint(Color.red)
-            .disabled(UserDefaults.standard.value(forKey: "ageCheck") == nil)
+			.tint(Color.red)
+            .disabled(undefinedAge)
         }
         .listRowBackground(Color.gray.opacity(0.2))
     }
@@ -178,6 +189,9 @@ struct SettingsView: View {
                     }
                 LabeledContent("provider", value: auth.provider?.string ?? String(localized: "unknown"))
             }
+			#if os(macOS)
+			.padding(.vertical)
+			#endif
 
             Button {
                 self.unviewAuth = true
