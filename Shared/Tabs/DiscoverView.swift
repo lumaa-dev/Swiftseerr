@@ -63,6 +63,7 @@ struct DiscoverView: View {
                                 self.discoverH(self.upShows)
                             }
                         }
+						.padding(.bottom)
                     }
                     #if !os(tvOS)
                     .navigationTitle(Text("discover"))
