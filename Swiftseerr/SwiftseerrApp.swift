@@ -12,7 +12,9 @@ struct SwiftseerrApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+			#if os(macOS)
 				.frame(minWidth: 1000, minHeight: 600)
+			#endif
                 .environment(\.colorScheme, ColorScheme.dark)
         }
         .windowResizability(.contentSize)
