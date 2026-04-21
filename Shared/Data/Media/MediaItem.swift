@@ -26,6 +26,8 @@ struct MediaItem: Identifiable {
     let rating: String?
     let releaseDate: Date
 
+	let releaseDates: [String: Date]
+
     let posterPath: String?
     private let backPath: String?
 
@@ -63,7 +65,7 @@ struct MediaItem: Identifiable {
         self.episodesCount = data["numberOfEpisodes"] as? Int
         self.runtime = data["runtime"] as? Int
 
-        self.releaseDate = (data[type == .movie ? "releaseDate" : "firstAirDate"] as! String).seerrDate ?? .init(timeIntervalSince1970: 0)
+        let worldwideRelease = (data[type == .movie ? "releaseDate" : "firstAirDate"] as! String).seerrDate ?? .init(timeIntervalSince1970: 0)
 
         self.posterPath = data["posterPath"] as? String
         self.backPath = data["backdropPath"] as? String
@@ -101,18 +103,33 @@ struct MediaItem: Identifiable {
             self.availableSeasons = [:]
         }
 
-        if let c = data["contentRatings"] as? [String: Any],
-           let ratings = c["results"] as? [[String: Any]],
-           let localRating = ratings.first(where: { ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }) {
-            self.rating = localRating["rating"] as? String
-        } else if let rels = data["releases"] as? [String: Any],
+		if let rels = data["releases"] as? [String: Any],
                   let res = rels["results"] as? [[String: Any]],
-                  let cntry = res.first(where: { ($0["iso_3166_1"] as? String) == Locale.current.region?.identifier }),
-                  let dates = cntry["release_dates"] as? [[String: Any]],
-                  let cert = dates.compactMap({ $0["certification"] as? String }).first {
-            self.rating = cert
-        } else {
+				  let cntry = res.filter({ LocaleManager.shared.matchesRegion(($0["iso_3166_1"] as? String) ?? "UNKNOWN") }).first,
+                  let dates = cntry["release_dates"] as? [[String: Any]] {
+            self.rating = dates.compactMap({ $0["certification"] as? String }).first
+			self.releaseDate = (dates.compactMap({ $0["release_date"] as? String }).first)?.isoDate ?? worldwideRelease
+			self.releaseDates = res.reduce(into: [:]) { result, item in
+				guard let iso = item["iso_3166_1"] as? String,
+					  let date = ((item["release_dates"] as? [[String: Any]])?.first?["release_date"] as? String)?.isoDate else {
+					return
+				}
+
+				result[iso] = date
+			}
+			print("[MediaItem+init] Used local (or not) release date")
+		} else if let c = data["contentRatings"] as? [String: Any],
+			 let ratings = c["results"] as? [[String: Any]],
+			 let localRating = ratings.filter({ LocaleManager.shared.matchesRegion(($0["iso_3166_1"] as? String) ?? "UNKNOWN") }).first {
+			self.rating = localRating["rating"] as? String
+			self.releaseDate = worldwideRelease
+			self.releaseDates = ["US": worldwideRelease]
+			print("[MediaItem+init] Used worldwide release date")
+		} else {
             self.rating = nil
+			self.releaseDate = worldwideRelease
+			self.releaseDates = ["US": worldwideRelease]
+			print("[MediaItem+init] Used worldwide release date (no ratings)")
         }
 
         if let credits = data["credits"] as? [String: Any] {
@@ -174,6 +191,7 @@ struct MediaItem: Identifiable {
         runtime: Int?,
         rating: String?,
         releaseDate: Date,
+		releaseDates: [String: Date],
         posterPath: String?,
         backPath: String?,
         inWatchList: Bool
@@ -192,6 +210,7 @@ struct MediaItem: Identifiable {
         self.runtime = runtime
         self.rating = rating
         self.releaseDate = releaseDate
+		self.releaseDates = releaseDates
         self.posterPath = posterPath
         self.backPath = backPath
         self.inWatchList = inWatchList
@@ -222,6 +241,7 @@ struct MediaItem: Identifiable {
             runtime: 107,
             rating: "R",
             releaseDate: formatter.date(from: "2014-10-10") ?? Date(timeIntervalSince1970: 0),
+			releaseDates: ["US": formatter.date(from: "2014-10-10") ?? Date(timeIntervalSince1970: 0)],
             posterPath: nil,
             backPath: nil,
             inWatchList: false

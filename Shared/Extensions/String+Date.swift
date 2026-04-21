@@ -9,4 +9,11 @@ extension String {
 
         return dateFormatter.date(from: self)
     }
+
+	var isoDate: Date? {
+		let iso = ISO8601DateFormatter()
+		iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+		return iso.date(from: self)
+	}
 }

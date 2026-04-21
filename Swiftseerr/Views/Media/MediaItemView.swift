@@ -61,6 +61,7 @@ struct MediaItemView: View {
 
                     list
                         .padding(.vertical, 15.0)
+						.padding(.horizontal)
                 }
                 .navigationTitle(Text(self.loadedData ? item.title : String("")))
                 #if !os(macOS)
@@ -345,8 +346,12 @@ struct MediaItemView: View {
     @ViewBuilder
     private var list: some View {
         VStack(spacing: 17.0) {
-            LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
-                .shouldRedact(!self.loadedData)
+			NavigationLink {
+				Self.ReleasesView(releaseDates: self.item!.releaseDates)
+			} label: {
+				LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
+					.shouldRedact(!self.loadedData)
+			}
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
@@ -611,6 +616,44 @@ struct MediaItemView: View {
 
         return emoji
     }
+
+	private struct ReleasesView: View {
+		let releaseDates: [String: Date]
+
+		init(releaseDates: [String : Date] = [:]) {
+			self.releaseDates = releaseDates
+		}
+
+		var body: some View {
+			if self.releaseDates.count > 1 {
+				List {
+					ForEach(self.releaseDates.sorted(by: { $0.value < $1.value }).map({ $0.key }), id: \.self) { iso in
+						LabeledContent {
+							Text(self.releaseDates[iso]!, format: .dateTime.day().month().year(.extended(minimumLength: 4)))
+								.lineLimit(1)
+								.multilineTextAlignment(.trailing)
+						} label: {
+							Text(Locale.current.localizedString(forRegionCode: iso) ?? "unknown")
+								.lineLimit(1)
+								.multilineTextAlignment(.leading)
+						}
+						.listRowBackground(Color.gray.opacity(0.2))
+					}
+				}
+				.navigationBarTitleDisplayMode(.inline)
+				.scrollContentBackground(.hidden)
+				.toolbarTitleDisplayMode(.inlineLarge)
+				.background {
+					Color.bgPurple.ignoresSafeArea()
+				}
+			} else {
+				ContentUnavailableView("media.missing-dates", systemImage: "calendar.badge.exclamationmark")
+					.background {
+						Color.bgPurple.ignoresSafeArea()
+					}
+			}
+		}
+	}
 }
 
 private extension View {

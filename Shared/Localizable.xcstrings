@@ -521,6 +521,22 @@
         }
       }
     },
+    "media.missing-dates" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no other dates"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il n’y a pas d’autres dates"
+          }
+        }
+      }
+    },
     "media.no-name" : {
       "localizations" : {
         "en" : {
