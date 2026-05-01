@@ -193,6 +193,22 @@
         }
       }
     },
+    "copy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier"
+          }
+        }
+      }
+    },
     "copy.password" : {
       "localizations" : {
         "en" : {
@@ -421,6 +437,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur"
+          }
+        }
+      }
+    },
+    "error.apn.unset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No APN server configured"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de serveur APN configuré"
           }
         }
       }
@@ -1688,13 +1720,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) is a self-hostable notification service to send webhook notifications to your iPhone through Swiftseerr."
+            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) is a self-hostable notification service to send webhook notifications to your device through Swiftseerr."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) est un service de notification auto-hébergeable pour envoyer des notifications webhook vers votre iPhone grâce à Swiftseerr. "
+            "value" : "[SeerrAPN](https://github.com/lumaa-dev/SeerrAPN) est un service de notification auto-hébergeable pour envoyer des notifications webhook vers votre appareil grâce à Swiftseerr. "
           }
         }
       }
@@ -1711,6 +1743,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL du SeerrAPN"
+          }
+        }
+      }
+    },
+    "settings.technical" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Technical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infos techniques"
+          }
+        }
+      }
+    },
+    "settings.technical.apn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APN server"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serveur APN"
+          }
+        }
+      }
+    },
+    "settings.technical.apn-admin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APN Admin Header"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entête admin APN"
+          }
+        }
+      }
+    },
+    "settings.technical.apn-logs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get APN server logs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les logs APN"
+          }
+        }
+      }
+    },
+    "settings.technical.device-token" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device Token"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token de l’appareil"
+          }
+        }
+      }
+    },
+    "settings.technical.push-notifications" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push Notifications"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications push"
           }
         }
       }

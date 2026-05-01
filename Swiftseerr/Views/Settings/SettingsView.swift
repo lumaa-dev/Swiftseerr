@@ -36,6 +36,15 @@ struct SettingsView: View {
 
             self.defAge
 
+			#if !os(macOS)
+			NavigationLink {
+				TechView()
+			} label: {
+				Text("settings.technical")
+			}
+			.listRowBackground(Color.gray.opacity(0.2))
+			#endif
+
             self.info
         }
         .navigationTitle(Text("settings"))

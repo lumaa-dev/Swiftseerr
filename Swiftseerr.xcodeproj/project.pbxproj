@@ -31,6 +31,7 @@
 				Views/Other/SeerrPersonView.swift,
 				Views/Settings/NotifSettingsView.swift,
 				Views/Settings/SettingsView.swift,
+				Views/Settings/TechView.swift,
 				Views/Tabs/RequestView.swift,
 			);
 			target = B964EA0C2E45523A0045CB2B /* Swiftseerr */;
