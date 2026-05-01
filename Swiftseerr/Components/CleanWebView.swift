@@ -15,6 +15,9 @@ struct CleanWebView: View {
     var body: some View {
         NavigationStack {
             WebView(url: self.url)
+			#if os(macOS)
+				.frame(width: 950, height: 700)
+			#endif
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(role: .close) {
