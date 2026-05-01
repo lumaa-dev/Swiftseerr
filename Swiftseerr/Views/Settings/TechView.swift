@@ -8,7 +8,7 @@ struct TechView: View {
 	@State private var apnLogs: RequestLogs? = nil
 
     var body: some View {
-		List {
+		Form {
 			Section(header: Text("settings.technical.push-notifications")) {
 				LabeledContent {
 					Text(AppDelegate.deviceToken.isEmpty ? "unknown" : AppDelegate.deviceToken)
@@ -36,8 +36,11 @@ struct TechView: View {
 			.listRowBackground(Color.gray.opacity(0.2))
 		}
 		.navigationTitle(Text("settings.technical"))
+		#if !os(macOS)
 		.navigationBarTitleDisplayMode(.inline)
+		#endif
 		.scrollContentBackground(.hidden)
+		.formStyle(.grouped)
 		.background {
 			Color.bgPurple.ignoresSafeArea()
 		}

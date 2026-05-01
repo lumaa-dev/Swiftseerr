@@ -640,7 +640,9 @@ struct MediaItemView: View {
 						.listRowBackground(Color.gray.opacity(0.2))
 					}
 				}
+				#if !os(macOS)
 				.navigationBarTitleDisplayMode(.inline)
+				#endif
 				.scrollContentBackground(.hidden)
 				.toolbarTitleDisplayMode(.inlineLarge)
 				.background {

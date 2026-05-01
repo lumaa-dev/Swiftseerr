@@ -23,27 +23,23 @@ struct SettingsView: View {
         Form {
             self.instances
 
-            #if !os(macOS)
             NavigationLink {
                 NotifSettingsView()
             } label: {
                 Text("settings.notifications")
             }
             .listRowBackground(Color.gray.opacity(0.2))
-            #endif
 
             self.appearence
 
             self.defAge
 
-			#if !os(macOS)
 			NavigationLink {
 				TechView()
 			} label: {
 				Text("settings.technical")
 			}
 			.listRowBackground(Color.gray.opacity(0.2))
-			#endif
 
             self.info
         }

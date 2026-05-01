@@ -1,9 +1,7 @@
 // Made by Lumaa
-#if canImport(UIKit)
 import SwiftUI
 
 struct NotifSettingsView: View {
-
     @State private var grantedNotifs: Bool = false
     @State private var validated: Bool = false
 
@@ -22,11 +20,12 @@ struct NotifSettingsView: View {
     @State private var delAlert: Bool = false
 
     var body: some View {
-        List {
+        Form {
             Section {
                 HStack {
                     TextField("settings.notifications.server-url", text: $serverUrl)
                         .textContentType(.URL)
+						.textFieldStyle(.roundedBorder)
                         #if !os(macOS)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
@@ -137,8 +136,11 @@ struct NotifSettingsView: View {
             .listRowBackground(Color.gray.opacity(0.2))
         }
         .navigationTitle(Text("settings.notifications"))
+		#if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+		#endif
         .scrollContentBackground(.hidden)
+		.formStyle(.grouped)
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
@@ -153,6 +155,8 @@ struct NotifSettingsView: View {
                     let del = await self.deleteToken()
 
                     if del {
+						print("[NotifSettingsView] Deleted token off APN server")
+
                         UserDefaults.standard.removeObject(forKey: "notifUrl")
                         UserDefaults.standard.removeObject(forKey: "notifAuth")
 
@@ -316,4 +320,3 @@ extension NotifSettingsView {
 #Preview {
     NotifSettingsView()
 }
-#endif
