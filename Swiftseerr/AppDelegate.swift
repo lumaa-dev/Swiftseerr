@@ -6,6 +6,7 @@ import UserNotifications
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     @AppStorage("notifUrl") private static var notifUrl: String?
+
     static var hasNotificationServer: Bool {
         return self.notifUrl != nil
     }
