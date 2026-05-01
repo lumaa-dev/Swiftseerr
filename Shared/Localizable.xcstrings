@@ -957,13 +957,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Swiftseerr! The native, open-source and free Seerr client. Swiftseerr allows you to do everything that’s possible on Seerr but on your iPhone!"
+            "value" : "Welcome to Swiftseerr! The native, open-source and free Seerr client. Swiftseerr allows you to do everything that’s possible on Seerr but on your device!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue sur Swiftseer ! Le client Seerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Seerr mais sur votre iPhone !"
+            "value" : "Bienvenue sur Swiftseer ! Le client Seerr natif, open-source et gratuit. Swiftseerr vous permet de faire tout ce qui est déjà possible sur Seerr mais sur votre appareil !"
           }
         }
       }
