@@ -201,13 +201,3 @@ class SeerSession {
         }
     }
 }
-
-/*
- // premiere execution (ou changement filtre)
-
- [SeerSession] GET https://jellyseerr.brebond.com/api/v1/request?skip=0&take=10&sort=added&sortDirection=desc&filter=all&mediaType=all
- [SeerSession] Cookie header set
- [200] (données de réponses)
-
-
- */
