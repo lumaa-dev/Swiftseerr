@@ -649,6 +649,22 @@
         }
       }
     },
+    "networks" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Networks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streaming"
+          }
+        }
+      }
+    },
     "no.requests" : {
       "localizations" : {
         "en" : {
@@ -2011,6 +2027,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Séries"
+          }
+        }
+      }
+    },
+    "studios" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studios"
           }
         }
       }

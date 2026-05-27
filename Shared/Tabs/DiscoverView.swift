@@ -56,12 +56,28 @@ struct DiscoverView: View {
                                 self.discoverH(self.shows)
                             }
 
+							VScrollItems("networks") {
+								HStack(spacing: 8) {
+									ForEach(Networks.allCases, id: \.network) { network in
+										NetworkCard(network)
+									}
+								}
+							}
+
                             VScrollItems("upcoming.movies") {
                                 self.discoverH(self.upMovies)
                             }
                             VScrollItems("upcoming.shows") {
                                 self.discoverH(self.upShows)
                             }
+
+							VScrollItems("studios") {
+								HStack(spacing: 8) {
+									ForEach(Studios.allCases, id: \.studio) { studio in
+										NetworkCard(studio)
+									}
+								}
+							}
                         }
 						.padding(.bottom)
                     }
