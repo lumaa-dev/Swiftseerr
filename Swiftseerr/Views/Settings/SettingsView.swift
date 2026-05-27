@@ -198,6 +198,12 @@ struct SettingsView: View {
                 LabeledContent("provider", value: auth.provider?.string ?? String(localized: "unknown"))
             }
 			.sectionActions {
+				#if os(macOS)
+				Button(role: .close) {
+					self.viewAuth = nil
+				}
+				#endif
+
 				Button {
 					self.unviewAuth = true
 
@@ -224,12 +230,6 @@ struct SettingsView: View {
 					Text("login")
 				}
 				.disabled(self.unviewAuth || SeerSession.shared.auth.id == auth.id)
-
-				#if os(macOS)
-				Button(role: .close) {
-					self.viewAuth = nil
-				}
-				#endif
 			}
         }
 		.formStyle(.grouped)
