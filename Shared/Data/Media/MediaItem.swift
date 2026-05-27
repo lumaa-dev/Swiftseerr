@@ -111,7 +111,8 @@ struct MediaItem: Identifiable {
 			self.releaseDate = (dates.compactMap({ $0["release_date"] as? String }).first)?.isoDate ?? worldwideRelease
 			self.releaseDates = res.reduce(into: [:]) { result, item in
 				guard let iso = item["iso_3166_1"] as? String,
-					  let date = ((item["release_dates"] as? [[String: Any]])?.first?["release_date"] as? String)?.isoDate else {
+					  let date = ((item["release_dates"] as? [[String: Any]])?.first?["release_date"] as? String)?.isoDate,
+					  ((item["release_dates"] as? [[String: Any]])?.first?["type"] as? Int) ?? 0 == 3 else {
 					return
 				}
 
