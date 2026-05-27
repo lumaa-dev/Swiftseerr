@@ -612,25 +612,6 @@ struct MediaItemView: View {
         return http
     }
 
-    func flagEmoji(for regionCode: String) -> String? {
-        guard regionCode.count == 2, let asciiA = Character("A").asciiValue else { return nil }
-
-        let uppercasedCode = regionCode.uppercased()
-        var emoji = ""
-
-        for char in uppercasedCode {
-            guard let asciiValue = char.asciiValue, let z = Character("Z").asciiValue, asciiValue >= asciiA && asciiValue <= z else { return nil }
-            let offset = UInt32(asciiValue - asciiA)
-            if let scalar = UnicodeScalar(0x1F1E6 + offset) {
-                emoji.append(Character(scalar))
-            } else {
-                return nil
-            }
-        }
-
-        return emoji
-    }
-
 	private struct ReleasesView: View {
 		let releaseDates: [String: Date]
 
@@ -647,7 +628,8 @@ struct MediaItemView: View {
 								.lineLimit(1)
 								.multilineTextAlignment(.trailing)
 						} label: {
-							Text(Locale.current.localizedString(forRegionCode: iso) ?? "unknown")
+
+							Text((self.flagEmoji(for: iso) ?? "") + " " + (Locale.current.localizedString(forRegionCode: iso) ?? "unknown"))
 								.lineLimit(1)
 								.multilineTextAlignment(.leading)
 						}
@@ -669,6 +651,25 @@ struct MediaItemView: View {
 						Color.bgPurple.ignoresSafeArea()
 					}
 			}
+		}
+
+		private func flagEmoji(for regionCode: String) -> String? {
+			guard regionCode.count == 2, let asciiA = Character("A").asciiValue else { return nil }
+
+			let uppercasedCode = regionCode.uppercased()
+			var emoji = ""
+
+			for char in uppercasedCode {
+				guard let asciiValue = char.asciiValue, let z = Character("Z").asciiValue, asciiValue >= asciiA && asciiValue <= z else { return nil }
+				let offset = UInt32(asciiValue - asciiA)
+				if let scalar = UnicodeScalar(0x1F1E6 + offset) {
+					emoji.append(Character(scalar))
+				} else {
+					return nil
+				}
+			}
+
+			return emoji
 		}
 	}
 }
