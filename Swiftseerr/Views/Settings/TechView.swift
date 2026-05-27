@@ -91,6 +91,10 @@ struct TechView: View {
 							.foregroundStyle(Color.primary)
 					}
 				}
+			} else {
+				Section(header: Text(String("success"))) {
+					ContentUnavailableView(String("No success"), systemImage: "circle.slash")
+				}
 			}
 
 			if !log.errors.isEmpty {
@@ -99,6 +103,10 @@ struct TechView: View {
 						Text(err.result)
 							.foregroundStyle(Color.red)
 					}
+				}
+			} else {
+				Section(header: Text(String("errors"))) {
+					ContentUnavailableView(String("No errors"), systemImage: "circle.slash")
 				}
 			}
 		}
@@ -141,6 +149,7 @@ struct TechView: View {
 			if let http = res as? HTTPURLResponse, (200...299).contains(http.statusCode) {
 				return try JSONDecoder().decode(RequestLogs.self, from: data)
 			} else {
+				print("[TechView+getLogs] Data: \(String(data: data, encoding: .utf8)), or error")
 				return nil
 			}
 		} catch {
