@@ -52,6 +52,8 @@ struct PersonPlate: View {
         .navigationLinkIndicatorVisibility(.hidden)
         #if os(tvOS)
         .buttonStyle(.borderless)
+		#elseif os(macOS)
+		.buttonStyle(.plain)
         #endif
     }
 

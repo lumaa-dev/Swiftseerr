@@ -83,7 +83,7 @@ struct TechView: View {
 
 	@ViewBuilder
 	private func apnLogView(_ log: RequestLogs) -> some View {
-		List {
+		Form {
 			if !log.success.isEmpty {
 				Section(header: Text(String("success"))) {
 					ForEach(log.success.defaultSort(), id: \.date) { l in
@@ -102,6 +102,7 @@ struct TechView: View {
 				}
 			}
 		}
+		.formStyle(.grouped)
 	}
 
 	// MARK: - Functions

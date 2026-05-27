@@ -57,6 +57,9 @@ struct SettingsView: View {
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
                 .interactiveDismissDisabled(self.unviewAuth)
+				#if os(macOS)
+				.frame(minWidth: 100, minHeight: 100)
+				#endif
         }
         .sheet(isPresented: $viewOnboard) {
             self.newOnboarding()
@@ -176,7 +179,7 @@ struct SettingsView: View {
 
     @ViewBuilder
     private func instance(_ auth: AuthInfo) -> some View {
-        List {
+        Form {
             Section {
                 LabeledContent("address", value: auth.address)
                 LabeledContent("username", value: auth.username)
@@ -194,37 +197,42 @@ struct SettingsView: View {
                     }
                 LabeledContent("provider", value: auth.provider?.string ?? String(localized: "unknown"))
             }
-			#if os(macOS)
-			.padding(.vertical)
-			#endif
+			.sectionActions {
+				Button {
+					self.unviewAuth = true
 
-            Button {
-                self.unviewAuth = true
+					let prevAuth: AuthInfo = SeerSession.shared.auth
+					SeerSession.shared.auth = auth
 
-                let prevAuth: AuthInfo = SeerSession.shared.auth
-                SeerSession.shared.auth = auth
+					Task {
+						defer {
+							self.unviewAuth = false
+							self.viewAuth = nil
+						}
 
-                Task {
-                    defer {
-                        self.unviewAuth = false
-                        self.viewAuth = nil
-                    }
+						do {
+							try await self.logIn(auth: auth)
+						} catch {
+							print(error)
 
-                    do {
-                        try await self.logIn(auth: auth)
-                    } catch {
-                        print(error)
+							withAnimation {
+								SeerSession.shared.auth = prevAuth
+							}
+						}
+					}
+				} label: {
+					Text("login")
+				}
+				.disabled(self.unviewAuth || SeerSession.shared.auth.id == auth.id)
 
-                        withAnimation {
-                            SeerSession.shared.auth = prevAuth
-                        }
-                    }
-                }
-            } label: {
-                Text("login")
-            }
-            .disabled(self.unviewAuth || SeerSession.shared.auth.id == auth.id)
+				#if os(macOS)
+				Button(role: .close) {
+					self.viewAuth = nil
+				}
+				#endif
+			}
         }
+		.formStyle(.grouped)
         .scrollDisabled(true)
         .scrollContentBackground(.hidden)
     }

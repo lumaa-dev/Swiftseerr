@@ -299,7 +299,11 @@ struct MediaItemView: View {
 								.padding(7.0)
 						}
 						.menuStyle(.button)
+						#if !os(macOS)
 						.buttonBorderShape(.circle)
+						#else
+						.buttonBorderShape(.roundedRectangle)
+						#endif
 						.disabled(self.hideContent || !self.loadedData)
 					} else {
 						if let jellyfin = self.item!.jellyfin, self.item!.requestStatus == .available {
@@ -350,18 +354,24 @@ struct MediaItemView: View {
 				Self.ReleasesView(releaseDates: self.item!.releaseDates)
 			} label: {
 				LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
+					.labeledContentStyle(.fullWidth)
 					.shouldRedact(!self.loadedData)
 			}
+			#if os(macOS)
+			.buttonStyle(.plain)
+			#endif
 
             if let duration = self.item!.runtime, duration > 0 {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "duration.m-\(duration)"))
+					.labeledContentStyle(.fullWidth)
                     .shouldRedact(!self.loadedData)
             } else if let seasonsCount = self.item!.seasonsCount, let episodesCount = self.item!.episodesCount {
                 Divider()
 
                 LabeledContent("duration", value: String(localized: "show.seasons-\(seasonsCount).episodes-\(episodesCount)"))
+					.labeledContentStyle(.fullWidth)
                     .shouldRedact(!self.loadedData)
             }
 
@@ -369,6 +379,7 @@ struct MediaItemView: View {
                 Divider()
 
                 LabeledContent("content-rating", value: rating)
+					.labeledContentStyle(.fullWidth)
                     .shouldRedact(!self.loadedData)
             }
         }
@@ -414,6 +425,9 @@ struct MediaItemView: View {
                         .shouldRedact(self.hideContent || !self.loadedData)
                     }
                     .disabled(self.hideContent || !self.loadedData)
+					#if os(macOS)
+					.buttonStyle(.plain)
+					#endif
                 }
             }
         }
@@ -626,7 +640,7 @@ struct MediaItemView: View {
 
 		var body: some View {
 			if self.releaseDates.count > 1 {
-				List {
+				Form {
 					ForEach(self.releaseDates.sorted(by: { $0.value < $1.value }).map({ $0.key }), id: \.self) { iso in
 						LabeledContent {
 							Text(self.releaseDates[iso]!, format: .dateTime.day().month().year(.extended(minimumLength: 4)))
@@ -643,6 +657,7 @@ struct MediaItemView: View {
 				#if !os(macOS)
 				.navigationBarTitleDisplayMode(.inline)
 				#endif
+				.formStyle(.grouped)
 				.scrollContentBackground(.hidden)
 				.toolbarTitleDisplayMode(.inlineLarge)
 				.background {
