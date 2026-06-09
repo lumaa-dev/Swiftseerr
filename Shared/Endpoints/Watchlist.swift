@@ -11,7 +11,7 @@ enum Watchlist: Endpoint {
         switch self {
             case .add:
                 "\(api)/watchlist"
-            case .remove(let tmdbId):
+            case .remove(let tmdbId, _):
                 "\(api)/watchlist/\(tmdbId)"
             case .get(let userId):
                 "\(api)/user/\(userId)/watchlist"
