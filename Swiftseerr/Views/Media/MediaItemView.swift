@@ -598,7 +598,7 @@ struct MediaItemView: View {
     private func changeWatchlist() async -> HTTPURLResponse? {
         guard let item else { return nil }
 
-        let endpoint: Watchlist = !item.inWatchList ? .remove(tmdbId: item.id) : .add(tmdbId: item.id, type: item.type, name: item.title)
+		let endpoint: Watchlist = !item.inWatchList ? .remove(tmdbId: item.id, type: item.type) : .add(tmdbId: item.id, type: item.type, name: item.title)
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(endpoint).1
         return http
     }
