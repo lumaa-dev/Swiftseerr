@@ -33,16 +33,16 @@ struct MediaItemView: View {
     }
 
     init(_ item: MediaItem) {
-        self.item = item
         self.id = item.id
         self.type = item.type
-        self.loadedData = true
+        self._item = State(initialValue: item)
+        self._loadedData = State(initialValue: true)
     }
 
     init(mediaId: Int, type: ItemType) {
-        self.item = .redacted
         self.id = mediaId
         self.type = type
+        self._item = State(initialValue: .redacted)
     }
 
     var body: some View {
@@ -199,7 +199,7 @@ struct MediaItemView: View {
                             .progressViewStyle(.circular)
                     }
             }
-            .safeAreaPadding(.top, 120)
+			.safeAreaPadding(.top, 120)
         }
         .stretchy()
     }
