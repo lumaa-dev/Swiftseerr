@@ -49,7 +49,7 @@ extension View {
     }
 
     private func changeWatchlist(_ item: DiscoverItem) async -> HTTPURLResponse? {
-        let endpoint: Watchlist = item.inWatchList ? .remove(tmdbId: item.id) : .add(tmdbId: item.id, type: item.type, name: item.name)
+		let endpoint: Watchlist = item.inWatchList ? .remove(tmdbId: item.id, type: item.type) : .add(tmdbId: item.id, type: item.type, name: item.name)
         let http: HTTPURLResponse? = try? await SeerSession.shared.raw(endpoint).1
         return http
     }
