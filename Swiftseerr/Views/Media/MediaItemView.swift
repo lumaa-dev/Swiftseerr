@@ -142,6 +142,7 @@ struct MediaItemView: View {
             }
         }
         .scrollContentBackground(.hidden)
+		.scrollEdgeEffectStyle(.soft, for: .all)
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
