@@ -4,7 +4,7 @@ import Foundation
 
 enum Watchlist: Endpoint {
     case add(tmdbId: Int, type: ItemType, name: String)
-    case remove(tmdbId: Int)
+	case remove(tmdbId: Int, type: ItemType)
     case get(userId: Int)
 
     func path() -> String {
@@ -33,6 +33,8 @@ enum Watchlist: Endpoint {
         switch self {
             case .get(let userId):
                 [.init(name: "userId", value: "\(userId)")]
+			case .remove(_, let type):
+				[.init(name: "mediaType", value: type.rawValue)]
             default:
                 nil
         }
