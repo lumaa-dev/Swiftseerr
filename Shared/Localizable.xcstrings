@@ -1834,6 +1834,22 @@
         }
       }
     },
+    "notification.filter.approved" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Approved Requests"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandes acceptés"
+          }
+        }
+      }
+    },
     "notification.filter.auto-approved" : {
       "localizations" : {
         "de" : {
@@ -1990,6 +2006,25 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새 대기 중인 요청"
+          }
+        }
+      }
+    },
+    "notification.media_approved-%@" : {
+      "comment" : "MEDIA_APPROVED notification",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ has been approved"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a été accepté"
           }
         }
       }
