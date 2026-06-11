@@ -243,7 +243,7 @@ struct ContentView: View {
 		print("deviceToken=\(AppDelegate.deviceToken)&seerrId=\(SeerSession.shared.user?.id ?? -1)&permissions=\(SeerSession.shared.user?.permission ?? -1)")
 
 		do {
-			let (data, res): (Data, URLResponse) = try await URLSession.shared.data(for: req)
+			let res: URLResponse = try await URLSession.shared.data(for: req).1
 			if let http = res as? HTTPURLResponse {
 				return http.statusCode == 200
 			} else {
