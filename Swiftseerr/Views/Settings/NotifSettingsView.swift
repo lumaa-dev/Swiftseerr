@@ -251,7 +251,7 @@ extension NotifSettingsView {
 
         var req: URLRequest = .init(url: urll, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 300)
         req.setValue(auth, forHTTPHeaderField: "Authorization")
-        req.httpBody = "deviceToken=\(AppDelegate.deviceToken)".data(using: .utf8)
+        req.httpBody = "deviceToken=\(AppDelegate.deviceToken)&seerrId=\(SeerSession.shared.user?.id ?? -1)&permissions=\(SeerSession.shared.user?.permission ?? -1)".data(using: .utf8)
         req.httpMethod = "POST"
 
         do {

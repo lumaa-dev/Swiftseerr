@@ -42,6 +42,9 @@ struct ContentView: View {
                 try await logIn(auth: loaded)
 
                 let isLogged: Bool = SeerSession.shared.authorization?.isEmpty == false
+				if isLogged {
+					_ = await self.sendToken()
+				}
 
                 self.onboarding = UserDefaults.standard.bool(forKey: "onboarded") && isLogged ? .complete : .welcome
             } catch {
@@ -225,5 +228,32 @@ struct ContentView: View {
             throw SeerrError()
         }
     }
+
+	private func sendToken() async -> Bool {
+		guard let urll: URL = URL(string: "\(UserDefaults.standard.string(forKey: "notifUrl") ?? "")/token"), let auth = UserDefaults.standard.string(forKey: "notifAuth") else {
+			return false
+		}
+
+		var req: URLRequest = .init(url: urll, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 300)
+		req.setValue(auth, forHTTPHeaderField: "Authorization")
+		req.httpBody = "deviceToken=\(AppDelegate.deviceToken)&seerrId=\(SeerSession.shared.user?.id ?? -1)&permissions=\(SeerSession.shared.user?.permission ?? -1)"
+			.data(using: .utf8)
+		req.httpMethod = "POST"
+
+		print("deviceToken=\(AppDelegate.deviceToken)&seerrId=\(SeerSession.shared.user?.id ?? -1)&permissions=\(SeerSession.shared.user?.permission ?? -1)")
+
+		do {
+			let (data, res): (Data, URLResponse) = try await URLSession.shared.data(for: req)
+			if let http = res as? HTTPURLResponse {
+				return http.statusCode == 200
+			} else {
+				return false
+			}
+		} catch {
+			print(error)
+		}
+
+		return false
+	}
 }
 
