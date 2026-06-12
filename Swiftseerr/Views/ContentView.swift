@@ -94,7 +94,7 @@ struct ContentView: View {
             .customizationID("requests")
 
             Tab {
-                DiscoverItemsView("upcoming.shows", endpoint: Discover.trending)
+                DiscoverItemsView("trending", endpoint: Discover.trending)
             } label: {
                 Label("trending", systemImage: "chart.line.uptrend.xyaxis")
             }
