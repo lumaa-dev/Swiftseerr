@@ -72,6 +72,13 @@ struct ContentView: View {
     @ViewBuilder
     private var bigTabs: some View {
         TabView {
+			Tab(role: .search) {
+				SearchView()
+			}
+			#if os(iPadOS)
+			.customizationBehavior(.disabled, for: .automatic, .sidebar, .tabBar)
+			#endif
+
             Tab {
                 DiscoverView()
             } label: {
@@ -92,13 +99,6 @@ struct ContentView: View {
                 Label("trending", systemImage: "chart.line.uptrend.xyaxis")
             }
             .customizationID("trending")
-
-            Tab(role: .search) {
-                SearchView()
-            }
-            #if os(iPadOS)
-            .customizationBehavior(.disabled, for: .automatic, .sidebar, .tabBar)
-            #endif
 
             TabSection("all.movies") {
                 Tab {
