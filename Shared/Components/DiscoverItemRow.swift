@@ -13,9 +13,7 @@ struct DiscoverItemRow: View {
     #endif
 
     var body: some View {
-        NavigationLink {
-            MediaItemView(mediaId: item.id, type: item.type)
-        } label: {
+		NavigationLink(value: Navigator.Paths.itemId(id: item.id, type: item.type)) {
             #if !os(tvOS)
             VStack(spacing: 4) {
                 self.poster

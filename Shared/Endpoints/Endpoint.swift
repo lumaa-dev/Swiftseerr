@@ -3,6 +3,8 @@
 import Foundation
 
 protocol Endpoint: Sendable {
+	var id: String { get }
+
     func path() -> String
     func queryItems() -> [URLQueryItem]?
     var jsonValue: Encodable? { get }
@@ -15,6 +17,10 @@ extension Endpoint {
 
     var source: String { SeerSession.shared.auth.address }
     var api: String { "\(SeerSession.shared.auth.address)/api/v1" }
+
+	var id: String {
+		return "\(self.method.rawValue) \(self.path())"
+	}
 }
 
 enum HTTPMethod: String {

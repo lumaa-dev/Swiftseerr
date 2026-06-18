@@ -47,9 +47,7 @@ struct RequestRow: View {
     var itemView: some View {
         if let item {
             VStack(spacing: 16.0) {
-                NavigationLink {
-                    MediaItemView(item)
-                } label: {
+				NavigationLink(value: Navigator.Paths.item(item)) {
                     HStack(spacing: 8) {
                         poster
                             .frame(width: width, height: height)

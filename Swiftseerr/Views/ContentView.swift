@@ -4,7 +4,8 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-	@Environment(\.horizontalSizeClass) var horizontalSizeClass
+	@Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
+	@Environment(\.openURL) private var openURL: OpenURLAction
 
     @AppStorage("AppTabs") private var customization: TabViewCustomization
 
@@ -52,6 +53,14 @@ struct ContentView: View {
                 print(error)
             }
         }
+		.environment(\.openURL, OpenURLAction { url in
+			print("[openURL+handle] Handling \(url.absoluteString)")
+			return DeeplinkManager.handle(url)
+		})
+		.onOpenURL(perform: { url in
+			print("[openURL+handle] Handling \(url.absoluteString)")
+			_ = DeeplinkManager.handle(url)
+		})
     }
 
     //MARK: - Views
@@ -71,72 +80,56 @@ struct ContentView: View {
 
     @ViewBuilder
     private var bigTabs: some View {
-        TabView {
-			Tab(role: .search) {
-				SearchView()
+		TabView(selection: Binding(get: { Navigator.shared.selectedTab }, set: { Navigator.shared.selectedTab = $0 })) {
+			Tab(value: Navigator.Tabs.search) {
+				Navigator.Tabs.search.content
+			} label: {
+				Navigator.Tabs.search.label
 			}
-			#if os(iPadOS)
-			.customizationBehavior(.disabled, for: .automatic, .sidebar, .tabBar)
-			#endif
 
-            Tab {
-                DiscoverView()
-            } label: {
-                Label("discover", systemImage: "sparkles")
-            }
-            .customizationID("discover")
+			Tab(value: Navigator.Tabs.discover) {
+				Navigator.Tabs.discover.content
+			} label: {
+				Navigator.Tabs.discover.label
+			}
+			.customizationID("discover")
 
-            Tab {
-                RequestView()
-            } label: {
-                Label("requests", systemImage: "clock")
-            }
-            .customizationID("requests")
-
-            Tab {
-                DiscoverItemsView("trending", endpoint: Discover.trending)
-            } label: {
-                Label("trending", systemImage: "chart.line.uptrend.xyaxis")
-            }
-            .customizationID("trending")
+			Tab(value: Navigator.Tabs.requests) {
+				Navigator.Tabs.requests.content
+			} label: {
+				Navigator.Tabs.requests.label
+			}
+			.customizationID("requests")
 
             TabSection("all.movies") {
-                Tab {
-                    DiscoverItemsView("movies", endpoint: Discover.movie)
+				Tab(value: Navigator.Tabs.movies) {
+					Navigator.Tabs.movies.content
                 } label: {
-                    Label("movies", systemImage: "film.stack")
+					Navigator.Tabs.movies.label
                 }
                 .customizationID("movies")
 
-                Tab {
-                    DiscoverItemsView(
-                        "upcoming.movies",
-                        endpoint: Discover.movie,
-                        additionalQueries: [Discover.upcoming(type: .movie)]
-                    )
-                } label: {
-                    Label("upcoming.movies", systemImage: "calendar.badge.clock")
-                }
+				Tab(value: Navigator.Tabs.upcomingMovies) {
+					Navigator.Tabs.upcomingMovies.content
+				} label: {
+					Navigator.Tabs.upcomingMovies.label
+				}
                 .customizationID("upcoming.movies")
             }
 
             TabSection("all.shows") {
-                Tab {
-                    DiscoverItemsView("shows", endpoint: Discover.show)
-                } label: {
-                    Label("shows", systemImage: "play.tv")
-                }
+				Tab(value: Navigator.Tabs.shows) {
+					Navigator.Tabs.shows.content
+				} label: {
+					Navigator.Tabs.shows.label
+				}
                 .customizationID("shows")
 
-                Tab {
-                    DiscoverItemsView(
-                        "upcoming.shows",
-                        endpoint: Discover.show,
-                        additionalQueries: [Discover.upcoming(type: .show)]
-                    )
-                } label: {
-                    Label("upcoming.shows", systemImage: "globe.badge.clock")
-                }
+				Tab(value: Navigator.Tabs.upcomingShows) {
+					Navigator.Tabs.upcomingShows.content
+				} label: {
+					Navigator.Tabs.upcomingShows.label
+				}
                 .customizationID("upcoming.shows")
             }
         }
@@ -146,42 +139,46 @@ struct ContentView: View {
         .defaultAdaptableTabBarPlacement(.tabBar)
         .tabBarMinimizeBehavior(.onScrollDown)
         #endif
+		#if DEBUG
         .onAppear {
             customization.resetSectionOrder()
             customization.resetVisibility()
         }
+		#endif
     }
 
     @ViewBuilder
     private var smallTabs: some View {
-        TabView {
-            Tab {
-                DiscoverView()
-            } label: {
-                Label("discover", systemImage: "sparkles")
-            }
+		TabView(selection: Binding(get: { Navigator.shared.selectedTab }, set: { Navigator.shared.selectedTab = $0 })) {
+			Tab(value: Navigator.Tabs.discover) {
+				Navigator.Tabs.discover.content
+			} label: {
+				Navigator.Tabs.discover.label
+			}
 
-            Tab {
-                DiscoverItemsView("movies", endpoint: Discover.movie)
-            } label: {
-                Label("movies", systemImage: "film.stack")
-            }
+			Tab(value: Navigator.Tabs.movies) {
+				Navigator.Tabs.movies.content
+			} label: {
+				Navigator.Tabs.movies.label
+			}
 
-            Tab {
-                DiscoverItemsView("shows", endpoint: Discover.show)
-            } label: {
-                Label("shows", systemImage: "play.tv")
-            }
+			Tab(value: Navigator.Tabs.shows) {
+				Navigator.Tabs.shows.content
+			} label: {
+				Navigator.Tabs.shows.label
+			}
 
-            Tab {
-                RequestView()
-            } label: {
-                Label("requests", systemImage: "clock")
-            }
+			Tab(value: Navigator.Tabs.requests) {
+				Navigator.Tabs.requests.content
+			} label: {
+				Navigator.Tabs.requests.label
+			}
 
-            Tab(role: .search) {
-                SearchView()
-            }
+			Tab(value: Navigator.Tabs.search, role: .search) {
+				Navigator.Tabs.search.content
+			} label: {
+				Navigator.Tabs.search.label
+			}
         }
         .tabViewStyle(.tabBarOnly)
         #if !os(macOS)

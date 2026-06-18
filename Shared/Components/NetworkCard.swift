@@ -22,9 +22,7 @@ struct NetworkCard: View {
 	}
 
 	var body: some View {
-		NavigationLink {
-			DiscoverItemsView(LocalizedStringKey(self.network.name), endpoint: self.isStudio ? Discover.studio(self.network.id) : Discover.network(self.network.id))
-		} label: {
+		NavigationLink(value: Navigator.Paths.items(LocalizedStringKey(self.network.name), endpoint: self.isStudio ? Discover.studio(self.network.id) : Discover.network(self.network.id))) {
 			self.label
 		}
 	}

@@ -10,9 +10,7 @@ extension View {
         self
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    NavigationLink {
-                        SettingsView()
-                    } label: {
+					NavigationLink(value: Navigator.Paths.settings) {
                         Label("settings", systemImage: "gear")
                     }
                 }

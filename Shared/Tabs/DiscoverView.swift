@@ -21,7 +21,7 @@ struct DiscoverView: View {
     var body: some View {
         ZStack {
             if hasLoaded {
-                NavigationStack {
+				NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[Navigator.Tabs.discover] ?? [] }, set: { Navigator.shared.navigationPath[Navigator.Tabs.discover] = $0 } )) {
                     ScrollView {
                         LazyVStack(spacing: 32) {
                             if !self.watchlist.isEmpty {
@@ -81,6 +81,7 @@ struct DiscoverView: View {
                         }
 						.padding(.bottom)
                     }
+					.navigator()
                     #if !os(tvOS)
                     .navigationTitle(Text("discover"))
                     .toolbarTitleDisplayMode(.inlineLarge)

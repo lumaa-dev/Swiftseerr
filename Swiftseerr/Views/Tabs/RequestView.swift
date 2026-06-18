@@ -12,7 +12,7 @@ struct RequestView: View {
 	@State private var atBottom: Bool = false
 
     var body: some View {
-		NavigationStack {
+		NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[Navigator.Tabs.requests] ?? [] }, set: { Navigator.shared.navigationPath[Navigator.Tabs.requests] = $0 } )) {
 			ScrollView {
 				if self.isLoaded && !self.requests.isEmpty  {
 					LazyVStack {
@@ -52,6 +52,7 @@ struct RequestView: View {
 					ContentUnavailableView("no.requests", systemImage: "clock.badge.questionmark", description: Text("no.requests.description"))
 				}
 			}
+			.navigator()
 			.addSettings()
 			.navigationTitle(Text("requests"))
 			.toolbarTitleDisplayMode(.inlineLarge)

@@ -9,4 +9,11 @@ extension [URLQueryItem] {
             return URLQueryItem(name: queryItem.name, value: encodedValue)
         }
     }
+
+	var asString: String {
+		let mapped: [String] = self.map {
+			return "\($0.name)=\($0.value ?? "")"
+		}
+		return mapped.joined(separator: "&")
+	}
 }

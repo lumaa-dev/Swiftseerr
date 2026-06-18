@@ -1,8 +1,9 @@
 // Made by Lumaa
 
 import Foundation
+import CoreTransferable
 
-struct MediaItem: Identifiable {
+struct MediaItem: Identifiable, Transferable {
     let id: Int
     let type: ItemType
 
@@ -248,5 +249,9 @@ struct MediaItem: Identifiable {
             inWatchList: false
         )
     }()
+
+	static var transferRepresentation: some TransferRepresentation {
+		ProxyRepresentation(exporting: \.title)
+	}
 }
 

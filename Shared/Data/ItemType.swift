@@ -2,9 +2,10 @@
 
 import Foundation
 
-enum ItemType: String, Decodable {
+enum ItemType: String, Codable {
     case movie
     case show = "tv"
+	case unknown
 
     var localized: LocalizedStringResource {
         switch self {
@@ -12,6 +13,8 @@ enum ItemType: String, Decodable {
                 LocalizedStringResource("movie")
             case .show:
                 LocalizedStringResource("show")
+			case .unknown:
+				LocalizedStringResource("unknown")
         }
     }
 }

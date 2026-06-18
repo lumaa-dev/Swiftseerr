@@ -18,9 +18,7 @@ struct PersonPlate: View {
     }
 
     var body: some View {
-        NavigationLink {
-            SeerrPersonView(personId: self.person.tmdbId)
-        } label: {
+		NavigationLink(value: Navigator.Paths.person(self.person.tmdbId)) {
             #if !os(tvOS)
             VStack(spacing: 10.0) {
                 profileImage

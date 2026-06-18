@@ -25,7 +25,7 @@ struct SearchView: View {
     }
 
     var body: some View {
-        NavigationStack {
+		NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[Navigator.Tabs.search] ?? [] }, set: { Navigator.shared.navigationPath[Navigator.Tabs.search] = $0 } )) {
             if self.items.isEmpty {
                 ZStack {
                     Color.bgPurple.ignoresSafeArea()
@@ -46,6 +46,7 @@ struct SearchView: View {
                     }
                     .padding()
                 }
+				.navigator()
                 #if !os(tvOS)
                 .navigationTitle("search")
                 .toolbarTitleDisplayMode(.inlineLarge)

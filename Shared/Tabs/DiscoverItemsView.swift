@@ -6,6 +6,7 @@ struct DiscoverItemsView: View {
     let title: LocalizedStringKey
     let endpoint: any Endpoint
     let query: [URLQueryItem]
+	let rootTab: Navigator.Tabs?
 
     @State private var items: [DiscoverItem] = []
     @State private var pages: Int = 2
@@ -24,10 +25,11 @@ struct DiscoverItemsView: View {
         #endif
     }
 
-    init(_ title: LocalizedStringKey, endpoint: any Endpoint, additionalQueries: [URLQueryItem] = []) {
+	init(_ title: LocalizedStringKey, endpoint: any Endpoint, additionalQueries: [URLQueryItem] = [], rootTab: Navigator.Tabs? = nil) {
         self.title = title
         self.endpoint = endpoint
         self.query = additionalQueries
+		self.rootTab = rootTab
     }
 
     var body: some View {
@@ -39,47 +41,57 @@ struct DiscoverItemsView: View {
                 ProgressView()
                     .progressViewStyle(.circular)
             } else {
-                NavigationStack {
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(items) { item in
-                                DiscoverItemRow(item: item)
-                                    .frame(maxWidth: .infinity)
-                                    .onAppear {
-                                        guard let lastItem = self.items.last, item == lastItem else { return }
-
-                                        Task {
-                                            let newItems: [DiscoverItem] = await self.fetchItems(page: self.pages)
-                                            if !newItems.isEmpty {
-                                                self.pages += 1
-                                                self.items.append(contentsOf: newItems)
-                                            } else {
-                                                print("[fetchItems (page \(self.pages)] Nothing new to add")
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                        .padding()
-                    }
-                    #if !os(tvOS)
-                    .navigationTitle(self.title)
-                    .toolbarTitleDisplayMode(.inlineLarge)
-                    .scrollContentBackground(.hidden)
-                    #endif
-                    .background {
-                        Color.bgPurple.ignoresSafeArea()
-                    }
-                    #if !os(tvOS)
-                    .addSettings()
-                    #endif
-                }
+				if let rootTab {
+					NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[rootTab] ?? [] }, set: { Navigator.shared.navigationPath[rootTab] = $0 })) {
+						self.grid
+							.navigator()
+					}
+				} else {
+					self.grid
+				}
             }
         }
         .task {
             self.items = await self.fetchItems()
         }
     }
+
+	@ContentBuilder
+	private var grid: some View {
+		ScrollView {
+			LazyVGrid(columns: columns, spacing: 16) {
+				ForEach(items) { item in
+					DiscoverItemRow(item: item)
+						.frame(maxWidth: .infinity)
+						.onAppear {
+							guard let lastItem = self.items.last, item == lastItem else { return }
+
+							Task {
+								let newItems: [DiscoverItem] = await self.fetchItems(page: self.pages)
+								if !newItems.isEmpty {
+									self.pages += 1
+									self.items.append(contentsOf: newItems)
+								} else {
+									print("[fetchItems (page \(self.pages)] Nothing new to add")
+								}
+							}
+						}
+				}
+			}
+			.padding()
+		}
+		#if !os(tvOS)
+		.navigationTitle(self.title)
+		.toolbarTitleDisplayMode(.inlineLarge)
+		.scrollContentBackground(.hidden)
+		#endif
+		.background {
+			Color.bgPurple.ignoresSafeArea()
+		}
+		#if !os(tvOS)
+		.addSettings()
+		#endif
+	}
 
     func fetchItems(page: Int = 1) async -> [DiscoverItem] {
         var q: [URLQueryItem] = [.init(name: "page", value: "\(page)")]
