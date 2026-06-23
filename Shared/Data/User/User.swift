@@ -56,4 +56,6 @@ struct User: Identifiable, Equatable {
 
         return (self.permission & Permission.admin.rawValue) != 0 || (self.permission & total) != 0
     }
+
+	static var redacted: User { return .init(id: 1, username: "Lumaa", permission: Permission.admin.rawValue ) }
 }

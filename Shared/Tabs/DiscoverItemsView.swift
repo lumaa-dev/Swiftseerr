@@ -34,22 +34,14 @@ struct DiscoverItemsView: View {
 
     var body: some View {
         ZStack {
-            if self.items.isEmpty {
-                Color.bgPurple
-                    .ignoresSafeArea()
-                
-                ProgressView()
-                    .progressViewStyle(.circular)
-            } else {
-				if let rootTab {
-					NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[rootTab] ?? [] }, set: { Navigator.shared.navigationPath[rootTab] = $0 })) {
-						self.grid
-							.navigator()
-					}
-				} else {
+			if let rootTab {
+				NavigationStack(path: Binding(get: { Navigator.shared.navigationPath[rootTab] ?? [] }, set: { Navigator.shared.navigationPath[rootTab] = $0 })) {
 					self.grid
+						.navigator()
 				}
-            }
+			} else {
+				self.grid
+			}
         }
         .task {
             self.items = await self.fetchItems()
@@ -58,10 +50,12 @@ struct DiscoverItemsView: View {
 
 	@ContentBuilder
 	private var grid: some View {
+		let loadItems: [DiscoverItem] = self.items.isEmpty ? Array(repeating: DiscoverItem.redacted, count: 10) : self.items
 		ScrollView {
 			LazyVGrid(columns: columns, spacing: 16) {
-				ForEach(items) { item in
+				ForEach(loadItems) { item in
 					DiscoverItemRow(item: item)
+						.shouldRedact(self.items.isEmpty)
 						.frame(maxWidth: .infinity)
 						.onAppear {
 							guard let lastItem = self.items.last, item == lastItem else { return }

@@ -75,4 +75,6 @@ struct DiscoverItem: Identifiable, Equatable {
         guard let media: MediaItem = await self.fetchMedia() else { return nil }
         return .init(id: media.id, name: media.title, imagePath: media.posterPath ?? "", type: media.type)
     }
+
+	static var redacted: DiscoverItem { MediaItem.redacted.toDiscover() }
 }

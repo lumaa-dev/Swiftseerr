@@ -26,6 +26,12 @@ struct RequestRow: View {
         self.onDelete = onDelete
     }
 
+	init(_ request: MediaRequest) {
+		self._request = .constant(request)
+		self.showActions = false
+		self.onDelete = {}
+	}
+
     var body: some View {
         if item != nil {
             itemView

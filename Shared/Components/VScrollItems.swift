@@ -3,20 +3,23 @@
 import SwiftUI
 
 struct VScrollItems<Content : View>: View {
-    let content: () -> Content
-    let title: LocalizedStringKey
+    private let content: () -> Content
+    private let title: LocalizedStringKey
+
+	private var canScroll: Bool
 
     #if !os(tvOS) && !os(macOS)
-    let vspacing: CGFloat = 8.0
+    private let vspacing: CGFloat = 8.0
     #elseif os(tvOS)
-    let vspacing: CGFloat = 35.0
+    private let vspacing: CGFloat = 35.0
 	#else
-	let vspacing: CGFloat = 12.0
+	private let vspacing: CGFloat = 12.0
     #endif
 
     init(_ title: LocalizedStringKey, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
         self.content = content
+		self.canScroll = true
     }
 
     var body: some View {
@@ -32,7 +35,14 @@ struct VScrollItems<Content : View>: View {
                 self.content()
             }
             .scrollClipDisabled()
+			.scrollDisabled(!self.canScroll)
         }
         .padding(.horizontal)
     }
+
+	func canScroll(_ enabled: Bool = true) -> Self {
+		var view: Self = self
+		view.canScroll = enabled
+		return view
+	}
 }

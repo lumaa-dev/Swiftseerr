@@ -90,14 +90,14 @@ struct SeerrPersonView: View {
 
     @ViewBuilder
     private var content: some View {
-        if !self.personContent.isEmpty {
-            LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(self.personContent) { item in
-                    DiscoverItemRow(item: item)
-                }
-            }
-            .padding()
-        }
+		let content: [DiscoverItem] = self.personContent.isEmpty ? Array(repeating: DiscoverItem.redacted, count: 10) : self.personContent
+		LazyVGrid(columns: columns, spacing: 16) {
+			ForEach(content) { item in
+				DiscoverItemRow(item: item)
+					.shouldRedact(self.personContent.isEmpty)
+			}
+		}
+		.padding()
     }
 
     private func fetchPerson() async throws -> SeerrPerson {

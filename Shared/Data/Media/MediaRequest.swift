@@ -41,4 +41,6 @@ struct MediaRequest: Identifiable, Equatable {
             throw SeerrError()
         }
     }
+
+	static var redacted: MediaRequest { self.init(id: 1, mediaId: nil, status: .unknown, requestedBy: .redacted, type: .unknown) }
 }

@@ -680,7 +680,7 @@ struct MediaItemView: View {
 	}
 }
 
-private extension View {
+extension View {
     @ViewBuilder
     func shouldRedact(_ redact: Bool = true) -> some View {
         if redact {
