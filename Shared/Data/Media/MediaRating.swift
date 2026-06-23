@@ -451,8 +451,7 @@ struct MediaRating {
     }
 
     static func prepareAsk(for age: Int) -> Bool {
-		return true
-//        return UserDefaults.standard.integer(forKey: "ageCheck") < age
+        return UserDefaults.standard.integer(forKey: "ageCheck") < age
     }
 }
 #endif
