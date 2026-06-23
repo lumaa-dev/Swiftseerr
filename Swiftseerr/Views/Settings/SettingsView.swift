@@ -9,6 +9,7 @@ struct SettingsView: View {
     #if os(iOS)
     @AppStorage("appIcon") private var appIcon: AppIcons = .jelly
     #endif
+	@AppStorage("ageCheck") private var definedAge: Int = -1
 
     @Query private var auths: [AuthInfo]
 
@@ -18,6 +19,10 @@ struct SettingsView: View {
     @State private var newOnboard: SeerSession.OnboardingSteps = .welcome
 
     @State private var viewUrl: String? = nil
+
+	private var undefinedAge: Bool {
+		return definedAge <= 0
+	}
 
     var body: some View {
         Form {
@@ -131,15 +136,12 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var defAge: some View {
-		let undefinedAge: Bool = UserDefaults.standard.value(forKey: "ageCheck") == nil
-
         Section(header: Text("def-age"), footer: Text("def-age.footer")) {
-            let definedAge: Int = UserDefaults.standard.integer(forKey: "ageCheck")
-            LabeledContent("def-age", value: definedAge > 0 ? "\(definedAge)" : "Unknown")
+			LabeledContent("def-age", value: definedAge > 0 ? "\(definedAge)" : String(localized: "unknown"))
         }
         .sectionActions {
             Button(role: .destructive) {
-                UserDefaults.standard.removeObject(forKey: "ageCheck")
+				self.definedAge = -1
             } label: {
                 Label("def-age.reset", systemImage: "figure.child.and.lock.fill")
                     .foregroundStyle(Color.red)

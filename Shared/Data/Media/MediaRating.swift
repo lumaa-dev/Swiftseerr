@@ -420,15 +420,24 @@ struct MediaRating {
 
     static func find(for media: MediaItem) -> Int? {
         if let normalizedRating = media.rating?.uppercased(), let normalizedCountry = Locale.current.region?.identifier {
+			var final: Int? = nil
             for (key, value) in Self.mappings {
                 if key == normalizedCountry {
                     print("[MediaRating] \(normalizedCountry) uses \(normalizedRating) which is \(value[normalizedRating] ?? -1)")
-                    return value[normalizedRating]
+                    final = value[normalizedRating]
                 }
             }
+
+			if (final == -1 || final == nil), var rating = media.rating {
+				print("[MediaRating] Instead of using mapping, use \(rating)")
+				rating.replace(/(\+|\-)+/, with: "") // remove all + in "13+" or "+13" for example
+				final = Int(rating)
+			}
+
+			return final
         } else if var rating = media.rating {
             print("[MediaRating] Using normal rating which is \(rating)")
-            rating.replace(/\++/, with: "") // remove all + in "13+" or "+13" for example
+            rating.replace(/(\+|\-)+/, with: "") // remove all + in "13+" or "+13" for example
             return Int(rating)
         }
         return nil
@@ -442,7 +451,8 @@ struct MediaRating {
     }
 
     static func prepareAsk(for age: Int) -> Bool {
-        return UserDefaults.standard.integer(forKey: "ageCheck") < age
+		return true
+//        return UserDefaults.standard.integer(forKey: "ageCheck") < age
     }
 }
 #endif

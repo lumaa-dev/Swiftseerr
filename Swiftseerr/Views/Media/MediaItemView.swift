@@ -528,13 +528,17 @@ struct MediaItemView: View {
     private func verifyAge() async {
         guard let item, let minAge: Int = MediaRating.find(for: item) else { return }
 
+		#if os(iOS)
+		// macOS always throws false for some reason, thanks Apple
         if #available(iOS 26.2, macOS 26.2, *) {
             let eligibility: Bool = (try? await AgeRangeService.shared.isEligibleForAgeFeatures) ?? true
             if !eligibility {
+				print("[verifyAge] User is ineligible")
                 self.hideContent = false
                 return
             }
         }
+		#endif
 
         if MediaRating.prepareAsk(for: minAge) {
             print("[verifyAge] Hiding content, asking for \(minAge)+ age")
@@ -552,6 +556,7 @@ struct MediaItemView: View {
                     case let .sharing(range):
                         if let lowerBound = range.lowerBound, lowerBound >= minAge {
                             print("[verifyAge] Verified age perfectly")
+							MediaRating.defineDefault(minAge)
                             self.hideContent = false
                         }
                     @unknown default:
