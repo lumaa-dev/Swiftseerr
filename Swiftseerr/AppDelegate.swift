@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var deviceToken: String = ""
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+		UNUserNotificationCenter.current().delegate = self
         Self.requestNotifications {_ in}
 
         return true
@@ -43,11 +44,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Task { @MainActor in
                 if granted {
                     print("GRANTED NOTIF")
-                    
-                    try await UNUserNotificationCenter.current().setBadgeCount(0)
-                    UIApplication.shared.registerForRemoteNotifications()
-                    AppDelegate.hasNotifications = true
-                    AppDelegate.failedToken = true
+
+					do {
+						try await UNUserNotificationCenter.current().setBadgeCount(0)
+						UIApplication.shared.registerForRemoteNotifications()
+						AppDelegate.hasNotifications = true
+						AppDelegate.failedToken = true
+					} catch {
+						print("[AppDelegate+requestNotifications] \(error)")
+					}
 
                     if let deviceToken = UserDefaults.standard.string(forKey: "deviceToken") {
                         AppDelegate.deviceToken = deviceToken
@@ -83,6 +88,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	static var deviceToken: String = ""
 
 	func applicationDidFinishLaunching(_ notification: Notification) {
+		UNUserNotificationCenter.current().delegate = self
 		Self.requestNotifications { _ in }
 	}
 
@@ -105,10 +111,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				if granted {
 					print("GRANTED NOTIF")
 
-					try await UNUserNotificationCenter.current().setBadgeCount(0)
-					NSApplication.shared.registerForRemoteNotifications()
-					AppDelegate.hasNotifications = true
-					AppDelegate.failedToken = true
+					do {
+						try await UNUserNotificationCenter.current().setBadgeCount(0)
+						NSApplication.shared.registerForRemoteNotifications()
+						AppDelegate.hasNotifications = true
+						AppDelegate.failedToken = true
+					} catch {
+						print("[AppDelegate+requestNotifications] \(error)")
+					}
 
 					if let deviceToken = UserDefaults.standard.string(forKey: "deviceToken") {
 						AppDelegate.deviceToken = deviceToken
@@ -127,3 +137,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 }
 #endif
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		let userInfo = response.notification.request.content.userInfo
+
+		if let urlString = userInfo["destination"] as? String, let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
+			UIApplication.shared.open(url)
+		} else {
+			UIApplication.shared.open(URL(string: "swiftseerr://")!)
+		}
+
+		completionHandler()
+	}
+}
