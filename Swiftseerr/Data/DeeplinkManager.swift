@@ -20,6 +20,7 @@ final class DeeplinkManager {
 
 			switch host {
 				case .movie, .tv:
+					print("[DeeplinkManager] Deep link is media")
 					return self.media(host, component: component)
 				case .navigation:
 					return self.defaultResult
@@ -43,26 +44,28 @@ final class DeeplinkManager {
 	}
 
 	private static func media(_ host: DeeplinkManager.Path, component: URLComponents) -> OpenURLAction.Result {
-		guard let queries: [URLQueryItem] = component.queryItems else { return self.defaultResult }
-
-		if let id: String = queries.filter({ $0.name == "id" }).first?.value, let idInt = Int(id) {
-			let path: Navigator.Paths = .itemId(id: idInt, type: host.type)
-			self.followPath(path)
-		} else {
-			Navigator.shared.selectedTab = host.tab
-			return .handled
+		if let queries: [URLQueryItem] = component.queryItems {
+			if let id: String = queries.filter({ $0.name == "id" }).first?.value, let idInt = Int(id) {
+				let path: Navigator.Paths = .itemId(id: idInt, type: host.type)
+				self.followPath(path)
+				return .handled
+			}
 		}
 
-		return self.defaultResult
+		Navigator.shared.selectedTab = host.tab
+		print("[DeeplinkManager] Probably just a tab \(host.tab.rawValue)")
+		return .handled
 	}
 
 	private static func followPath(_ path: Navigator.Paths) {
 		let pathIndex: Int? = Navigator.shared.currentPath.lastIndex(of: path)
 		if let pathIndex {
 			let count: Int = Navigator.shared.currentPath.count
-			Navigator.shared.currentPath.remove(atOffsets: .init(integersIn: pathIndex...count))
+			Navigator.shared.currentPath.remove(atOffsets: .init(integersIn: pathIndex + 1...count))
+			print("[DeeplinkManager] Found existing path to \(path.id)")
 		} else {
 			Navigator.shared.currentPath.append(path)
+			print("[DeeplinkManager] Appended path \(path.id)")
 		}
 	}
 
