@@ -2,9 +2,9 @@
 
 import SwiftUI
 
-struct NavigationVScrollItems<Content : View, Destination : View>: View {
+struct NavigationVScrollItems<Content : View>: View {
     private let title: LocalizedStringKey
-    private let destination: () -> Destination
+	private let destination: Navigator.Paths
     private let content: () -> Content
 
 	private var canScroll: Bool
@@ -17,25 +17,16 @@ struct NavigationVScrollItems<Content : View, Destination : View>: View {
 	private let vspacing: CGFloat = 12.0
 	#endif
 
-    init(_ title: LocalizedStringKey, @ViewBuilder destination: @escaping () -> Destination, @ViewBuilder content: @escaping () -> Content) {
+	init(_ title: LocalizedStringKey, destination: Navigator.Paths, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
         self.destination = destination
         self.content = content
 		self.canScroll = true
     }
 
-    init(_ title: LocalizedStringKey, destination: Destination, @ViewBuilder content: @escaping () -> Content) {
-        self.title = title
-        self.destination = { destination }
-        self.content = content
-		self.canScroll = true
-    }
-
     var body: some View {
         LazyVStack(alignment: .leading, spacing: vspacing) {
-            NavigationLink {
-                self.destination()
-            } label: {
+			NavigationLink(value: self.destination) {
                 HStack(spacing: 12.0) {
                     Text(title)
                         .foregroundStyle(Color.primary)

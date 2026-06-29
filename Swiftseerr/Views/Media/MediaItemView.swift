@@ -351,9 +351,7 @@ struct MediaItemView: View {
     @ViewBuilder
     private var list: some View {
         VStack(spacing: 17.0) {
-			NavigationLink {
-				Self.ReleasesView(releaseDates: self.item!.releaseDates)
-			} label: {
+			NavigationLink(value: Navigator.Paths.releases(self.item!.releaseDates)) {
 				LabeledContent(String(localized: "release"), value: self.item!.releaseDate, format: .dateTime.day().month(.wide).year(.extended(minimumLength: 4)))
 					.labeledContentStyle(.fullWidth)
 					.shouldRedact(!self.loadedData)
@@ -439,7 +437,7 @@ struct MediaItemView: View {
         if let item {
             VStack(alignment: .leading, spacing: 32) {
                 if !item.cast.isEmpty {
-                    NavigationVScrollItems("cast", destination: MediaPersonsView(with: item.cast, title: "cast")) {
+					NavigationVScrollItems("cast", destination: Navigator.Paths.persons(item.cast, title: "cast")) {
                         HStack {
                             if item.cast.count > 8 {
                                 ForEach(item.cast[0...8]) { c in
@@ -455,7 +453,7 @@ struct MediaItemView: View {
                 }
 
                 if !item.crew.isEmpty {
-                    NavigationVScrollItems("crew", destination: MediaPersonsView(with: item.crew, title: "crew")) {
+                    NavigationVScrollItems("crew", destination: Navigator.Paths.persons(item.crew, title: "crew")) {
                         HStack {
                             if item.crew.count > 8 {
                                 ForEach(item.crew[0...8]) { c in
@@ -618,7 +616,7 @@ struct MediaItemView: View {
         return http
     }
 
-	private struct ReleasesView: View {
+	struct ReleasesView: View {
 		let releaseDates: [String: Date]
 
 		init(releaseDates: [String : Date] = [:]) {
@@ -634,7 +632,6 @@ struct MediaItemView: View {
 								.lineLimit(1)
 								.multilineTextAlignment(.trailing)
 						} label: {
-
 							Text((self.flagEmoji(for: iso) ?? "") + " " + (Locale.current.localizedString(forRegionCode: iso) ?? "unknown"))
 								.lineLimit(1)
 								.multilineTextAlignment(.leading)

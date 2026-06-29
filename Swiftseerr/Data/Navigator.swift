@@ -139,7 +139,9 @@ final class Navigator {
 		case item(_ item: MediaItem)
 		case itemId(id: Int, type: ItemType)
 		case items(_ name: LocalizedStringKey, endpoint: any Endpoint, additionalQueries: [URLQueryItem] = [], rootTab: Navigator.Tabs? = nil)
+		case releases(_ releases: [String: Date])
 		case person(_ personId: Int)
+		case persons(_ persons: [MediaPerson], title: LocalizedStringKey)
 		case settings
 
 		@ContentBuilder
@@ -151,8 +153,12 @@ final class Navigator {
 					MediaItemView(mediaId: id, type: type)
 				case .items(let name, let endpoint, let queries, let root):
 					DiscoverItemsView(name, endpoint: endpoint, additionalQueries: queries, rootTab: root)
+				case .releases(let dates):
+					MediaItemView.ReleasesView(releaseDates: dates)
 				case .person(let id):
 					SeerrPersonView(personId: id)
+				case .persons(let persons, let title):
+					MediaPersonsView(with: persons, title: "cast")
 				case .settings:
 					SettingsView()
 			}
@@ -166,8 +172,12 @@ final class Navigator {
 					return "item.\(type.rawValue)-\(id)"
 				case .items(let name, let endpoint, let additionalQueries, _):
 					return "items.\(name)-\(endpoint.id)-\(additionalQueries.asString)"
+				case .releases(let dates):
+					return "media.releases-\(dates.count)"
 				case .person(let id):
 					return "person-\(id)"
+				case .persons(let persons, let title):
+					return "persons.\(title)-\(persons.count)"
 				case .settings:
 					return "settings"
 			}
@@ -195,6 +205,20 @@ final class Navigator {
 					CleanWebView(url)
 			}
 		}
+	}
+}
+
+extension Navigator.Paths {
+	static var trending: Navigator.Paths {
+		return Navigator.Paths.items("trending", endpoint: Discover.trending)
+	}
+
+	static var upcomingMovie: Navigator.Paths {
+		return Navigator.Paths.items("upcoming.movies", endpoint: Discover.movie, additionalQueries: [Discover.upcoming(type: .movie)])
+	}
+
+	static var upcomingShow: Navigator.Paths {
+		return Navigator.Paths.items("upcoming.shows", endpoint: Discover.show, additionalQueries: [Discover.upcoming(type: .show)])
 	}
 }
 

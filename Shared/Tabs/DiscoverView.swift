@@ -68,9 +68,7 @@ struct DiscoverView: View {
 					.canScroll(self.requests.1)
 					#endif
 
-					NavigationVScrollItems("trending") {
-						DiscoverItemsView("trending", endpoint: Discover.trending)
-					} content: {
+					NavigationVScrollItems("trending", destination: Navigator.Paths.trending) {
 						if self.trending.1 {
 							self.discoverH(self.trending.0)
 						} else {
@@ -106,7 +104,7 @@ struct DiscoverView: View {
 						}
 					}
 
-					VScrollItems("upcoming.movies") {
+					NavigationVScrollItems("upcoming.movies", destination: Navigator.Paths.upcomingMovie) {
 						if self.upMovies.1 {
 							self.discoverH(self.upMovies.0)
 						} else {
@@ -115,7 +113,7 @@ struct DiscoverView: View {
 					}
 					.canScroll(self.upMovies.1)
 
-					VScrollItems("upcoming.shows") {
+					NavigationVScrollItems("upcoming.shows", destination: Navigator.Paths.upcomingShow) {
 						if self.upShows.1 {
 							self.discoverH(self.upShows.0)
 						} else {
