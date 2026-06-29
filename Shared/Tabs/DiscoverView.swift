@@ -20,7 +20,7 @@ struct DiscoverView: View {
         }
         .task {
 			let infolessList: [DiscoverItem] = await self.fetchItems(endpoint: Discover.watchlist).0
-            self.watchlist = (infolessList, false)
+			self.watchlist = infolessList.count != self.watchlist.0.count ? (infolessList, false) : self.watchlist
             self.requests = await self.fetchRequests()
 
             self.trending = await self.fetchItems(endpoint: Discover.trending)
@@ -31,13 +31,15 @@ struct DiscoverView: View {
             self.upMovies = await self.fetchItems(endpoint: Discover.movie, queries: [Discover.upcoming(type: .movie)])
             self.upShows = await self.fetchItems(endpoint: Discover.show, queries: [Discover.upcoming(type: .show)])
 
-			for item in infolessList {
-				guard var fetchedItem = await item.fetch(), let index = self.watchlist.0.firstIndex(of: item) else { continue }
-                fetchedItem.inWatchList = true
-				self.watchlist.0[index] = fetchedItem
-            }
-
-			self.watchlist = (self.watchlist.0, true)
+			if (infolessList.count != self.watchlist.0.count) {
+				for item in infolessList {
+					guard var fetchedItem = await item.fetch(), let index = self.watchlist.0.firstIndex(of: item) else { continue }
+					fetchedItem.inWatchList = true
+					self.watchlist.0[index] = fetchedItem
+				}
+				
+				self.watchlist = (self.watchlist.0, true)
+			}
         }
     }
 
