@@ -63,16 +63,7 @@ class NotificationService: UNNotificationServiceExtension {
 
 			// 5. Try adding getting the attachment and pass it to the completion handler
 			do {
-				let thumbnail: CGRect = CGRect(
-					origin: CGPoint(x: 0.25, y: 0.25),
-					size: CGSize.init(width: 0.25, height: 0.25)
-				)
-				let rect = CGRectCreateDictionaryRepresentation(thumbnail)
-
-				let options: [AnyHashable : Any] = [
-					UNNotificationAttachmentOptionsThumbnailClippingRectKey: rect
-				]
-				let attachment = try UNNotificationAttachment(identifier: "picture", url: urlPath, options: options)
+				let attachment = try UNNotificationAttachment(identifier: "picture", url: urlPath)
 				completionHandler(attachment)
 			} catch {
 				completionHandler(nil)
