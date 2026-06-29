@@ -37,8 +37,8 @@ struct ContentView: View {
             self.loading = true
 
             do {
-                guard let loaded: AuthInfo = self.auths.first else { throw SeerrError() }
-                
+				guard let loaded: AuthInfo = self.auths.first else { throw SeerrError() }
+
                 SeerSession.shared.auth = loaded
                 try await logIn(auth: loaded)
 
@@ -49,7 +49,9 @@ struct ContentView: View {
 
                 self.onboarding = UserDefaults.standard.bool(forKey: "onboarded") && isLogged ? .complete : .welcome
             } catch {
-                self.onboarding = .welcome
+				if self.auths.count <= 0 {
+					self.onboarding = .welcome
+				}
                 print(error)
             }
         }
