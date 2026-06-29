@@ -97,7 +97,7 @@ struct NotifSettingsView: View {
                     self.updateFilter()
                 }
 
-				Toggle(isOn: $medAutoAprNotify) {
+				Toggle(isOn: $medAprNotify) {
 					Text("notification.filter.approved")
 				}
 				.disabled(!self.validated)
