@@ -86,7 +86,7 @@ class SeerSession {
 			print("Cookies received:")
 			print(cookies.map { "\($0.name): \($0.value)" })
 
-			if http.statusCode < 200 || http.statusCode > 299 {
+			if !(200...299).contains(http.statusCode) {
 				print("[Error \(http.statusCode)] \(String(data: data, encoding: .utf8) ?? "No error returned")")
 			}
 		}

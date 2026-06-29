@@ -27,6 +27,12 @@ struct MediaItemView: View {
     private var posterWidth: CGFloat { self.posterHeight * (1.0 / 1.5) }
     private let posterHeight: CGFloat = 260
 
+	private var seasonPickerSheet: Navigator.Sheets {
+		Navigator.Sheets.seasonsPicker(self.item!.seasons, disabledSeasons: Array(self.item!.availableSeasons.keys)) { selection in
+			await self.requestButton(is4k: self.requestingSeason4k, with: selection)
+		}
+	}
+
     private var canManageRequests: Bool {
         guard let user = SeerSession.shared.user else { return false }
         return user.hasPermission(Permission.manageRequests)
@@ -69,14 +75,6 @@ struct MediaItemView: View {
                 #endif
                 .sheet(item: $showingSeason) { season in
                     ShowSeasonView(item: item, season: season)
-                }
-                .sheet(isPresented: $requestingSeason) {
-                    SeasonsPicker(seasons: item.seasons, disabledSeasons: Array(item.availableSeasons.keys)) { selection in
-                        await self.requestButton(is4k: self.requestingSeason4k, with: selection)
-                    }
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.hidden)
-                    .presentationBackground(Color.bgPurple)
                 }
                 .toolbar {
                     ToolbarItem {
@@ -215,8 +213,8 @@ struct MediaItemView: View {
 							if self.item!.type == .movie || self.item!.seasons.count <= 1 {
 								await self.requestButton(is4k: false, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
 							} else {
-								self.requestingSeason.toggle()
 								self.requestingSeason4k = false
+								Navigator.shared.presentedSheet = self.seasonPickerSheet
 							}
 						}
 					} label: {
@@ -230,8 +228,8 @@ struct MediaItemView: View {
 							if self.item!.type == .movie || self.item!.seasons.count <= 1 {
 								await self.requestButton(is4k: true, with: self.item!.seasons.count == 1 ? [self.item!.seasons[0]] : [])
 							} else {
-								self.requestingSeason.toggle()
 								self.requestingSeason4k = true
+								Navigator.shared.presentedSheet = self.seasonPickerSheet
 							}
 						}
 					} label: {

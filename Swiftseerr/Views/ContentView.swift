@@ -27,8 +27,8 @@ struct ContentView: View {
                 if self.onboarding != SeerSession.OnboardingSteps.complete {
                     OnboardingView(onboarding: $onboarding)
                 } else if SeerSession.shared.authorization != nil {
-                    tabs
-                }
+                    tabs.sheet()
+				}
             }
         }
         .preferredColorScheme(ColorScheme.dark)

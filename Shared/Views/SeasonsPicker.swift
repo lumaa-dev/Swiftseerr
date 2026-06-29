@@ -12,17 +12,27 @@ struct SeasonsPicker: View {
 
     var confirmAction: ([ShowSeason.About]) async -> Void
 
+	init(seasons: [ShowSeason.About], disabledSeasons: [Int], confirmAction: @escaping ([ShowSeason.About]) async -> Void) {
+		self.seasons = seasons
+		self.disabledSeasons = disabledSeasons
+		self.confirmAction = confirmAction
+	}
+
+	private var enabledSeasons: [ShowSeason.About] {
+		self.seasons.filter { !self.disabledSeasons.contains($0.seasonNumber) }
+	}
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    let allSelected: Bool = self.selectedSeasons.count == self.seasons.filter { !self.disabledSeasons.contains($0.seasonNumber) }.count
+					let allSelected: Bool = self.selectedSeasons.count == self.enabledSeasons.count
 
                     Button {
                         if allSelected {
                             self.selectedSeasons = []
                         } else {
-                            self.selectedSeasons = self.seasons.filter { !self.disabledSeasons.contains($0.seasonNumber) }
+                            self.selectedSeasons = self.enabledSeasons
                         }
                     } label: {
                         self.seasonLabel(.init(name: String(localized: "all.seasons")), isSelected: allSelected)

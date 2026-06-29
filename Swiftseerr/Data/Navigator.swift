@@ -192,8 +192,9 @@ final class Navigator {
 		}
 	}
 
-	enum Sheets: ViewRepresentable {
+	enum Sheets: ViewRepresentable, Identifiable {
 		case seasons(_ item: MediaItem, season: ShowSeason.About)
+		case seasonsPicker(_ seasons: [ShowSeason.About], disabledSeasons: [Int], confirmAction: ([ShowSeason.About]) async -> Void)
 		case web(url: URL?)
 
 		@ContentBuilder
@@ -201,8 +202,24 @@ final class Navigator {
 			switch self {
 				case .seasons(let item, let season):
 					ShowSeasonView(item: item, season: season)
+				case .seasonsPicker(let seasons, let disabled, let confirm):
+					SeasonsPicker(seasons: seasons, disabledSeasons: disabled, confirmAction: confirm)
+						.presentationDetents([.medium, .large])
+						.presentationDragIndicator(.hidden)
+						.presentationBackground(Color.bgPurple)
 				case .web(let url):
 					CleanWebView(url)
+			}
+		}
+
+		var id: String {
+			switch self {
+				case .seasons(let item, let season):
+					return "item-\(item.id).season-\(season.id)"
+				case .seasonsPicker(let seasons, let disabledSeasons, let confirmAction):
+					return "season-picker.\(seasons.count)-\(disabledSeasons.map { "\($0)" }.joined())"
+				case .web(let url):
+					return "web-\(url?.absoluteString ?? "web")"
 			}
 		}
 	}
@@ -227,6 +244,13 @@ extension View {
 	func navigator() -> some View {
 		self.navigationDestination(for: Navigator.Paths.self) { i in
 			i.label
+		}
+	}
+
+	@ContentBuilder
+	func sheet() -> some View {
+		self.sheet(item: Binding(get: { Navigator.shared.presentedSheet }, set: { Navigator.shared.presentedSheet = $0 })) { s in
+			s.label
 		}
 	}
 }
