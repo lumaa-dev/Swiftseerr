@@ -89,22 +89,6 @@ final class Navigator {
 			}
 		}
 
-		@ContentBuilder
-		var view: some TabContent {
-			switch self {
-				case .search:
-					Tab(value: self, role: .search) {
-						self.content
-					}
-				default:
-					Tab(value: self) {
-						self.content
-					} label: {
-						self.label
-					}
-			}
-		}
-
 		/// Used for iOS and iPadOS
 		static var smallTabs: [Self] { [
 			Tabs.discover,
