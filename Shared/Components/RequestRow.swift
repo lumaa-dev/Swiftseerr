@@ -162,7 +162,7 @@ struct RequestRow: View {
 						}
 					}
 
-					if (hasPermissions && item.requestStatus != .pending) || !hasPermissions {
+                    if (item.requestStatus == .pending && !hasPermissions) || hasPermissions {
 						Button {
 							Task {
 								if await self.deleteRequest() {
