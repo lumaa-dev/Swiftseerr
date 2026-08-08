@@ -42,5 +42,5 @@ struct MediaRequest: Identifiable, Equatable {
         }
     }
 
-	static var redacted: MediaRequest { self.init(id: 1, mediaId: nil, status: .unknown, requestedBy: .redacted, type: .unknown) }
+	static var redacted: MediaRequest { self.init(id: 1, mediaId: 244786, status: .unknown, requestedBy: .redacted, type: .unknown) }
 }

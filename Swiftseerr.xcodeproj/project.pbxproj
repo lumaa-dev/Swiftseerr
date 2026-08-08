@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		B97050072FEEBB1700993079 /* SeerrAPN.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B97050002FEEBB1700993079 /* SeerrAPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B9880E8F2FF7242700FA3C5F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9880E8E2FF7242700FA3C5F /* WidgetKit.framework */; };
+		B9880E912FF7242700FA3C5F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9880E902FF7242700FA3C5F /* SwiftUI.framework */; };
+		B9880E9E2FF7242A00FA3C5F /* SwiftseerrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B9880E8C2FF7242700FA3C5F /* SwiftseerrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,6 +21,13 @@
 			remoteGlobalIDString = B9704FFF2FEEBB1600993079;
 			remoteInfo = SeerrAPN;
 		};
+		B9880E9C2FF7242A00FA3C5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B964EA052E45523A0045CB2B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B9880E8B2FF7242700FA3C5F;
+			remoteInfo = SwiftseerrWidgetsExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +37,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				B9880E9E2FF7242A00FA3C5F /* SwiftseerrWidgets.appex in Embed Foundation Extensions */,
 				B97050072FEEBB1700993079 /* SeerrAPN.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -38,6 +49,9 @@
 		B94DA3D92F126F9600C27AD1 /* SwiftseerrTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftseerrTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B96F49372E48A7C0007E63A2 /* Swiftseerr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Swiftseerr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B97050002FEEBB1700993079 /* SeerrAPN.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SeerrAPN.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9880E8C2FF7242700FA3C5F /* SwiftseerrWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SwiftseerrWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9880E8E2FF7242700FA3C5F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		B9880E902FF7242700FA3C5F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,6 +62,7 @@
 				AppIcon.icon,
 				Assets.xcassets,
 				Components/CleanWebView.swift,
+				Data/AppData.swift,
 				Data/AppIcons.swift,
 				Data/DeeplinkManager.swift,
 				Data/Navigator.swift,
@@ -74,11 +89,60 @@
 			);
 			target = B9704FFF2FEEBB1600993079 /* SeerrAPN */;
 		};
+		B9880EA22FF7242A00FA3C5F /* Exceptions for "SwiftseerrWidgets" folder in "SwiftseerrWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
+		};
+		B9880EA42FF7277C00FA3C5F /* Exceptions for "Shared" folder in "SwiftseerrWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Data/AuthInfo.swift,
+				Data/ItemType.swift,
+				Data/LocaleManager.swift,
+				Data/Media/DiscoverItem.swift,
+				Data/Media/MediaItem.swift,
+				Data/Media/MediaPerson.swift,
+				Data/Media/MediaRequest.swift,
+				Data/Media/MediaStatus.swift,
+				Data/Media/ShowEpisode.swift,
+				Data/Media/ShowSeason.swift,
+				Data/SeerSession.swift,
+				Data/User/Permission.swift,
+				Data/User/User.swift,
+				Endpoints/Endpoint.swift,
+				Endpoints/Media.swift,
+				Endpoints/Requests.swift,
+				"Extensions/String+Date.swift",
+				"Extensions/URL+Query.swift",
+				"Extensions/View+Background.swift",
+			);
+			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
+		};
+		B98E0A422FFA82D500D65949 /* Exceptions for "Swiftseerr" folder in "SwiftseerrWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Data/AppData.swift,
+			);
+			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
+		};
+		B98E0A442FFA82EF00D65949 /* Exceptions for "SwiftseerrWidgets" folder in "Swiftseerr" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"AuthInfo+Entity.swift",
+			);
+			target = B964EA0C2E45523A0045CB2B /* Swiftseerr */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B94DA3D32F126E9D00C27AD1 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B9880EA42FF7277C00FA3C5F /* Exceptions for "Shared" folder in "SwiftseerrWidgets" target */,
+			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -91,6 +155,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				B94DA4942F126FC400C27AD1 /* Exceptions for "Swiftseerr" folder in "Swiftseerr" target */,
+				B98E0A422FFA82D500D65949 /* Exceptions for "Swiftseerr" folder in "SwiftseerrWidgets" target */,
 			);
 			path = Swiftseerr;
 			sourceTree = "<group>";
@@ -101,6 +166,15 @@
 				B970500C2FEEBB1700993079 /* Exceptions for "SeerrAPN" folder in "SeerrAPN" target */,
 			);
 			path = SeerrAPN;
+			sourceTree = "<group>";
+		};
+		B9880E922FF7242700FA3C5F /* SwiftseerrWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B98E0A442FFA82EF00D65949 /* Exceptions for "SwiftseerrWidgets" folder in "Swiftseerr" target */,
+				B9880EA22FF7242A00FA3C5F /* Exceptions for "SwiftseerrWidgets" folder in "SwiftseerrWidgets" target */,
+			);
+			path = SwiftseerrWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -127,6 +201,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B9880E892FF7242700FA3C5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9880E912FF7242700FA3C5F /* SwiftUI.framework in Frameworks */,
+				B9880E8F2FF7242700FA3C5F /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -140,7 +223,19 @@
 				B94DA4722F126FC400C27AD1 /* Swiftseerr */,
 				B97050002FEEBB1700993079 /* SeerrAPN.appex */,
 				B97050012FEEBB1700993079 /* SeerrAPN */,
+				B9880E8C2FF7242700FA3C5F /* SwiftseerrWidgets.appex */,
+				B9880E922FF7242700FA3C5F /* SwiftseerrWidgets */,
+				B9880E8D2FF7242700FA3C5F /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		B9880E8D2FF7242700FA3C5F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B9880E8E2FF7242700FA3C5F /* WidgetKit.framework */,
+				B9880E902FF7242700FA3C5F /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,6 +277,7 @@
 			);
 			dependencies = (
 				B97050062FEEBB1700993079 /* PBXTargetDependency */,
+				B9880E9D2FF7242A00FA3C5F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B94DA3D32F126E9D00C27AD1 /* Shared */,
@@ -215,6 +311,28 @@
 			productReference = B97050002FEEBB1700993079 /* SeerrAPN.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9880EA12FF7242A00FA3C5F /* Build configuration list for PBXNativeTarget "SwiftseerrWidgets" */;
+			buildPhases = (
+				B9880E882FF7242700FA3C5F /* Sources */,
+				B9880E892FF7242700FA3C5F /* Frameworks */,
+				B9880E8A2FF7242700FA3C5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B9880E922FF7242700FA3C5F /* SwiftseerrWidgets */,
+			);
+			name = SwiftseerrWidgets;
+			packageProductDependencies = (
+			);
+			productName = SwiftseerrWidgetsExtension;
+			productReference = B9880E8C2FF7242700FA3C5F /* SwiftseerrWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -232,6 +350,9 @@
 						CreatedOnToolsVersion = 26.0;
 					};
 					B9704FFF2FEEBB1600993079 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					B9880E8B2FF7242700FA3C5F = {
 						CreatedOnToolsVersion = 27.0;
 					};
 				};
@@ -256,6 +377,7 @@
 			projectRoot = "";
 			targets = (
 				B964EA0C2E45523A0045CB2B /* Swiftseerr */,
+				B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */,
 				B94DA3D82F126F9600C27AD1 /* SwiftseerrTV */,
 				B9704FFF2FEEBB1600993079 /* SeerrAPN */,
 			);
@@ -278,6 +400,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B9704FFE2FEEBB1600993079 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9880E8A2FF7242700FA3C5F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -308,6 +437,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B9880E882FF7242700FA3C5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -315,6 +451,11 @@
 			isa = PBXTargetDependency;
 			target = B9704FFF2FEEBB1600993079 /* SeerrAPN */;
 			targetProxy = B97050052FEEBB1700993079 /* PBXContainerItemProxy */;
+		};
+		B9880E9D2FF7242A00FA3C5F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
+			targetProxy = B9880E9C2FF7242A00FA3C5F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -516,7 +657,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Swiftseerr/Swiftseerr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 128;
+				CURRENT_PROJECT_VERSION = 301;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -572,7 +713,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Swiftseerr/Swiftseerr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 128;
+				CURRENT_PROJECT_VERSION = 301;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -692,6 +833,86 @@
 			};
 			name = Release;
 		};
+		B9880E9F2FF7242A00FA3C5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HB5P3BML86;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftseerrWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SwiftseerrWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr.SwiftseerrWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B9880EA02FF7242A00FA3C5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HB5P3BML86;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftseerrWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SwiftseerrWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.lumaa.Swiftseerr.SwiftseerrWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -727,6 +948,15 @@
 			buildConfigurations = (
 				B97050092FEEBB1700993079 /* Debug */,
 				B970500A2FEEBB1700993079 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9880EA12FF7242A00FA3C5F /* Build configuration list for PBXNativeTarget "SwiftseerrWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9880E9F2FF7242A00FA3C5F /* Debug */,
+				B9880EA02FF7242A00FA3C5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

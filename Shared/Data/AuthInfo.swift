@@ -4,7 +4,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-final class AuthInfo: Codable, Identifiable {
+final class AuthInfo: Codable, Identifiable, Sendable {
     var username: String = ""
     var password: String = ""
     var address: String = ""
