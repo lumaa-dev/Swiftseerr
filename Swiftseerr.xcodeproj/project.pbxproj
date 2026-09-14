@@ -112,12 +112,14 @@
 				Data/SeerSession.swift,
 				Data/User/Permission.swift,
 				Data/User/User.swift,
+				Endpoints/Auth.swift,
 				Endpoints/Endpoint.swift,
 				Endpoints/Media.swift,
 				Endpoints/Requests.swift,
 				"Extensions/String+Date.swift",
 				"Extensions/URL+Query.swift",
 				"Extensions/View+Background.swift",
+				Localizable.xcstrings,
 			);
 			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
 		};
@@ -127,13 +129,6 @@
 				Data/AppData.swift,
 			);
 			target = B9880E8B2FF7242700FA3C5F /* SwiftseerrWidgets */;
-		};
-		B98E0A442FFA82EF00D65949 /* Exceptions for "SwiftseerrWidgets" folder in "Swiftseerr" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"AuthInfo+Entity.swift",
-			);
-			target = B964EA0C2E45523A0045CB2B /* Swiftseerr */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -171,7 +166,6 @@
 		B9880E922FF7242700FA3C5F /* SwiftseerrWidgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B98E0A442FFA82EF00D65949 /* Exceptions for "SwiftseerrWidgets" folder in "Swiftseerr" target */,
 				B9880EA22FF7242A00FA3C5F /* Exceptions for "SwiftseerrWidgets" folder in "SwiftseerrWidgets" target */,
 			);
 			path = SwiftseerrWidgets;
@@ -765,7 +759,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 403;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -803,7 +797,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 403;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SeerrAPN/Info.plist;
@@ -838,8 +832,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SwiftseerrWidgets/SwiftseerrWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 403;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -878,8 +873,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SwiftseerrWidgets/SwiftseerrWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 403;
 				DEVELOPMENT_TEAM = HB5P3BML86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;

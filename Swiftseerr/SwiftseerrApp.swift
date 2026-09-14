@@ -20,6 +20,6 @@ struct SwiftseerrApp: App {
                 .environment(\.colorScheme, ColorScheme.dark)
         }
         .windowResizability(.contentSize)
-        .modelContainer(for: AuthInfo.self, isAutosaveEnabled: true)
+        .modelContainer(AppData.modelContainer)
     }
 }

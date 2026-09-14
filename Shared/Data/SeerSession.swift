@@ -201,3 +201,32 @@ class SeerSession {
         }
     }
 }
+
+extension SeerSession {
+    /// Authenticates this session against Jellyseerr/Overseerr and binds the returned `connect.sid` cookie.
+    ///
+    /// `Endpoint` resolves its base URL from `SeerSession.shared`, so this session has to be the shared
+    /// one for the request to be addressed correctly.
+    @discardableResult
+    func logIn() async throws -> String {
+        guard let provider = self.auth.provider,
+              !self.auth.address.isEmpty,
+              !self.auth.password.isEmpty else {
+            throw SeerrError()
+        }
+
+        let endpoint: Login = provider == .jellyfin
+            ? .jellyfin(username: self.auth.username, password: self.auth.password)
+            : .local(email: self.auth.username, password: self.auth.password)
+
+        let (_, res, cookies) = try await self.raw(endpoint, useCookies: false)
+
+        guard res?.statusCode == 200,
+              let sid = cookies.first(where: { $0.name == "connect.sid" }) else {
+            throw SeerrError()
+        }
+
+        self.authorization = sid.value
+        return sid.value
+    }
+}

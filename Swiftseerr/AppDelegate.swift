@@ -142,11 +142,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
 		let userInfo = response.notification.request.content.userInfo
 
-		if let urlString = userInfo["destination"] as? String, let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
-			UIApplication.shared.open(url)
+		let destination: URL? = (userInfo["destination"] as? String).flatMap { URL(string: $0) }
+
+		#if canImport(UIKit)
+		if let destination, UIApplication.shared.canOpenURL(destination) {
+			UIApplication.shared.open(destination)
 		} else {
 			UIApplication.shared.open(URL(string: "swiftseerr://")!)
 		}
+		#elseif canImport(AppKit)
+		NSWorkspace.shared.open(destination ?? URL(string: "swiftseerr://")!)
+		#endif
 
 		completionHandler()
 	}

@@ -31,6 +31,24 @@ struct MediaRequest: Identifiable, Equatable {
         }
     }
 
+    /// Non-trapping counterpart to `init(data:)`.
+    ///
+    /// The force-unwraps above take down the whole process on an unexpected payload, which in a widget
+    /// extension means the widget simply never renders. Returns `nil` instead so a malformed entry can
+    /// be skipped.
+    init?(safely data: [String: Any]) {
+        guard let id = data["id"] as? Int,
+              let requestedBy = data["requestedBy"] as? [String: Any] else {
+            return nil
+        }
+
+        self.id = id
+        self.status = MediaStatus(rawValue: data["status"] as? Int ?? -1) ?? .unknown
+        self.type = ItemType(rawValue: data["type"] as? String ?? "") ?? .movie
+        self.requestedBy = .init(data: requestedBy)
+        self.mediaId = (data["media"] as? [String: Any])?["tmdbId"] as? Int
+    }
+
     func getMedia() async throws -> MediaItem {
         guard let mediaId else { throw SeerrError() }
 
