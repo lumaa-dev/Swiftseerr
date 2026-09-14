@@ -28,6 +28,8 @@ struct ContentView: View {
                     OnboardingView(onboarding: $onboarding)
                 } else if SeerSession.shared.authorization != nil {
                     tabs.sheet()
+				} else {
+					Text(String("faut envoyer un message à romain"))
 				}
             }
         }

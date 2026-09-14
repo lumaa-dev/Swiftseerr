@@ -2,6 +2,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
@@ -20,6 +21,8 @@ struct SettingsView: View {
 
     @State private var viewUrl: String? = nil
 
+	@State private var widgetAccount: String = AppData.widgetAccountID ?? ""
+
 	private var undefinedAge: Bool {
 		return definedAge <= 0
 	}
@@ -36,6 +39,8 @@ struct SettingsView: View {
             .listRowBackground(Color.gray.opacity(0.2))
 
             self.appearence
+
+            self.widgets
 
             self.defAge
 
@@ -120,6 +125,27 @@ struct SettingsView: View {
                 Text("add.instance")
             }
         }
+    }
+
+    @ViewBuilder
+    private var widgets: some View {
+        // The widget is a StaticConfiguration, so the account is picked here rather than per widget.
+        Section(header: Text("settings.widgets"), footer: Text("settings.widgets.footer")) {
+            Picker(selection: $widgetAccount) {
+                Text("settings.widgets.automatic").tag("")
+
+                ForEach(auths) { auth in
+                    Text(verbatim: "\(auth.username) — \(auth.address)").tag(auth.accountID)
+                }
+            } label: {
+                Text("seerr.account")
+            }
+            .onChange(of: widgetAccount) { _, newValue in
+                AppData.widgetAccountID = newValue.isEmpty ? nil : newValue
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        }
+        .listRowBackground(Color.gray.opacity(0.2))
     }
 
     @ViewBuilder

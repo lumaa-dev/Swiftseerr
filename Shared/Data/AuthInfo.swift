@@ -4,7 +4,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-final class AuthInfo: Codable, Identifiable {
+final class AuthInfo: Codable, Identifiable, Sendable {
     var username: String = ""
     var password: String = ""
     var address: String = ""
@@ -12,6 +12,14 @@ final class AuthInfo: Codable, Identifiable {
 
     var id: String {
         "\(username)_\(password):\(address)"
+    }
+
+    /// Identifies the account without depending on the password, unlike `id`.
+    ///
+    /// Used to remember which account the widgets display, so changing the password does not silently
+    /// detach them.
+    var accountID: String {
+        "\(self.address)|\(self.username)"
     }
 
     init(username: String? = nil, password: String? = nil, address: String? = nil, provider: AuthInfo.Providers? = nil) {
