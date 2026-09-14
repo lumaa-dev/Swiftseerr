@@ -6,6 +6,16 @@ import SwiftUI
 struct RequestsWidget: Widget {
     let kind: String = "fr.lumaa.Swiftseerr.SwiftseerrRequests"
 
+	private var widgetSizes: [WidgetFamily] {
+		var families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+
+		if #available(iOS 27.0, macOS 27.0, visionOS 26.0, *) {
+			families.append(.systemExtraLargePortrait)
+		}
+
+		return families
+	}
+
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             WidgetView(entry: entry)
@@ -14,10 +24,10 @@ struct RequestsWidget: Widget {
         }
 		.configurationDisplayName(Text("widget.requests"))
 		.description(Text("widget.requests.description"))
-		.supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+		.supportedFamilies(self.widgetSizes)
 		#if !os(macOS)
 		// macOS has no CarPlay or StandBy placements.
-		.disfavoredLocations([.carPlay, .standBy], for: [.systemSmall, .systemMedium, .systemLarge])
+		.disfavoredLocations([.carPlay, .standBy], for: self.widgetSizes)
 		#endif
     }
 
@@ -27,9 +37,6 @@ struct RequestsWidget: Widget {
 		@Environment(\.widgetFamily) private var widgetFamily: WidgetFamily
 
 		var entry: Provider.Entry
-
-		private var height: CGFloat { self.widgetFamily == .systemSmall ? 116.0 : 64.0 }
-		private var width: CGFloat { self.height * (1.0 / 1.5) }
 
 		var body: some View {
 			if entry.items.isEmpty {
@@ -69,8 +76,9 @@ struct RequestsWidget: Widget {
 
 					Text(item.title)
 						.font(.callout.bold())
-						.lineLimit(2)
+						.lineLimit(1)
 						.multilineTextAlignment(.leading)
+						.foregroundStyle(Color.white)
 
 					self.status(item)
 				}
@@ -84,6 +92,7 @@ struct RequestsWidget: Widget {
 							.font(.callout.bold())
 							.lineLimit(1)
 							.multilineTextAlignment(.leading)
+							.foregroundStyle(Color.white)
 
 						self.status(item)
 					}
@@ -105,7 +114,7 @@ struct RequestsWidget: Widget {
 		/// Posters are decoded from data captured by the provider: `AsyncImage` never resolves inside a
 		/// widget, since WidgetKit renders an archived snapshot rather than running a live view tree.
 		@ViewBuilder
-		private func poster(_ item: Provider.Entry.Item) -> some View {
+		private func poster(_ item: Provider.Entry.Item, height: CGFloat = 70.0) -> some View {
 			Group {
 				if let image = item.image {
 					image
@@ -120,7 +129,7 @@ struct RequestsWidget: Widget {
 						}
 				}
 			}
-			.frame(width: self.width, height: self.height)
+			.frame(width: height * (1.0 / 1.5), height: height)
 			.clipShape(RoundedRectangle(cornerRadius: 8.0))
 		}
 	}
@@ -252,9 +261,11 @@ struct RequestsWidget: Widget {
 				case .systemSmall:
 					return 1
 				case .systemLarge:
-					return 5
+					return 4
+				case .systemExtraLargePortrait:
+					return 8
 				default:
-					return 3
+					return 2
 			}
 		}
 
