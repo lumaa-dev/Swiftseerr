@@ -31,6 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B964EA0C2E45523A0045CB2B"
                BuildableName = "Swiftseerr.app"
+               BlueprintName = "Swiftseerr"
                ReferencedContainer = "container:Swiftseerr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,6 +61,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B964EA0C2E45523A0045CB2B"
             BuildableName = "Swiftseerr.app"
+            BlueprintName = "Swiftseerr"
             ReferencedContainer = "container:Swiftseerr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -78,6 +80,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B964EA0C2E45523A0045CB2B"
             BuildableName = "Swiftseerr.app"
+            BlueprintName = "Swiftseerr"
             ReferencedContainer = "container:Swiftseerr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

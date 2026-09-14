@@ -22,8 +22,8 @@ final class DeeplinkManager {
 				case .movie, .tv:
 					print("[DeeplinkManager] Deep link is media")
 					return self.media(host, component: component)
-				case .navigation:
-					return self.defaultResult
+				case .requests:
+					return self.openTab(host, component: component)
 			}
 		}
 		return self.defaultResult
@@ -57,6 +57,12 @@ final class DeeplinkManager {
 		return .handled
 	}
 
+	private static func openTab(_ host: DeeplinkManager.Path, component: URLComponents) -> OpenURLAction.Result {
+		Navigator.shared.selectedTab = host.tab
+		print("[DeeplinkManager] Opened tab \(host.tab.rawValue)")
+		return .handled
+	}
+
 	private static func followPath(_ path: Navigator.Paths) {
 		let pathIndex: Int? = Navigator.shared.currentPath.lastIndex(of: path)
 		if let pathIndex {
@@ -72,7 +78,7 @@ final class DeeplinkManager {
 	enum Path: String {
 		case movie = "movie"
 		case tv = "tv"
-		case navigation = "nav"
+		case requests = "requests"
 
 		static func from(_ string: String) -> Self? {
 			switch string {
@@ -80,8 +86,8 @@ final class DeeplinkManager {
 					return Self.movie
 				case Self.tv.rawValue:
 					return Self.tv
-				case Self.navigation.rawValue:
-					return Self.navigation
+				case Self.requests.rawValue:
+					return Self.requests
 				default:
 					return nil
 			}
@@ -93,7 +99,7 @@ final class DeeplinkManager {
 					return .movie
 				case .tv:
 					return .show
-				case .navigation:
+				case .requests:
 					return .unknown
 			}
 		}
@@ -104,8 +110,8 @@ final class DeeplinkManager {
 					return .movies
 				case .tv:
 					return .shows
-				case .navigation:
-					return .discover
+				case .requests:
+					return .requests
 			}
 		}
 	}
