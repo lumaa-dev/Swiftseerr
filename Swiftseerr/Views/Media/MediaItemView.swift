@@ -12,6 +12,8 @@ struct MediaItemView: View {
     @State private var loadedData: Bool = false
     @State private var hideContent: Bool = false
 
+	@State private var scrollOffset: CGFloat = 0
+
     @State private var showingSeason: ShowSeason.About? = nil
 
     // requesting seasons
@@ -55,7 +57,7 @@ struct MediaItemView: View {
         ScrollView {
             if let item {
                 VStack {
-                    header
+					header
 
                     info
 
@@ -99,29 +101,40 @@ struct MediaItemView: View {
                     }
 
 
+					#if os(iOS)
+					if #available(iOS 27.0, visionOS 27.0, *) {
+						ToolbarOverflowMenu {
+							if let jellyfin = item.jellyfin {
+								Link(destination: jellyfin) {
+									Label("open.jellyfin", image: .jellyfin)
+								}
+							}
+
+							if let webUrl = item.webUrl {
+								ShareLink(item: webUrl)
+							}
+						}
+					} else {
+						ToolbarItem {
+							Menu {
+								if let jellyfin = item.jellyfin {
+									Link(destination: jellyfin) {
+										Label("open.jellyfin", image: .jellyfin)
+									}
+								}
+
+								if let webUrl = item.webUrl {
+									ShareLink(item: webUrl)
+								}
+							} label: {
+								Label("more-actions", systemImage: "ellipsis")
+							}
+							.disabled(self.hideContent || !self.loadedData)
+						}
+					}
+					#else
                     ToolbarItem {
                         Menu {
-                            Button {
-                                withAnimation {
-                                    self.item!.inWatchList.toggle()
-                                }
-
-                                Task {
-                                    let http: HTTPURLResponse? = await self.changeWatchlist()
-                                    if let http, !(http.statusCode >= 200 && http.statusCode <= 208) {
-                                        self.item!.inWatchList.toggle()
-                                    } else if http == nil {
-                                        self.item!.inWatchList.toggle()
-                                    }
-                                }
-                            } label: {
-                                Label(item.inWatchList ? "remove.watchlist" : "add.watchlist", systemImage: item.inWatchList ? "star.fill" : "star")
-                                    .contentTransition(.symbolEffect(.replace.downUp))
-                            }
-                            .disabled(self.hideContent || !self.loadedData)
-
-                            Divider()
-
                             if let jellyfin = item.jellyfin {
                                 Link(destination: jellyfin) {
                                     Label("open.jellyfin", image: .jellyfin)
@@ -136,11 +149,19 @@ struct MediaItemView: View {
                         }
                         .disabled(self.hideContent || !self.loadedData)
                     }
+					#endif
                 }
             }
         }
+		.onScrollGeometryChange(for: CGFloat.self) { geometry in
+			return geometry.contentOffset.y > 0 ? geometry.contentOffset.y : 0
+		} action: { _, newValue in
+			self.scrollOffset = newValue
+			print(self.scrollOffset)
+		}
         .scrollContentBackground(.hidden)
 		.scrollEdgeEffectStyle(.soft, for: .all)
+		.scrollEdgeEffectHidden(self.scrollOffset < 45.0, for: .top)
         .background {
             Color.bgPurple.ignoresSafeArea()
         }
@@ -166,20 +187,21 @@ struct MediaItemView: View {
     @ViewBuilder
     private var header: some View {
         ZStack(alignment: .top) {
-            AsyncImage(url: item?.backdrop) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .blur(radius: self.hideContent ? 8.0 : 0)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.bgPurple)
-            }
+			AsyncImage(url: item?.backdrop) { image in
+				image
+					.resizable()
+					.scaledToFit()
+					.blur(radius: self.hideContent ? 8.0 : 0)
+			} placeholder: {
+				Rectangle()
+					.fill(Color.bgPurple)
+			}
 			.frame(maxWidth: .infinity, alignment: .center)
-            .mask {
-                LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
-            }
+			.mask {
+				LinearGradient(colors: [Color.white.opacity(0.75), Color.clear], startPoint: .top, endPoint: .bottom)
+			}
 			.backgroundExtensionEffect()
+			.stretchy()
 
             let imgUrl: URL? = self.loadedData ? item?.image ?? URL(string: "\(SeerSession.shared.auth.address)/images/jellyseerr_poster_not_found.png") : item?.image
 
