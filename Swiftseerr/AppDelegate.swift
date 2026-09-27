@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var deviceToken: String = ""
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		UNUserNotificationCenter.current().delegate = self
+			UNUserNotificationCenter.current().delegate = self
         Self.requestNotifications {_ in}
 
         return true
@@ -141,12 +141,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate {
 	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
 		let userInfo = response.notification.request.content.userInfo
+		let fallbackUrl = URL(string: "swiftseerr://")!
 
+#if canImport(UIKit)
 		if let urlString = userInfo["destination"] as? String, let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
 			UIApplication.shared.open(url)
 		} else {
-			UIApplication.shared.open(URL(string: "swiftseerr://")!)
+			UIApplication.shared.open(fallbackUrl)
 		}
+#elseif canImport(AppKit)
+		if let urlString = userInfo["destination"] as? String, let url = URL(string: urlString) {
+			NSWorkspace.shared.open(url)
+		} else {
+			NSWorkspace.shared.open(fallbackUrl)
+		}
+#endif
 
 		completionHandler()
 	}
