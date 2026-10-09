@@ -234,7 +234,7 @@ struct SettingsView: View {
 				Button {
 					self.setDefault(auth)
 				} label: {
-					Text("set-default-instance")
+					Text("account.set-default")
 				}
 				.disabled(auth.isDefault)
 
@@ -271,7 +271,7 @@ struct SettingsView: View {
 				Button {
 					self.setDefault(auth)
 				} label: {
-					Text("set-default-instance")
+					Text("account.set-default")
 				}
 				.disabled(auth.isDefault)
 

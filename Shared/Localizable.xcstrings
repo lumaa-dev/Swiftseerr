@@ -1,6 +1,62 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "account.fallback" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use an alternate account"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser un autre compte"
+          }
+        }
+      }
+    },
+    "account.set-default" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Standardinstanz festlegen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set as Default Instance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Establecer como instancia predeterminada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définir en tant que compte par défaut"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトのインスタンスに設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 인스턴스로 설정"
+          }
+        }
+      }
+    },
     "add.instance" : {
       "localizations" : {
         "de" : {
@@ -1109,6 +1165,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오류"
+          }
+        }
+      }
+    },
+    "error.account.login" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t log in the default account"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de se connecter au compte par défaut"
           }
         }
       }
@@ -5484,5 +5556,5 @@
       }
     }
   },
-  "version" : "1.1"
+  "version" : "1.3"
 }
