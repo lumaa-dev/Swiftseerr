@@ -6,6 +6,7 @@ import SwiftData
 struct ContentView: View {
 	@Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
 	@Environment(\.openURL) private var openURL: OpenURLAction
+	@Environment(\.modelContext) private var modelContext: ModelContext
 
     @AppStorage("AppTabs") private var customization: TabViewCustomization
 
@@ -28,6 +29,8 @@ struct ContentView: View {
                     OnboardingView(onboarding: $onboarding)
                 } else if SeerSession.shared.authorization != nil {
                     tabs.sheet()
+				} else {
+					self.errorView
 				}
             }
         }
@@ -37,17 +40,10 @@ struct ContentView: View {
             self.loading = true
 
             do {
-				guard let loaded: AuthInfo = self.auths.first else { throw SeerrError() }
+				guard let loaded: AuthInfo = self.auths.first(where: { $0.isDefault }) ?? self.auths.first else { throw SeerrError() }
 
-                SeerSession.shared.auth = loaded
-                try await logIn(auth: loaded)
-
-                let isLogged: Bool = SeerSession.shared.authorization?.isEmpty == false
-				if isLogged {
-					_ = await self.sendToken()
-				}
-
-                self.onboarding = UserDefaults.standard.bool(forKey: "onboarded") && isLogged ? .complete : .welcome
+				let hasSucceeded = try await self.initialize(using: loaded)
+				self.onboarding = hasSucceeded ? .complete : .welcome
             } catch {
 				if self.auths.count <= 0 {
 					self.onboarding = .welcome
@@ -189,7 +185,38 @@ struct ContentView: View {
         #endif
     }
 
+	@ViewBuilder
+	private var errorView: some View {
+		Color.bgPurple.ignoresSafeArea()
+
+		ContentUnavailableView {
+			Label("error.account.login", systemImage: "person.crop.circle.badge.exclamationmark")
+		} actions: {
+			Button {
+				guard let def: AuthInfo = self.auths.first(where: { $0.isDefault }) ?? self.auths.first else { return }
+
+				Task {
+					await self.fallbackAccounts(without: [def])
+				}
+			} label: {
+				Text("account.fallback")
+			}
+		}
+	}
+
     //MARK: - Methods
+
+	private func initialize(using auth: AuthInfo) async throws -> Bool {
+		SeerSession.shared.auth = auth
+		try await logIn(auth: auth)
+
+		let isLogged: Bool = SeerSession.shared.authorization?.isEmpty == false
+		if isLogged {
+			_ = await self.sendToken()
+		}
+
+		return UserDefaults.standard.bool(forKey: "onboarded") && isLogged
+	}
 
     private func logIn(auth: AuthInfo) async throws {
         guard !auth.address.isEmpty && !auth.password.isEmpty && auth.provider != nil else { throw SeerrError() }
@@ -253,6 +280,43 @@ struct ContentView: View {
 		}
 
 		return false
+	}
+
+	private func fallbackAccounts(without auths: [AuthInfo]) async {
+		defer { self.loading = false }
+		let fallbacks: [AuthInfo] = self.auths.filter({ !auths.contains($0) })
+
+		if fallbacks.count > 0 {
+			self.loading = true
+
+			for f in fallbacks {
+				repeat {
+					do {
+						let hasSucceeded = try await self.initialize(using: f)
+						if hasSucceeded {
+							continue
+						} else {
+							SeerSession.shared.clear()
+							throw SeerrError()
+						}
+					} catch {
+						print("[ContentView+fallbackAccounts] Couldn't log in \(f.username)")
+						print(error)
+						continue
+					}
+				} while(SeerSession.shared.user == nil)
+			}
+		}
+
+		if SeerSession.shared.user == nil {
+			self.onboarding = .welcome
+		}
+	}
+
+	private func removeFirstAccount() {
+		guard let loaded: AuthInfo = self.auths.first else { return }
+
+		self.modelContext.delete(loaded)
 	}
 }
 

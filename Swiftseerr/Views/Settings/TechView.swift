@@ -1,11 +1,20 @@
 // Made by Lumaa
 
 import SwiftUI
+import SwiftData
 
 struct TechView: View {
+	@Environment(\.modelContext) private var context: ModelContext
+
+	@Query private var accs: [AuthInfo]
+
 	@State private var apnOK: Bool = false
 	@State private var apnAdmin: String = ""
 	@State private var apnLogs: RequestLogs? = nil
+
+	private var includesFailAuth: Bool {
+		self.accs.contains(where: { $0.address == AuthInfo.debug.address })
+	}
 
     var body: some View {
 		Form {
@@ -34,6 +43,20 @@ struct TechView: View {
 				self.adminAPN
 			}
 			.listRowBackground(Color.gray.opacity(0.2))
+
+			#if DEBUG
+			Section(header: Text(String("DEBUG"))) {
+				Button {
+					if !self.includesFailAuth {
+						self.context.insert(AuthInfo.debug)
+					}
+				} label: {
+					Text(String("Add failing acc"))
+				}
+				.disabled(self.includesFailAuth)
+			}
+			.listRowBackground(Color.gray.opacity(0.2))
+			#endif
 		}
 		.navigationTitle(Text("settings.technical"))
 		#if !os(macOS)
@@ -162,4 +185,8 @@ struct TechView: View {
 
 extension RequestLogs: Identifiable {
 	var id: UUID { UUID() }
+}
+
+fileprivate extension AuthInfo {
+	static let debug: AuthInfo = .init(username: "lumaa", password: "lumaa", address: "https://lumaa.fr/", provider: .jellyfin)
 }

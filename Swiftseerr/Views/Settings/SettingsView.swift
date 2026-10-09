@@ -102,14 +102,30 @@ struct SettingsView: View {
 				.buttonStyle(.plain)
 				#endif
             }
+			.onMove { set, i in
+				var a = self.auths
+				a.move(fromOffsets: set, toOffset: i)
+			}
             .onDelete { indices in
                 for index in indices {
                     let auth = auths[index]
                     modelContext.delete(auth)
                 }
             }
+
+			#if !os(macOS)
+			Button {
+				SeerSession.shared.clear()
+
+				self.newOnboard = .welcome
+				self.viewOnboard.toggle()
+			} label: {
+				Text("add.instance")
+			}
+			#endif
         }
         .listRowBackground(Color.gray.opacity(0.2))
+		#if os(macOS)
         .sectionActions {
             Button {
                 SeerSession.shared.clear()
@@ -120,6 +136,7 @@ struct SettingsView: View {
                 Text("add.instance")
             }
         }
+		#endif
     }
 
     @ViewBuilder
@@ -138,23 +155,37 @@ struct SettingsView: View {
     private var defAge: some View {
         Section(header: Text("def-age"), footer: Text("def-age.footer")) {
 			LabeledContent("def-age", value: definedAge > 0 ? "\(definedAge)" : String(localized: "unknown"))
+
+			#if !os(macOS)
+			Button(role: .destructive) {
+				self.definedAge = -1
+			} label: {
+				Label("def-age.reset", systemImage: "figure.child.and.lock.fill")
+					.foregroundStyle(Color.red)
+					.labelStyle(.titleOnly)
+					.frame(minWidth: 100.0)
+					.opacity(undefinedAge ? 0.35 : 1.0)
+			}
+			.tint(Color.red)
+			.disabled(undefinedAge)
+			#endif
         }
+		.listRowBackground(Color.gray.opacity(0.2))
+		#if os(macOS)
         .sectionActions {
             Button(role: .destructive) {
 				self.definedAge = -1
             } label: {
                 Label("def-age.reset", systemImage: "figure.child.and.lock.fill")
                     .foregroundStyle(Color.red)
-				#if os(macOS)
 					.labelStyle(.titleOnly)
 					.frame(minWidth: 100.0)
 					.opacity(undefinedAge ? 0.35 : 1.0)
-				#endif
             }
 			.tint(Color.red)
             .disabled(undefinedAge)
         }
-        .listRowBackground(Color.gray.opacity(0.2))
+		#endif
     }
 
     @ViewBuilder
@@ -198,8 +229,52 @@ struct SettingsView: View {
                         }
                     }
                 LabeledContent("provider", value: auth.provider?.string ?? String(localized: "unknown"))
+
+				#if !os(macOS)
+				Button {
+					self.setDefault(auth)
+				} label: {
+					Text("set-default-instance")
+				}
+				.disabled(auth.isDefault)
+
+				Button {
+					self.unviewAuth = true
+
+					let prevAuth: AuthInfo = SeerSession.shared.auth
+					SeerSession.shared.auth = auth
+
+					Task {
+						defer {
+							self.unviewAuth = false
+							self.viewAuth = nil
+						}
+
+						do {
+							try await self.logIn(auth: auth)
+						} catch {
+							print(error)
+
+							withAnimation {
+								SeerSession.shared.auth = prevAuth
+							}
+						}
+					}
+				} label: {
+					Text("login")
+				}
+				.disabled(self.unviewAuth || SeerSession.shared.auth.id == auth.id)
+				#endif
             }
+			#if os(macOS)
 			.sectionActions {
+				Button {
+					self.setDefault(auth)
+				} label: {
+					Text("set-default-instance")
+				}
+				.disabled(auth.isDefault)
+
 				Button {
 					self.unviewAuth = true
 
@@ -227,12 +302,11 @@ struct SettingsView: View {
 				}
 				.disabled(self.unviewAuth || SeerSession.shared.auth.id == auth.id)
 
-				#if os(macOS)
 				Button(role: .close) {
 					self.viewAuth = nil
 				}
-				#endif
 			}
+			#endif
         }
 		.formStyle(.grouped)
         .scrollDisabled(true)
@@ -340,6 +414,12 @@ struct SettingsView: View {
 			throw SeerrError()
 		}
 	}
+
+    private func setDefault(_ auth: AuthInfo) {
+        for a in auths {
+            a.isDefault = a.id == auth.id
+        }
+    }
 
     private func openLink(_ url: URL?) -> OpenURLAction.Result {
         self.viewUrl = url?.absoluteString
