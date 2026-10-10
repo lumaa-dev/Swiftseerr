@@ -284,6 +284,8 @@ struct ContentView: View {
 
 	private func fallbackAccounts(without auths: [AuthInfo]) async {
 		defer { self.loading = false }
+		SeerSession.shared.clear()
+		
 		let fallbacks: [AuthInfo] = self.auths.filter({ !auths.contains($0) })
 
 		if fallbacks.count > 0 {
