@@ -282,43 +282,35 @@ struct ContentView: View {
 		return false
 	}
 
-	private func fallbackAccounts(without auths: [AuthInfo]) async {
+	private func fallbackAccounts(without broken: [AuthInfo]) async {
 		defer { self.loading = false }
+		self.loading = true
 		SeerSession.shared.clear()
-		
-		let fallbacks: [AuthInfo] = self.auths.filter({ !auths.contains($0) })
 
-		if fallbacks.count > 0 {
-			self.loading = true
+		// The caller's credentials no longer work (e.g. changed server-side), so this account
+		// is dead weight no matter what happens below — drop it now, unconditionally.
+		for account in broken {
+			self.modelContext.delete(account)
+		}
+		try? self.modelContext.save()
 
-			for f in fallbacks {
-				repeat {
-					do {
-						let hasSucceeded = try await self.initialize(using: f)
-						if hasSucceeded {
-							continue
-						} else {
-							SeerSession.shared.clear()
-							throw SeerrError()
-						}
-					} catch {
-						print("[ContentView+fallbackAccounts] Couldn't log in \(f.username)")
-						print(error)
-						continue
-					}
-				} while(SeerSession.shared.user == nil)
+		let fallbacks: [AuthInfo] = self.auths.filter({ !broken.contains($0) })
+
+		for f in fallbacks {
+			do {
+				let hasSucceeded = try await self.initialize(using: f)
+				if hasSucceeded {
+					return
+				}
+			} catch {
+				print("[ContentView+fallbackAccounts] Couldn't log in \(f.username)")
+				print(error)
 			}
+
+			SeerSession.shared.clear()
 		}
 
-		if SeerSession.shared.user == nil {
-			self.onboarding = .welcome
-		}
-	}
-
-	private func removeFirstAccount() {
-		guard let loaded: AuthInfo = self.auths.first else { return }
-
-		self.modelContext.delete(loaded)
+		self.onboarding = .welcome
 	}
 }
 
